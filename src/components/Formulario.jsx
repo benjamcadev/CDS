@@ -149,20 +149,21 @@ export default function Formulario({ vale, setVale }) {
               FIRMA QUIEN RETIRA
             </p>
             <SignatureCanvas
-              penColor='green'
+              penColor='blue'
               ref={sigCanvas}
-              canvasProps={{  className: 'sigCanvas' }}
+              canvasProps={{  className: 'sigCanvas border-4 border-gray-950' , width: 300, height: 200,}}
             />
           </div>
 
 
 
-          <div className="mb-5">
-            <p className="block text-gray-700 uppercase font-bold">FIRMA RESPONSABLE BODEGA</p>
+          <div className="mb-5 ">
+            <p className="block text-gray-700 uppercase font-bold">
+              FIRMA RESPONSABLE BODEGA</p>
             <SignatureCanvas
-              penColor='green'
+              penColor='blue'
               ref={sigCanvas}
-              canvasProps={{  className: 'sigCanvas' }}
+              canvasProps={{  className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
             />
           </div>
         </div>

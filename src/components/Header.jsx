@@ -1,5 +1,5 @@
 import React from 'react'
-import logoPsinet from '../../public/Logo-PSINet.png'
+import logoPsinet from '/src/Logo-PSINet.png'
 
 export default function Header() {
   return (
