@@ -1,12 +1,13 @@
 import { useState, useRef } from 'react'
+import * as React from 'react';
+
+//IMPORTAR COMPONENTE DE TABLA
+import Tabla from './Tabla'
 
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
 
-//COMPONENTE DE MATERIAL UI DATE TABLE
-import { DataGrid } from '@mui/x-data-grid';
 
 //COMPONENTES MATERIAL UI DATE PICKERS
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -19,6 +20,7 @@ import dayjs from 'dayjs'
 
 //COMPONENTE DE FIRMA
 import SignatureCanvas from 'react-signature-canvas'
+
 
 
 
@@ -40,47 +42,7 @@ export default function Formulario({ vale, setVale }) {
 
   ];
 
-  const rows = [
-    { id: 1, unidad: "Snow", descripcion: "Jon", cantidad: 35 },
-    { id: 2, unidad: "Lannister", descripcion: "Cersei", cantidad: 42 },
-    { id: 3, unidad: "Lannister", descripcion: "Jaime", cantidad: 45 },
-    { id: 4, unidad: "Stark", descripcion: "Arya", cantidad: 16 },
-    { id: 5, unidad: "Targaryen", descripcion: "Daenerys", cantidad: null },
-    { id: 6, unidad: "Melisandre", descripcion: null, cantidad: 150 },
-    { id: 7, unidad: "Clifford", descripcion: "Ferrara", cantidad: 44 },
-    { id: 8, unidad: "Frances", descripcion: "Rossini", cantidad: 36 },
-    { id: 9, unidad: "Roxie", descripcion: "Harvey", cantidad: 65 }
-  ];
 
-  const columns = [
-
-    {
-      field: 'id',
-      headerName: 'id',
-      width: 150,
-    },
-    {
-      field: 'unidad',
-      headerName: 'Unidad',
-      width: 150,
-    },
-    {
-      field: 'descripcion',
-      headerName: 'Descripcion',
-      width: 150,
-    },
-    {
-      field: 'cantidad',
-      headerName: 'Cantidad',
-      width: 150,
-    },
-    {
-      field: 'button',
-      headerName: 'Actions',
-      width: 150,
-      renderCell: (params) => (<Button variant="contained">Contained</Button>),
-    },
-  ];
 
   const save = () => {
     setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
@@ -130,6 +92,17 @@ export default function Formulario({ vale, setVale }) {
             />
           </div>
 
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">Descripcion del Trabajo</label>
+            <TextField
+              id="descripcion"
+              size="normal"
+              fullWidth
+              multiline
+              
+            />
+          </div>
+
 
         </div>
 
@@ -137,9 +110,7 @@ export default function Formulario({ vale, setVale }) {
 
         <div className="grid gap-4 grid-cols-1" >
           <div className="mb-5">
-            <div style={{ height: 400, width: "100%" }}>
-              <DataGrid rows={rows} columns={columns} checkboxSelection />
-            </div>
+            <Tabla />
           </div>
         </div>
 
@@ -151,7 +122,7 @@ export default function Formulario({ vale, setVale }) {
             <SignatureCanvas
               penColor='blue'
               ref={sigCanvas}
-              canvasProps={{  className: 'sigCanvas border-4 border-gray-950' , width: 300, height: 200,}}
+              canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
             />
           </div>
 
@@ -163,7 +134,7 @@ export default function Formulario({ vale, setVale }) {
             <SignatureCanvas
               penColor='blue'
               ref={sigCanvas}
-              canvasProps={{  className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
+              canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
             />
           </div>
         </div>
