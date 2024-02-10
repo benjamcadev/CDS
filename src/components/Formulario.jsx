@@ -4,6 +4,9 @@ import * as React from 'react';
 //IMPORTAR COMPONENTE DE TABLA
 import Tabla from './Tabla'
 
+//IMPORTAR COMPONENTE DE FIRMA
+import Firmas from './Firmas'
+
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -18,8 +21,7 @@ import 'dayjs/locale/es'
 //LIBRERIA PARA TRABAJAR FECHAS
 import dayjs from 'dayjs'
 
-//COMPONENTE DE FIRMA
-import SignatureCanvas from 'react-signature-canvas'
+
 
 
 
@@ -27,11 +29,10 @@ import SignatureCanvas from 'react-signature-canvas'
 export default function Formulario({ vale, setVale }) {
 
 
-  const sigCanvas = useRef({});
 
-  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsable: '', descripcion: '' })
+  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsableRetira: '', responsableEntrega: '', descripcion: '' })
   const [datosTabla, setDatosTabla] = useState({})
-  const [imageURL, setImageURL] = useState(null);
+
 
 
   const opcionesArea = [
@@ -60,13 +61,14 @@ export default function Formulario({ vale, setVale }) {
 
   ]
 
+  const opcionesResponsableBodega = [
+    { label: 'Benjamin Cortes', value: 'Benjamin Cortes', id: 1 },
+    { label: 'Javiera Zamorano', value: 'Javiera Zamorano', id: 2 },
+    { label: 'Alejandro Cortes', value: 'Alejandro Cortes', id: 3 },
+    { label: 'Rodrigo Caminada', value: 'Rodrigo Caminada', id: 4 },
+  ]
 
 
-  const save = () => {
-    setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
-
-    console.log(imageURL)
-  }
 
 
   const handleSubmit = (e) => {
@@ -91,6 +93,7 @@ export default function Formulario({ vale, setVale }) {
             >
               <DatePicker
                 className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                defaultValue={dayjs()}
                 id="fecha"
                 onChange={(newValue) => setDatos({ ...datos, fecha: dayjs(newValue).format('YYYY-MM-DD HH:mm:ss') })}
 
@@ -143,10 +146,24 @@ export default function Formulario({ vale, setVale }) {
               id="responsable"
               options={opcionesResponsable}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, responsable: e.target.value })}
+              onBlur={(e) => setDatos({ ...datos, responsableRetira: e.target.value })}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
+
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable Bodega</label>
+            <Autocomplete
+              disablePortal
+              freeSolo
+              id="responsableBodega"
+              options={opcionesResponsableBodega}
+              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+              onBlur={(e) => setDatos({ ...datos, responsableEntrega: e.target.value })}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </div>
+
 
 
 
@@ -178,43 +195,22 @@ export default function Formulario({ vale, setVale }) {
 
         {/* Firmas */}
 
-        <div className="grid gap-4 mt-10 sm:grid-cols-1 md:grid-cols-2" >
-          <div className="mb-5">
-            <p className="block text-gray-700 uppercase font-bold">
-              FIRMA QUIEN RETIRA
-            </p>
-            <SignatureCanvas
-              penColor='blue'
-              ref={sigCanvas}
-              canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
-            />
-          </div>
+        <div className="grid gap-4 mt-10 " >
 
-
-
-          <div className="mb-5 ">
-            <p className="block text-gray-700 uppercase font-bold">
-              FIRMA RESPONSABLE BODEGA</p>
-            <SignatureCanvas
-              penColor='blue'
-              ref={sigCanvas}
-              canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
-            />
-          </div>
+          <Firmas
+            datos={datos}
+          />
         </div>
 
         <input
           type="submit"
-          className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-all"
+          className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-all rounded"
 
         />
 
-
-
-
       </form >
 
-      <button onClick={save}>Save</button>
+
     </div >
   )
 }
