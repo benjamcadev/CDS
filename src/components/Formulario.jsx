@@ -29,8 +29,8 @@ export default function Formulario({ vale, setVale }) {
 
   const sigCanvas = useRef({});
 
-  const [fecha, setFecha] = useState('')
-  const [area, setArea] = useState('')
+  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsable: '', descripcion: '' })
+  const [datosTabla, setDatosTabla] = useState({})
   const [imageURL, setImageURL] = useState(null);
 
 
@@ -41,6 +41,24 @@ export default function Formulario({ vale, setVale }) {
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
   ];
+
+  const opcionesBodega = [
+    { label: 'Insumos', value: 'Insumos', id: 1 },
+    { label: 'Networking', value: 'Networking', id: 2 },
+    { label: 'Carlitos', value: 'Carlitos', id: 3 },
+    { label: 'Legrand', value: 'Legrand', id: 4 },
+    { label: 'UPS', value: 'UPS', id: 5 },
+  ]
+
+  const opcionesResponsable = [
+    { label: 'Arturo Jeronimo', value: 'Arturo Jeronimo', id: 1 },
+    { label: 'Daniel Diaz', value: 'Daniel Diaz', id: 2 },
+    { label: 'Jose Castillo P.', value: 'Jose Castillo P.', id: 3 },
+    { label: 'Jose Castillo A.', value: 'Jose Castillo A.', id: 4 },
+    { label: 'Felipe Mardonez', value: 'Felipe Mardonez', id: 5 },
+    { label: 'Evans Jones', value: 'Evans Jones', id: 6 },
+
+  ]
 
 
 
@@ -61,6 +79,8 @@ export default function Formulario({ vale, setVale }) {
 
       <form className="" onSubmit={handleSubmit}>
 
+        {/* Inputs */}
+
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Fecha</label>
@@ -72,7 +92,7 @@ export default function Formulario({ vale, setVale }) {
               <DatePicker
                 className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 id="fecha"
-                onChange={(newValue) => setFecha(dayjs(newValue).format('YYYY-MM-DD HH:mm:ss'))}
+                onChange={(newValue) => setDatos({ ...datos, fecha: dayjs(newValue).format('YYYY-MM-DD HH:mm:ss') })}
 
               />
             </LocalizationProvider>
@@ -84,13 +104,55 @@ export default function Formulario({ vale, setVale }) {
             <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Area Solicitante</label>
             <Autocomplete
               disablePortal
+              freeSolo
               id="area"
               options={opcionesArea}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setArea(e.target.value)}
+              onBlur={(e) => setDatos({ ...datos, area: e.target.value })}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
+
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="codelcoSolicitante">Solicitante Codelco</label>
+            <TextField
+              id="codelcoSolicitante"
+              size="normal"
+              fullWidth
+              variant="outlined"
+              onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="bodega">Bodega</label>
+            <Autocomplete
+              disablePortal
+              id="bodega"
+              options={opcionesBodega}
+              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+              onBlur={(e) => setDatos({ ...datos, bodega: e.target.value })}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </div>
+
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
+            <Autocomplete
+              disablePortal
+              freeSolo
+              id="responsable"
+              options={opcionesResponsable}
+              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+              onBlur={(e) => setDatos({ ...datos, responsable: e.target.value })}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </div>
+
+
+
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
 
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">Descripcion del Trabajo</label>
@@ -99,22 +161,24 @@ export default function Formulario({ vale, setVale }) {
               size="normal"
               fullWidth
               multiline
-              
+              onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
             />
           </div>
-
 
         </div>
 
         {/* Tabla */}
 
-        <div className="grid gap-4 grid-cols-1" >
+        <div className="grid gap-4 mt-10 grid-cols-1" >
           <div className="mb-5">
             <Tabla />
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2" >
+
+        {/* Firmas */}
+
+        <div className="grid gap-4 mt-10 sm:grid-cols-1 md:grid-cols-2" >
           <div className="mb-5">
             <p className="block text-gray-700 uppercase font-bold">
               FIRMA QUIEN RETIRA

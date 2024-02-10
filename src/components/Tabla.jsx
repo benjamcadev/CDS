@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
+import FilterCenterFocusIcon from '@mui/icons-material/FilterCenterFocus';
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
@@ -166,6 +167,13 @@ export default function Tabla() {
                             onClick={handleCancelClick(id)}
                             color="inherit"
                         />,
+                        <GridActionsCellItem
+                        icon={<FilterCenterFocusIcon />}
+                        label="Scan"
+                        className="textPrimary"
+                        onClick={handleCancelClick(id)}
+                        color="inherit"
+                    />,
                     ];
                 }
                 return [
