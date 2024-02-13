@@ -5,6 +5,10 @@ import * as React from 'react';
 //IMPORTAR LIBRERIA DE SCAN BARCODE
 import { useZxing } from "react-zxing";
 
+//LIBRERIA DE CAPTURAR DEVICES
+import { useMediaDevices } from "react-media-devices";
+
+
 //IMPORTAR COMPONENTE DE TABLA
 import Tabla from './Tabla'
 
@@ -47,6 +51,7 @@ export default function Formulario({ vale, setVale }) {
   const [open, setOpen] = useState(false);
 
 
+
   const handleClick = () => {
     setOpen(true);
   };
@@ -65,12 +70,13 @@ export default function Formulario({ vale, setVale }) {
       const availableDevices = await navigator.mediaDevices.enumerateDevices();
       const availableVideoDevices = availableDevices.filter(device => device.kind === 'videoinput');
 
+
       if (availableVideoDevices.length === 0) {
         setOpen(true)
       }
       else {
-        setDevices(availableVideoDevices);
-        alert(JSON.stringify(devices, null, 4))
+        await setDevices(availableVideoDevices);
+        console.log(devices)
       }
     }
 
@@ -81,17 +87,14 @@ export default function Formulario({ vale, setVale }) {
 
   }, []);
 
+
+
   const { ref } = useZxing({
-    deviceId: devices,
+    deviceId: devices.deviceId,
     onDecodeResult(result) {
       setResult(result.getText());
     },
-
-
   });
-
-
-
 
 
   const opcionesArea = [
