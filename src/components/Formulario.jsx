@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import * as React from 'react';
 
+
+//IMPORTAR LIBRERIA DE SCAN BARCODE
 import { useZxing } from "react-zxing";
 
 //IMPORTAR COMPONENTE DE TABLA
@@ -12,6 +14,8 @@ import Firmas from './Firmas'
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 //COMPONENTES MATERIAL UI DATE PICKERS
@@ -37,12 +41,56 @@ export default function Formulario({ vale, setVale }) {
 
   const [result, setResult] = useState("");
 
+  const [devices, setDevices] = useState([]);
+
+  // STATE QUE MANEJA MOSTRAR EL MENSAJE
+  const [open, setOpen] = useState(false);
+
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
+
+  useEffect(() => {
+
+    const fetchDataCamera = async () => {
+      const availableDevices = await navigator.mediaDevices.enumerateDevices();
+      const availableVideoDevices = availableDevices.filter(device => device.kind === 'videoinput');
+
+      if (availableVideoDevices.length === 0) {
+        setOpen(true)
+      }
+      else {
+        setDevices(availableVideoDevices);
+        alert(JSON.stringify(devices, null, 4))
+      }
+    }
+
+    // call the function
+    fetchDataCamera()
+      // make sure to catch any error
+      .catch(console.error);
+
+  }, []);
 
   const { ref } = useZxing({
+    deviceId: devices,
     onDecodeResult(result) {
       setResult(result.getText());
     },
+
+
   });
+
+
 
 
 
@@ -227,7 +275,16 @@ export default function Formulario({ vale, setVale }) {
 
       </form >
 
-
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert
+          onClose={handleClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          No cameras found
+        </Alert>
+      </Snackbar>
     </div >
   )
 }
