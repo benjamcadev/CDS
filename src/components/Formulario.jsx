@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import * as React from 'react';
 
+import { useZxing } from "react-zxing";
+
 //IMPORTAR COMPONENTE DE TABLA
 import Tabla from './Tabla'
 
@@ -32,6 +34,15 @@ export default function Formulario({ vale, setVale }) {
 
   const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsableRetira: '', responsableEntrega: '', descripcion: '' })
   const [datosTabla, setDatosTabla] = useState({})
+
+  const [result, setResult] = useState("");
+
+
+  const { ref } = useZxing({
+    onDecodeResult(result) {
+      setResult(result.getText());
+    },
+  });
 
 
 
@@ -201,6 +212,12 @@ export default function Formulario({ vale, setVale }) {
             datos={datos}
           />
         </div>
+
+        <video ref={ref} />
+        <p>
+          <span>Last result:</span>
+          <span>{result}</span>
+        </p>
 
         <input
           type="submit"
