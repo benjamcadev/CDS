@@ -67,8 +67,9 @@ export default function Formulario({ vale, setVale }) {
   useEffect(() => {
 
     const fetchDataCamera = async () => {
+      try{
       const availableDevices = await navigator.mediaDevices.enumerateDevices();
-      const availableVideoDevices = availableDevices.filter(device => device.kind === 'videoinput');
+      const availableVideoDevices = await availableDevices.filter(device => device.kind === 'videoinput');
 
 
       if (availableVideoDevices.length === 0) {
@@ -76,27 +77,30 @@ export default function Formulario({ vale, setVale }) {
       }
       else {
         await setDevices(availableVideoDevices);
-        console.log(devices)
-      }
+      } 
+    }catch(e){
+      // abrir un mensaje de error
+    }
     }
 
     // call the function
     fetchDataCamera()
-      // make sure to catch any error
-      .catch(console.error);
+    alert(JSON.stringify(devices, null, 4))
+   
+     
 
   }, []);
 
 
 
   const { ref } = useZxing({
-    deviceId: devices.deviceId,
     onDecodeResult(result) {
       setResult(result.getText());
     },
+    //deviceId: devices[0].deviceId
   });
 
-
+  
   const opcionesArea = [
     { label: 'Telecomunicaciones', value: 'Telecomunicaciones', id: 1 },
     { label: 'Area TI', value: 'Area TI', id: 2 },
