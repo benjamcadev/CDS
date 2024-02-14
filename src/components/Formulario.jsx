@@ -2,12 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import * as React from 'react';
 
 
-//IMPORTAR LIBRERIA DE SCAN BARCODE
-import { useZxing } from "react-zxing";
-
-//LIBRERIA DE CAPTURAR DEVICES
-import { useMediaDevices } from "react-media-devices";
-
 
 //IMPORTAR COMPONENTE DE TABLA
 import Tabla from './Tabla'
@@ -18,8 +12,7 @@ import Firmas from './Firmas'
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+
 
 
 //COMPONENTES MATERIAL UI DATE PICKERS
@@ -33,9 +26,6 @@ import dayjs from 'dayjs'
 
 
 
-
-
-
 export default function Formulario({ vale, setVale }) {
 
 
@@ -43,62 +33,7 @@ export default function Formulario({ vale, setVale }) {
   const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsableRetira: '', responsableEntrega: '', descripcion: '' })
   const [datosTabla, setDatosTabla] = useState({})
 
-  const [result, setResult] = useState("");
-
-  const [devices, setDevices] = useState([]);
-
-  // STATE QUE MANEJA MOSTRAR EL MENSAJE
-  const [open, setOpen] = useState(false);
-
-
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
-
-  useEffect(() => {
-
-    const fetchDataCamera = async () => {
-      try{
-      const availableDevices = await navigator.mediaDevices.enumerateDevices();
-      const availableVideoDevices = await availableDevices.filter(device => device.kind === 'videoinput');
-
-
-      if (availableVideoDevices.length === 0) {
-        setOpen(true)
-      }
-      else {
-        await setDevices(availableVideoDevices);
-      } 
-    }catch(e){
-      // abrir un mensaje de error
-    }
-    }
-
-    // call the function
-    fetchDataCamera()
-    alert(JSON.stringify(devices, null, 4))
-   
-     
-
-  }, []);
-
-
-
-  const { ref } = useZxing({
-    onDecodeResult(result) {
-      setResult(result.getText());
-    },
-    //deviceId: devices[0].deviceId
-  });
+ 
 
   
   const opcionesArea = [
@@ -268,11 +203,6 @@ export default function Formulario({ vale, setVale }) {
           />
         </div>
 
-        <video ref={ref} />
-        <p>
-          <span>Last result:</span>
-          <span>{result}</span>
-        </p>
 
         <input
           type="submit"
@@ -282,16 +212,7 @@ export default function Formulario({ vale, setVale }) {
 
       </form >
 
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert
-          onClose={handleClose}
-          severity="error"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          No cameras found
-        </Alert>
-      </Snackbar>
+    
     </div >
   )
 }
