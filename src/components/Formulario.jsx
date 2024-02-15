@@ -15,12 +15,6 @@ import MultipleSelectChipBodega from './selectBodegas'
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import Select from '@mui/material/Select';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import MenuItem from '@mui/material/MenuItem';
-import { useTheme } from '@mui/material/styles';
 
 
 //COMPONENTES MATERIAL UI DATE PICKERS
@@ -45,8 +39,8 @@ export default function Formulario({ vale, setVale }) {
 
 
   const opcionesArea = [
-    { label: 'Telecomunicaciones', value: 'Telecomunicaciones', id: 1 },
-    { label: 'Area TI', value: 'Area TI', id: 2 },
+    { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
+    { label: 'Area TI PSINET', value: 'Area TI PSINET', id: 2 },
     { label: 'Sonda', value: 'Sonda', id: 3 },
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
@@ -76,7 +70,8 @@ export default function Formulario({ vale, setVale }) {
     { label: 'Benjamin Cortes', value: 'Benjamin Cortes', id: 1 },
     { label: 'Javiera Zamorano', value: 'Javiera Zamorano', id: 2 },
     { label: 'Alejandro Cortes', value: 'Alejandro Cortes', id: 3 },
-    { label: 'Rodrigo Caminada', value: 'Rodrigo Caminada', id: 4 },
+    { label: 'Mauricio Barraza', value: 'Mauricio Barraza', id: 4 },
+    { label: 'Rodrigo Caminada', value: 'Rodrigo Caminada', id: 5 },
   ]
 
 

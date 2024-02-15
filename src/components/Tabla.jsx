@@ -6,22 +6,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import FilterCenterFocusIcon from '@mui/icons-material/FilterCenterFocus';
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
 
-
-
-
-
-
 export default function Tabla() {
-
-
-
-
 
 
     function EditToolbar(props) {
@@ -31,7 +23,7 @@ export default function Tabla() {
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, unidad: '', descripcion: '', cantidad: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, {id, item: id, unidad: '', descripcion: '', cantidad: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -40,7 +32,7 @@ export default function Tabla() {
 
         return (
             <GridToolbarContainer className="mt-3">
-                <Button  size="small" variant='contained' color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                <Button size="small" variant='contained' color="primary" startIcon={<AddIcon />} onClick={handleClick}>
                     Agregar Material
                 </Button>
             </GridToolbarContainer>
@@ -90,6 +82,11 @@ export default function Tabla() {
         setRows(rows.filter((row) => row.id !== id));
     };
 
+    const handleSearchClick = (id) => () => {
+       alert("Search")
+    };
+
+
     const handleCancelClick = (id) => () => {
         setRowModesModel({
             ...rowModesModel,
@@ -117,14 +114,17 @@ export default function Tabla() {
     const columns = [
 
         {
-            field: 'id',
-            headerName: 'id',
-            editable: true
+            field: 'item',
+            headerName: 'Item',
+            headerAlign: 'left',
+            type: 'number',
+            width: 150,
 
         },
         {
             field: 'unidad',
             headerName: 'Unidad',
+            headerAlign: 'left',
             editable: true,
             width: 150,
             type: 'singleSelect',
@@ -133,20 +133,25 @@ export default function Tabla() {
         {
             field: 'descripcion',
             headerName: 'Descripcion',
+            headerAlign: 'left',
             editable: true,
-            width: 150,
+            width: 800,
+            type: 'string'
         },
         {
             field: 'cantidad',
             headerName: 'Cantidad',
+            headerAlign: 'left',
             editable: true,
             width: 150,
+            type: 'number',
         },
         {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            width: 100,
+            headerAlign: 'left',
+            width: 200,
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -168,12 +173,12 @@ export default function Tabla() {
                             color="inherit"
                         />,
                         <GridActionsCellItem
-                        icon={<FilterCenterFocusIcon />}
-                        label="Scan"
-                        className="textPrimary"
-                        onClick={handleCancelClick(id)}
-                        color="inherit"
-                    />,
+                            icon={<SearchIcon />}
+                            label="Search"
+                            className="textPrimary"
+                            onClick={handleSearchClick(id)}
+                            color="inherit"
+                        />,
                     ];
                 }
                 return [
@@ -206,8 +211,8 @@ export default function Tabla() {
 
 
     return (
-        <div className='' style={{ height: 400, width: "100%" }}>
-             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado de Materiales</label>
+        <div className='' style={{ height: 600, width: "100%" }}>
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado de Materiales</label>
             <DataGrid
                 rows={rows}
                 columns={columns}
