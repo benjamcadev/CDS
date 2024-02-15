@@ -55,15 +55,15 @@ export default function Firmas({datos}) {
                 />
 
 
-                <button
+                {/* <button
                     className="bg-blue-500 p-3 text-xs h-10 mt-4 text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={saveSign1}
                 >
                     Guardar
-                </button>
+                </button> */}
 
                 <button
-                    className="bg-blue-500 p-3 text-xs h-10 mt-4 ml-4 text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
+                    className="bg-blue-500 p-3 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={clearSign1}
                 >
                     Limpiar
@@ -85,15 +85,15 @@ export default function Firmas({datos}) {
                     canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
                 />
 
-                <button
+                {/* <button
                     className="bg-blue-500 p-3 text-xs h-10 mt-4 text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={saveSign2}
                 >
                     Guardar
-                </button>
+                </button> */}
 
                 <button
-                    className="bg-blue-500 p-3 text-xs h-10 mt-4 ml-4 text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
+                    className="bg-blue-500 p-3 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={clearSign2}
                 >
                     Limpiar

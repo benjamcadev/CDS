@@ -9,10 +9,18 @@ import Tabla from './Tabla'
 //IMPORTAR COMPONENTE DE FIRMA
 import Firmas from './Firmas'
 
+//IMPORTAR COMPONENTE DE MULTISELECT BODEGAS
+import MultipleSelectChipBodega from './selectBodegas'
+
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
+import { useTheme } from '@mui/material/styles';
 
 
 //COMPONENTES MATERIAL UI DATE PICKERS
@@ -30,12 +38,12 @@ export default function Formulario({ vale, setVale }) {
 
 
 
-  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodega: '', responsableRetira: '', responsableEntrega: '', descripcion: '' })
+  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodegas: [], responsableRetira: '', responsableEntrega: '', descripcion: '' })
   const [datosTabla, setDatosTabla] = useState({})
 
- 
 
-  
+
+
   const opcionesArea = [
     { label: 'Telecomunicaciones', value: 'Telecomunicaciones', id: 1 },
     { label: 'Area TI', value: 'Area TI', id: 2 },
@@ -51,6 +59,8 @@ export default function Formulario({ vale, setVale }) {
     { label: 'Legrand', value: 'Legrand', id: 4 },
     { label: 'UPS', value: 'UPS', id: 5 },
   ]
+
+
 
   const opcionesResponsable = [
     { label: 'Arturo Jeronimo', value: 'Arturo Jeronimo', id: 1 },
@@ -127,17 +137,15 @@ export default function Formulario({ vale, setVale }) {
               onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
           </div>
 
+
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="bodega">Bodega</label>
-            <Autocomplete
-              disablePortal
-              id="bodega"
-              options={opcionesBodega}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, bodega: e.target.value })}
-              renderInput={(params) => <TextField {...params} />}
+            <MultipleSelectChipBodega
+            setDatos={setDatos}
+            datos={datos}
             />
           </div>
+
 
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
@@ -212,7 +220,7 @@ export default function Formulario({ vale, setVale }) {
 
       </form >
 
-    
+
     </div >
   )
 }
