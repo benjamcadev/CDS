@@ -8,7 +8,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
-import FilterCenterFocusIcon from '@mui/icons-material/FilterCenterFocus';
+
+//IMPORTAR COMPONENTES
+import SearchModal from './modal'
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
@@ -51,6 +53,7 @@ export default function Tabla() {
 
     const [rows, setRows] = React.useState(initialRows);
     const [rowModesModel, setRowModesModel] = React.useState({});
+    const [openModal, setOpenModal] = React.useState(false);
 
     const getLastId = () => {
 
@@ -83,7 +86,8 @@ export default function Tabla() {
     };
 
     const handleSearchClick = (id) => () => {
-       alert("Search")
+       setOpenModal(true)
+       
     };
 
 
@@ -213,6 +217,10 @@ export default function Tabla() {
     return (
         <div className='' style={{ height: 600, width: "100%" }}>
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado de Materiales</label>
+            <SearchModal 
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            />
             <DataGrid
                 rows={rows}
                 columns={columns}
