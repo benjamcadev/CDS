@@ -32,7 +32,7 @@ export default function Formulario({ vale, setVale }) {
 
 
 
-  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodegas: [], responsableRetira: '', responsableEntrega: '', descripcion: '' })
+  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodegas: [], responsableRetira: '', responsableEntrega: '', descripcion: '', observaciones: '' })
   const [datosTabla, setDatosTabla] = useState({})
 
 
@@ -194,6 +194,24 @@ export default function Formulario({ vale, setVale }) {
           <div className="mb-5">
             <Tabla />
           </div>
+        </div>
+
+
+      {/* Tabla */}
+
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
+
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="observaciones">Observaciones</label>
+            <TextField
+              id="observaciones"
+              size="normal"
+              fullWidth
+              multiline
+              onChange={(e) => setDatos({ ...datos, observaciones: e.target.value })}
+            />
+          </div>
+
         </div>
 
 
