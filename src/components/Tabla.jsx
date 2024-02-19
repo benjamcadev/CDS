@@ -15,7 +15,7 @@ import SearchModal from './modal'
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
 
-export default function Tabla() {
+export default function Tabla({rows, setRows}) {
 
 
     function EditToolbar(props) {
@@ -45,13 +45,10 @@ export default function Tabla() {
 
     //-------------------------------- DATA GRID  -------------------------------------//
 
-    const initialRows = [
+    
 
 
-    ];
-
-
-    const [rows, setRows] = React.useState(initialRows);
+    
     const [rowModesModel, setRowModesModel] = React.useState({});
     const [openModal, setOpenModal] = React.useState(false);
 
@@ -79,6 +76,7 @@ export default function Tabla() {
 
     const handleSaveClick = (id) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+        
     };
 
     const handleDeleteClick = (id) => () => {
@@ -106,6 +104,7 @@ export default function Tabla() {
     const processRowUpdate = (newRow) => {
         const updatedRow = { ...newRow, isNew: false };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+       
         return updatedRow;
     };
 

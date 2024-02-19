@@ -32,11 +32,29 @@ export default function Formulario({ vale, setVale }) {
 
 
 
-  const [datos, setDatos] = useState({ fecha: '', area: '', solCodelco: '', bodegas: [], responsableRetira: '', responsableEntrega: '', descripcion: '', observaciones: '' })
-  const [datosTabla, setDatosTabla] = useState({})
+  const [datos, setDatos] = useState({
+    fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    area: '',
+    solCodelco: '',
+    bodegas: [], 
+    responsableRetira: '',
+    responsableEntrega: '',
+    descripcion: '',
+    observaciones: '',
+    firmaSolicitante: '',
+    firmaBodega: '',
+    detalle: ''
+  })
+
+  //STATE DE LA TABLA
+  const initialRows = [];
+  const [rows, setRows] = React.useState(initialRows);
 
 
-
+  //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
+  useEffect(() => {
+    setDatos({ ...datos, detalle: rows })
+  },[rows])
 
   const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
@@ -79,7 +97,15 @@ export default function Formulario({ vale, setVale }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert(fecha + " " + area)
+
+    
+    
+    console.log(datos)
+   
+    const myJSON = JSON.stringify(datos);
+
+    console.log(myJSON)
+    
   }
 
   return (
@@ -136,8 +162,8 @@ export default function Formulario({ vale, setVale }) {
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="bodega">Bodega</label>
             <MultipleSelectChipBodega
-            setDatos={setDatos}
-            datos={datos}
+              setDatos={setDatos}
+              datos={datos}
             />
           </div>
 
@@ -192,12 +218,15 @@ export default function Formulario({ vale, setVale }) {
 
         <div className="grid gap-4 mt-10 grid-cols-1" >
           <div className="mb-5">
-            <Tabla />
+            <Tabla
+              rows={rows}
+              setRows={setRows}
+            />
           </div>
         </div>
 
 
-      {/* Tabla */}
+        {/* Observaciones */}
 
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
 
@@ -220,6 +249,7 @@ export default function Formulario({ vale, setVale }) {
         <div className="grid gap-4 mt-10 " >
 
           <Firmas
+            setDatos={setDatos}
             datos={datos}
           />
         </div>

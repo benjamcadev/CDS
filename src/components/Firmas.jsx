@@ -1,22 +1,19 @@
-import {useRef, useState} from 'react'
+import { useRef, useState } from 'react'
 
 //LIBRERIA DE FIRMA
 import SignatureCanvas from 'react-signature-canvas'
 
-export default function Firmas({datos}) {
+export default function Firmas({ datos, setDatos }) {
 
     //REFERENCIAS A LAS FIRMAS
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
 
-    const [imageURL, setImageURL] = useState(null);
 
     // FUNCIONES DE LAS FIRMAS
-    const saveSign1 = (e) => {
-        e.preventDefault()
-        setImageURL(sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"));
-
-        console.log(imageURL)
+    const saveSign1 = () => {
+        setDatos({...datos, firmaSolicitante: sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")})
+        console.log(sigCanvas.current.isEmpty()) 
     }
 
     const clearSign1 = (e) => {
@@ -24,11 +21,9 @@ export default function Firmas({datos}) {
         sigCanvas.current.clear();
     }
 
-    const saveSign2 = (e) => {
-        e.preventDefault()
-        setImageURL(sigCanvas2.current.getTrimmedCanvas().toDataURL("image/png"));
+    const saveSign2 = () => {
+        setDatos({...datos, firmaBodega: sigCanvas2.current.getTrimmedCanvas().toDataURL("image/png")})
 
-        console.log(imageURL)
     }
 
     const clearSign2 = (e) => {
@@ -51,6 +46,7 @@ export default function Firmas({datos}) {
                 <SignatureCanvas
                     penColor='blue'
                     ref={sigCanvas}
+                    onEnd={() => saveSign1()}
                     canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
                 />
 
@@ -82,6 +78,7 @@ export default function Firmas({datos}) {
                 <SignatureCanvas
                     penColor='blue'
                     ref={sigCanvas2}
+                    onEnd={() => saveSign2()}
                     canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
                 />
 
