@@ -121,7 +121,7 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Item',
             headerAlign: 'left',
             type: 'number',
-            width: 150,
+            flex: 0.1,
 
         },
         {
@@ -129,7 +129,8 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Unidad',
             headerAlign: 'left',
             editable: true,
-            width: 150,
+            flex: 0.3,
+            minWidth: 110,
             type: 'singleSelect',
             valueOptions: ["Unidad", "Paquete"],
         },
@@ -138,7 +139,8 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Descripcion',
             headerAlign: 'left',
             editable: true,
-            width: 800,
+            flex: 1,
+            minWidth: 150,
             type: 'string'
         },
         {
@@ -146,7 +148,8 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Cantidad',
             headerAlign: 'left',
             editable: true,
-            width: 150,
+            flex: 0.3,
+            minWidth: 100,
             type: 'number',
         },
         {
@@ -154,7 +157,7 @@ export default function Tabla({rows, setRows}) {
             type: 'actions',
             headerName: 'Actions',
             headerAlign: 'left',
-            width: 200,
+           
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -224,7 +227,7 @@ export default function Tabla({rows, setRows}) {
                 rows={rows}
                 columns={columns}
                 editMode="row"
-
+                autoHeight
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
