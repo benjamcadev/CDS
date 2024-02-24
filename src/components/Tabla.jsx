@@ -227,7 +227,7 @@ export default function Tabla({rows, setRows}) {
                 rows={rows}
                 columns={columns}
                 editMode="row"
-                autoHeight
+                
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
@@ -238,6 +238,7 @@ export default function Tabla({rows, setRows}) {
                 slotProps={{
                     toolbar: { setRows, setRowModesModel },
                 }}
+                localeText={{noRowsLabel: "No hay materiales agregados"}}
             />
         </div>
     )

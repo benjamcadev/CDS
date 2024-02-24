@@ -274,7 +274,7 @@ export default function Formulario({ vale, setVale }) {
 
         {/* Tabla */}
 
-        <div className="grid gap-4 mt-10 grid-cols-1" >
+        <div className="grid gap-4 mt-10 mb-10 grid-cols-1" >
           <div className="mb-5">
             <Tabla
               rows={rows}
