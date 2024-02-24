@@ -54,7 +54,11 @@ export default function Formulario({ vale, setVale }) {
   const [rows, setRows] = useState(initialRows);
 
   //STATE DE ALERT SNACKBAR
-  const [alert, setAlert] = useState({estado: false, mensaje: 'Mensaje de prueba'});
+  const [alert, setAlert] = useState({
+    estado: false, 
+    mensaje: 'Mensaje de prueba',
+    titulo: ''
+  });
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
@@ -105,13 +109,13 @@ export default function Formulario({ vale, setVale }) {
     e.preventDefault()
 
     //VALIDAR DATOS VACIOS
-    if (datos.area == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el area', tipo: 'error'}); return}
-    if (datos.bodegas.length == 0) {setAlert({...alert, estado: true, mensaje: 'Error, falta seleccionar bodega', tipo: 'error'}); return}
-    if (datos.responsableRetira == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el nombre responsable que retira', tipo: 'error'}); return}
-    if (datos.responsableEntrega == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el nombre responsable de bodega', tipo: 'error'}); return}
-    if (datos.descripcion == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar una descripcion del trabajo', tipo: 'error'}); return}
-    if (datos.detalle == '') {setAlert({...alert, estado: true, mensaje: 'Error, no has agregado materiales', tipo: 'error'}); return}
-    
+    if (datos.area == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.bodegas.length == 0) {setAlert({...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.responsableRetira == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.responsableEntrega == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.descripcion == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.detalle == '') {setAlert({...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error',titulo: 'Error'}); return}
+
 
     console.log(datos)
    
