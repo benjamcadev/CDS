@@ -15,6 +15,9 @@ import MultipleSelectChipBodega from './selectBodegas'
 // IMPORTAR COMPONENTE DE ALERT SNACKBAR
 import Alert from './alertSnackbar'
 
+// IMPORTAR COMPONENTE DE DIALOG
+import Dialogo from './Dialogo'
+
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -39,7 +42,7 @@ export default function Formulario({ vale, setVale }) {
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     area: '',
     solCodelco: '',
-    bodegas: [], 
+    bodegas: [],
     responsableRetira: '',
     responsableEntrega: '',
     descripcion: '',
@@ -55,16 +58,36 @@ export default function Formulario({ vale, setVale }) {
 
   //STATE DE ALERT SNACKBAR
   const [alert, setAlert] = useState({
-    estado: false, 
+    estado: false,
     mensaje: 'Mensaje de prueba',
     titulo: ''
+  });
+
+  //STATE DE DIALOG
+  const [dialogo, setDialogo] = useState({
+    estado: false,
+    mensaje: 'Mensaje de prueba',
+    titulo: 'Titulo de prueba',
+    boton1Texto: 'Cancelar',
+    boton2Texto: 'Aceptar',
+    responseReturn: false
   });
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
     setDatos({ ...datos, detalle: rows })
-  },[rows])
+  }, [rows])
+
+  useEffect(() => {
+
+
+    if (dialogo.responseReturn) {
+      console.log("Boton Aceptar")
+      //ENVIAR DATOS CON VALE ABIERTO
+      enviarDatos()
+    }
+  }, [dialogo])
 
   const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
@@ -109,28 +132,41 @@ export default function Formulario({ vale, setVale }) {
     e.preventDefault()
 
     //VALIDAR DATOS VACIOS
-    if (datos.area == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error',titulo: 'Error'}); return}
-    if (datos.bodegas.length == 0) {setAlert({...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error',titulo: 'Error'}); return}
-    if (datos.responsableRetira == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error',titulo: 'Error'}); return}
-    if (datos.responsableEntrega == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error',titulo: 'Error'}); return}
-    if (datos.descripcion == '') {setAlert({...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error',titulo: 'Error'}); return}
-    if (datos.detalle == '') {setAlert({...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error',titulo: 'Error'}); return}
+    if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.bodegas.length == 0) { setAlert({ ...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.firmaSolicitante == '') {
+      setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
+    }else{
+      enviarDatos()
+    }
 
+  }
 
+  const enviarDatos = () => {
     console.log(datos)
-   
+
     const myJSON = JSON.stringify(datos);
 
     console.log(myJSON)
-    
   }
 
   return (
     <div className="bg-white shadow-md rounded-md py-5 px-5 ">
 
-      <Alert 
-      alert={alert}
-      setAlert={setAlert}
+      <Alert
+        alert={alert}
+        setAlert={setAlert}
+      />
+
+      <Dialogo
+        dialogo={dialogo}
+        setDialogo={setDialogo}
+
       />
 
       <form className="" onSubmit={handleSubmit}>

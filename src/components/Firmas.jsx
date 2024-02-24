@@ -13,12 +13,13 @@ export default function Firmas({ datos, setDatos }) {
     // FUNCIONES DE LAS FIRMAS
     const saveSign1 = () => {
         setDatos({...datos, firmaSolicitante: sigCanvas.current.getTrimmedCanvas().toDataURL("image/png")})
-        console.log(sigCanvas.current.isEmpty()) 
+        //console.log(sigCanvas.current.isEmpty()) 
     }
 
     const clearSign1 = (e) => {
         e.preventDefault()
         sigCanvas.current.clear();
+        setDatos({...datos, firmaSolicitante: ''})
     }
 
     const saveSign2 = () => {
@@ -29,6 +30,7 @@ export default function Firmas({ datos, setDatos }) {
     const clearSign2 = (e) => {
         e.preventDefault()
         sigCanvas2.current.clear();
+        setDatos({...datos, firmaBodega: ''})
     }
 
     return (
