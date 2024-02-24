@@ -12,6 +12,9 @@ import Firmas from './Firmas'
 //IMPORTAR COMPONENTE DE MULTISELECT BODEGAS
 import MultipleSelectChipBodega from './selectBodegas'
 
+// IMPORTAR COMPONENTE DE ALERT SNACKBAR
+import Alert from './alertSnackbar'
+
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -48,7 +51,10 @@ export default function Formulario({ vale, setVale }) {
 
   //STATE DE LA TABLA
   const initialRows = [];
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = useState(initialRows);
+
+  //STATE DE ALERT SNACKBAR
+  const [alert, setAlert] = useState({estado: false, mensaje: 'Mensaje de prueba'});
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
@@ -98,8 +104,15 @@ export default function Formulario({ vale, setVale }) {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    //VALIDAR DATOS VACIOS
+    if (datos.area == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el area', tipo: 'error'}); return}
+    if (datos.bodegas.length == 0) {setAlert({...alert, estado: true, mensaje: 'Error, falta seleccionar bodega', tipo: 'error'}); return}
+    if (datos.responsableRetira == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el nombre responsable que retira', tipo: 'error'}); return}
+    if (datos.responsableEntrega == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar el nombre responsable de bodega', tipo: 'error'}); return}
+    if (datos.descripcion == '') {setAlert({...alert, estado: true, mensaje: 'Error, falta completar una descripcion del trabajo', tipo: 'error'}); return}
+    if (datos.detalle == '') {setAlert({...alert, estado: true, mensaje: 'Error, no has agregado materiales', tipo: 'error'}); return}
     
-    
+
     console.log(datos)
    
     const myJSON = JSON.stringify(datos);
@@ -110,6 +123,11 @@ export default function Formulario({ vale, setVale }) {
 
   return (
     <div className="bg-white shadow-md rounded-md py-5 px-5 ">
+
+      <Alert 
+      alert={alert}
+      setAlert={setAlert}
+      />
 
       <form className="" onSubmit={handleSubmit}>
 
