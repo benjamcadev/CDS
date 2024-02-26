@@ -6,11 +6,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 
-//IMPORTAR COMPONENTES
-import SearchModal from './modal'
+//IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
+import AutocompleteSearch from './autocompleteSearch'
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
@@ -50,7 +49,7 @@ export default function Tabla({rows, setRows}) {
 
     
     const [rowModesModel, setRowModesModel] = React.useState({});
-    const [openModal, setOpenModal] = React.useState(false);
+    
 
     const getLastId = () => {
 
@@ -76,6 +75,7 @@ export default function Tabla({rows, setRows}) {
 
     const handleSaveClick = (id) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+       
         
     };
 
@@ -83,10 +83,7 @@ export default function Tabla({rows, setRows}) {
         setRows(rows.filter((row) => row.id !== id));
     };
 
-    const handleSearchClick = (id) => () => {
-       setOpenModal(true)
-       
-    };
+
 
 
     const handleCancelClick = (id) => () => {
@@ -138,10 +135,18 @@ export default function Tabla({rows, setRows}) {
             field: 'descripcion',
             headerName: 'Descripcion',
             headerAlign: 'left',
-            editable: true,
             flex: 1,
             minWidth: 150,
-            type: 'string'
+            renderCell: (params) => {
+                return (
+                    <AutocompleteSearch
+                    id={params.id}
+                    setRows={setRows}
+                    rows={rows}
+                    />
+                )
+            },
+        
         },
         {
             field: 'cantidad',
@@ -178,13 +183,7 @@ export default function Tabla({rows, setRows}) {
                             onClick={handleCancelClick(id)}
                             color="inherit"
                         />,
-                        <GridActionsCellItem
-                            icon={<SearchIcon />}
-                            label="Search"
-                            className="textPrimary"
-                            onClick={handleSearchClick(id)}
-                            color="inherit"
-                        />,
+                       
                     ];
                 }
                 return [
@@ -219,10 +218,7 @@ export default function Tabla({rows, setRows}) {
     return (
         <div className='' style={{ height: 600, width: "100%" }}>
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado de Materiales</label>
-            <SearchModal 
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-            />
+           
             <DataGrid
                 rows={rows}
                 columns={columns}
