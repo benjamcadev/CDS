@@ -57,7 +57,8 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
     return (
         <Autocomplete
             id="asynchronous-demo"
-
+           
+            freeSolo
             fullWidth
             open={open}
             onOpen={() => {
@@ -87,10 +88,12 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
             renderInput={(params) => (
                 <TextField
                     fullWidth
-                   
-
                     {...params}
 
+                    onKeyDown={(e) => {
+                        e.key === " " && e.stopPropagation();
+                      }}
+                      
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
