@@ -153,6 +153,9 @@ export default function Formulario({ vale, setVale }) {
     const myJSON = JSON.stringify(datos);
 
     console.log(myJSON)
+
+   //ENVIAR DATOS EN ENDPOINT
+   
   }
 
   return (
@@ -316,7 +319,7 @@ export default function Formulario({ vale, setVale }) {
         <input
           type="submit"
           className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-all rounded"
-
+          value={'cerrar vale'}
         />
 
       </form >

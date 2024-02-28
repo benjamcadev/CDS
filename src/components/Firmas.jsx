@@ -3,6 +3,8 @@ import { useRef, useState } from 'react'
 //LIBRERIA DE FIRMA
 import SignatureCanvas from 'react-signature-canvas'
 
+import DeleteIcon from '@mui/icons-material/Delete';
+
 export default function Firmas({ datos, setDatos }) {
 
     //REFERENCIAS A LAS FIRMAS
@@ -61,10 +63,10 @@ export default function Firmas({ datos, setDatos }) {
                 </button> */}
 
                 <button
-                    className="bg-blue-500 p-3 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
+                    className="bg-blue-500 p-2 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={clearSign1}
                 >
-                    Limpiar
+                     <DeleteIcon />
                 </button>
             </div>
 
@@ -92,10 +94,11 @@ export default function Firmas({ datos, setDatos }) {
                 </button> */}
 
                 <button
-                    className="bg-blue-500 p-3 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
+                    className="bg-blue-500 p-2 text-xs h-10 mt-4  text-white uppercase font-bold hover:bg-blue-700 cursor-pointer transition-all rounded"
                     onClick={clearSign2}
                 >
-                    Limpiar
+                    <DeleteIcon />
+
                 </button>
 
             </div>

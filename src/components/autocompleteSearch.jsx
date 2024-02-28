@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 
 
 import { options as topFilms } from '../helpers/options';
-import { Details } from '@mui/icons-material';
+
 
 function sleep(duration) {
     return new Promise((resolve) => {
@@ -83,7 +83,16 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                 setRows(newArr)
               }}
             isOptionEqualToValue={(option, value) => option.Descripcion === value.Descripcion}
-            getOptionLabel={(option) => option.Descripcion}
+            getOptionLabel={(option) => {
+
+               
+               if(option.Codigo_SAP){return option.Descripcion + ' ' + option.Codigo_SAP}
+               if(option.SKU){return  option.Descripcion + ' ' + option.SKU}
+
+               return  option.Descripcion 
+            } 
+                
+             }
             options={options}
             loading={loading}
 

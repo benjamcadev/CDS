@@ -126,8 +126,8 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Unidad',
             headerAlign: 'left',
             editable: true,
-            flex: 0.3,
-            minWidth: 110,
+            flex: 0.4,
+            minWidth: 120,
             type: 'singleSelect',
             valueOptions: ["Unidad", "Paquete"],
         },
@@ -136,7 +136,7 @@ export default function Tabla({rows, setRows}) {
             headerName: 'Descripcion',
             headerAlign: 'left',
             flex: 1,
-            minWidth: 150,
+            minWidth: 200,
             renderCell: (params) => {
                 return (
                     <AutocompleteSearch
@@ -154,13 +154,13 @@ export default function Tabla({rows, setRows}) {
             headerAlign: 'left',
             editable: true,
             flex: 0.3,
-            minWidth: 100,
+            minWidth: 130,
             type: 'number',
         },
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'Actions',
+            headerName: 'Acciones',
             headerAlign: 'left',
            
             cellClassName: 'actions',
