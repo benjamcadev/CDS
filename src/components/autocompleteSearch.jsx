@@ -2,6 +2,7 @@ import { useState, useEffect, Fragment } from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 
 import { options as topFilms } from '../helpers/options';
@@ -81,10 +82,18 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                 obj.descripcion = newValue
                 setRows(newArr)
               }}
-            isOptionEqualToValue={(option, value) => option.title === value.title}
-            getOptionLabel={(option) => option.title}
+            isOptionEqualToValue={(option, value) => option.Descripcion === value.Descripcion}
+            getOptionLabel={(option) => option.Descripcion}
             options={options}
             loading={loading}
+
+            renderOption={(props, option) => (
+                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                 
+                  {option.Descripcion} - {option.Codigo_SAP} - (Cantidad: {option.Stock}) 
+                </Box>
+              )}
+
             renderInput={(params) => (
                 <TextField
                     fullWidth
