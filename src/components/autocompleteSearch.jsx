@@ -4,6 +4,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
+import axios from 'axios'
+
 
 import { options as topFilms } from '../helpers/options';
 
@@ -26,7 +28,6 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
 
     const loading = open && options.length === 0;
 
-
     useEffect(() => {
         let active = true;
 
@@ -38,7 +39,9 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
             await sleep(1e3); // For demo purposes.
 
             if (active) {
-                setOptions([...topFilms]);
+                //endpoint de getmateriales
+               
+                setOptions([]);
             }
         })();
 
@@ -68,7 +71,7 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
             onClose={() => {
                 setOpen(false);
             }}
-            onInputChange={(e, newValue) => {
+            onInputChange={async (e, newValue) => {
                 // setInputValue((old) => [...old, newValue]);
                 setInputValue((old) => {
                   return {
@@ -81,6 +84,29 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                 let obj = newArr.find(o => o.id === id);
                 obj.descripcion = newValue
                 setRows(newArr)
+
+                //ACA INVOQUEMOS EL ENDPOINT
+                let headersList = {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json" 
+                   }
+                   
+                   let bodyContent = JSON.stringify({
+                     "search_value": newValue
+                   });
+                   
+                   let reqOptions = {
+                     url: "http://localhost:3000/materiales/find",
+                     method: "POST",
+                     headers: headersList,
+                     data: bodyContent,
+                   }
+                   
+                   let response = await axios.request(reqOptions);
+
+                setOptions(response.data)
+                   console.log(response)
+
               }}
             isOptionEqualToValue={(option, value) => option.Descripcion === value.Descripcion}
             getOptionLabel={(option) => {
