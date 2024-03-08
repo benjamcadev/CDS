@@ -39,7 +39,6 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
             await sleep(1e3); // For demo purposes.
 
             if (active) {
-                //endpoint de getmateriales
                
                 setOptions([]);
             }
@@ -96,16 +95,22 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                    });
                    
                    let reqOptions = {
-                     url: "http://localhost:3000/materiales/find",
+                     url: "http://186.64.113.208:3000/materiales/find",
                      method: "POST",
                      headers: headersList,
                      data: bodyContent,
                    }
                    
-                   let response = await axios.request(reqOptions);
+                   //MANEJAR EL ERROR
+                   let response = await axios.request(reqOptions)
+                   .catch(function (error) {
+                    console.log(error);
+                  });
+
+                
 
                 setOptions(response.data)
-                   console.log(response)
+                   
 
               }}
             isOptionEqualToValue={(option, value) => option.Descripcion === value.Descripcion}
