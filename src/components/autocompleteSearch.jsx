@@ -20,7 +20,7 @@ function sleep(duration) {
 }
 
 
-export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBodegasId, bodegasMaterial, setBodegasMaterial }) {
+export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBodegasId, bodegasMaterial, setBodegasMaterial, alert, setAlert }) {
 
 
     const [open, setOpen] = useState(false);
@@ -80,9 +80,10 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                 setOpen(false);
               
             }}
-            onChange={(e,v) => {
-                console.log(v)
-               setBodegasId([v.id])
+            onChange={(e,value) => {
+                if(value)
+                {setBodegasId([value.id])}
+               
             }}
            
             onInputChange={async (e, newValue) => {
@@ -115,15 +116,17 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                      data: bodyContent,
                    }
                    
-                   //MANEJAR EL ERROR
                    let response = await axios.request(reqOptions)
                    .catch(function (error) {
+                    if (error.response.status == 404) {
+                       // console.log(error.response.data)
+                        setAlert({...alert, estado: true, mensaje: error.response.data.message , tipo: 'error', titulo: 'Error'})
+                    }
                     console.log(error);
                   });
 
+                  if (response.status == 200) {setOptions(response.data)}
                 
-
-                setOptions(response.data)
                 
                    
 
@@ -181,7 +184,7 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                           
                           let response = await axios.request(reqOptions);
                           setBodegasMaterial(response.data)
-                          console.log(response.data);
+                          
                     }}  
                       
                     InputProps={{

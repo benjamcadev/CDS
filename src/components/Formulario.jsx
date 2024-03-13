@@ -296,6 +296,8 @@ export default function Formulario({ vale, setVale }) {
               rows={rows}
               setRows={setRows}
               bodegas={bodegas}
+              alert={alert}
+              setAlert={setAlert}
 
             />
           </div>

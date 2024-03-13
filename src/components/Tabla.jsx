@@ -19,7 +19,7 @@ import AutocompleteSearch from './autocompleteSearch'
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
 
 
-export default function Tabla({ rows, setRows, bodegas }) {
+export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
 
 
     const [bodegasId, setBodegasId] = useState([]);
@@ -156,6 +156,8 @@ export default function Tabla({ rows, setRows, bodegas }) {
                         setBodegasId={setBodegasId}
                         bodegasMaterial={bodegasMaterial}
                         setBodegasMaterial={setBodegasMaterial}
+                        alert={alert}
+                        setAlert={setAlert}
                     />
                 )
             },
