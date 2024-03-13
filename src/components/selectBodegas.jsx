@@ -36,7 +36,7 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelectChipBodega({datos, setDatos}) {
+export default function MultipleSelectChipBodega({datos, setDatos, bodegas}) {
   const theme = useTheme();
   
   return (
@@ -59,13 +59,13 @@ export default function MultipleSelectChipBodega({datos, setDatos}) {
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {bodegas.map((bodega) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, datos.bodegas, theme)}
+              key={bodega.idbodegas}
+              value={bodega.nombre}
+              style={getStyles(bodega.nombre, datos.bodegas, theme)}
             >
-              {name}
+              {bodega.nombre}
             </MenuItem>
           ))}
         </Select>

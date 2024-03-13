@@ -8,6 +8,7 @@ import axios from 'axios'
 
 
 import { options as topFilms } from '../helpers/options';
+import { VerticalAlignBottom } from '@mui/icons-material';
 
 
 function sleep(duration) {
@@ -19,14 +20,22 @@ function sleep(duration) {
 }
 
 
-export default function AutocompleteSearch({ id, rows, setRows }) {
+export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBodegasId, bodegasMaterial, setBodegasMaterial }) {
 
 
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [inputValue, setInputValue] = useState({});
+    
+  
 
     const loading = open && options.length === 0;
+
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json" 
+       }
+       
 
     useEffect(() => {
         let active = true;
@@ -69,8 +78,15 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
             }}
             onClose={() => {
                 setOpen(false);
+              
             }}
+            onChange={(e,v) => {
+                console.log(v)
+               setBodegasId([v.id])
+            }}
+           
             onInputChange={async (e, newValue) => {
+                
                 // setInputValue((old) => [...old, newValue]);
                 setInputValue((old) => {
                   return {
@@ -84,12 +100,10 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                 obj.descripcion = newValue
                 setRows(newArr)
 
+                
+
                 //ACA INVOQUEMOS EL ENDPOINT
-                let headersList = {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json" 
-                   }
-                   
+               
                    let bodyContent = JSON.stringify({
                      "search_value": newValue
                    });
@@ -110,38 +124,65 @@ export default function AutocompleteSearch({ id, rows, setRows }) {
                 
 
                 setOptions(response.data)
+                
                    
 
               }}
-            isOptionEqualToValue={(option, value) => option.Descripcion === value.Descripcion}
+            isOptionEqualToValue={(option, value) => 
+            {
+                
+                option.Descripcion === value.Descripcion
+            }
+            }
             getOptionLabel={(option) => {
-
+               
                
                if(option.Codigo_SAP){return option.Descripcion + ' ' + option.Codigo_SAP}
                if(option.SKU){return  option.Descripcion + ' ' + option.SKU}
 
+              
+
                return  option.Descripcion 
             } 
+
+            
                 
              }
             options={options}
             loading={loading}
-
+            
+           
             renderOption={(props, option) => (
+                
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                 
+
                   {option.Descripcion} - {option.Codigo_SAP} - (Cantidad: {option.Stock}) 
                 </Box>
               )}
 
             renderInput={(params) => (
                 <TextField
+                
                     fullWidth
                     {...params}
 
                     onKeyDown={(e) => {
                         e.key === " " && e.stopPropagation();
                       }}
+                    onBlur={async (e) => {
+                       
+                        //ENDPOINT BUSCAR BODEGAS DEL MATERIAL
+                        let reqOptions = {
+                            url: "http://186.64.113.208:3000/bodegas/find/"+bodegasId[0],
+                            method: "GET",
+                            headers: headersList,
+                          }
+
+                          
+                          let response = await axios.request(reqOptions);
+                          setBodegasMaterial(response.data)
+                          console.log(response.data);
+                    }}  
                       
                     InputProps={{
                         ...params.InputProps,

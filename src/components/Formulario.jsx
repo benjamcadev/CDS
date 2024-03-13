@@ -32,7 +32,8 @@ import 'dayjs/locale/es'
 //LIBRERIA PARA TRABAJAR FECHAS
 import dayjs from 'dayjs'
 
-
+//LIBRERIA PARA HACER FETCH
+import axios from 'axios'
 
 export default function Formulario({ vale, setVale }) {
 
@@ -73,12 +74,16 @@ export default function Formulario({ vale, setVale }) {
     responseReturn: false
   });
 
+  //STATE PARA TRAER BODEGAS
+  const [bodegas, setBodegas] = useState([])
+
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
     setDatos({ ...datos, detalle: rows })
   }, [rows])
 
+  //USE EFFECT PARA CAPTURAR RESPUESTA DEL DIALOGO
   useEffect(() => {
 
 
@@ -89,6 +94,23 @@ export default function Formulario({ vale, setVale }) {
     }
   }, [dialogo])
 
+  //USE EFFECT PARA TRAER BODEGAS
+
+  useEffect(() => {
+
+    async function fetchBodegas() {
+      try {
+        const response = await axios.get('http://localhost:3000/bodegas/');
+        setBodegas(response.data)
+      } catch (error) {
+        console.error('Hubo un error fetch bodegas: ' + error);
+      }
+    }
+
+    fetchBodegas()
+
+  }, [])
+
   const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
     { label: 'Area TI PSINET', value: 'Area TI PSINET', id: 2 },
@@ -96,16 +118,6 @@ export default function Formulario({ vale, setVale }) {
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
   ];
-
-  const opcionesBodega = [
-    { label: 'Insumos', value: 'Insumos', id: 1 },
-    { label: 'Networking', value: 'Networking', id: 2 },
-    { label: 'Carlitos', value: 'Carlitos', id: 3 },
-    { label: 'Legrand', value: 'Legrand', id: 4 },
-    { label: 'UPS', value: 'UPS', id: 5 },
-  ]
-
-
 
   const opcionesResponsable = [
     { label: 'Arturo Jeronimo', value: 'Arturo Jeronimo', id: 1 },
@@ -141,7 +153,7 @@ export default function Formulario({ vale, setVale }) {
     if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error' }); return }
     if (datos.firmaSolicitante == '') {
       setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
-    }else{
+    } else {
       enviarDatos()
     }
 
@@ -154,8 +166,8 @@ export default function Formulario({ vale, setVale }) {
 
     console.log(myJSON)
 
-   //ENVIAR DATOS EN ENDPOINT
-   
+    //ENVIAR DATOS EN ENDPOINT
+
   }
 
   return (
@@ -225,6 +237,7 @@ export default function Formulario({ vale, setVale }) {
             <MultipleSelectChipBodega
               setDatos={setDatos}
               datos={datos}
+              bodegas={bodegas}
             />
           </div>
 
@@ -282,6 +295,8 @@ export default function Formulario({ vale, setVale }) {
             <Tabla
               rows={rows}
               setRows={setRows}
+              bodegas={bodegas}
+
             />
           </div>
         </div>
