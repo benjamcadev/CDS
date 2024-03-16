@@ -33,7 +33,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '',idArticulo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },

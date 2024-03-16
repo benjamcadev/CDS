@@ -7,10 +7,6 @@ import Box from '@mui/material/Box';
 import axios from 'axios'
 
 
-import { options as topFilms } from '../helpers/options';
-import { VerticalAlignBottom } from '@mui/icons-material';
-
-
 function sleep(duration) {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -81,12 +77,20 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
               
             }}
             onChange={(e,value) => {
+
                 if(value)
-                {setBodegasId([value.id])}
+                {
+                    setBodegasId([value.id])
+                    let newArr = [...rows];
+                    let obj = newArr.find(o => o.id === id);
+                    obj.idArticulo = value.id
+                    setRows(newArr)
+                }
                
             }}
            
             onInputChange={async (e, newValue) => {
+               
                 
                 // setInputValue((old) => [...old, newValue]);
                 setInputValue((old) => {
@@ -104,7 +108,7 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                 
 
                 //ACA INVOQUEMOS EL ENDPOINT
-               
+              
                    let bodyContent = JSON.stringify({
                      "search_value": newValue
                    });
@@ -139,12 +143,6 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
             }
             getOptionLabel={(option) => {
                
-               
-               if(option.Codigo_SAP){return option.Descripcion + ' ' + option.Codigo_SAP}
-               if(option.SKU){return  option.Descripcion + ' ' + option.SKU}
-
-              
-
                return  option.Descripcion 
             } 
 

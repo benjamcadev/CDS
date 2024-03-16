@@ -45,6 +45,7 @@ export default function Formulario({ vale, setVale }) {
     solCodelco: '',
     bodegas: [],
     responsableRetira: '',
+    responsableRetiraCorreo: '',
     responsableEntrega: '',
     descripcion: '',
     observaciones: '',
@@ -77,6 +78,9 @@ export default function Formulario({ vale, setVale }) {
   //STATE PARA TRAER BODEGAS
   const [bodegas, setBodegas] = useState([])
 
+  //STATE PARA TRAER RESPONSABLES
+  const [responsables, setResponsables] = useState([])
+
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
@@ -100,7 +104,7 @@ export default function Formulario({ vale, setVale }) {
 
     async function fetchBodegas() {
       try {
-        const response = await axios.get('http://localhost:3000/bodegas/');
+        const response = await axios.get('http://186.64.113.208:3000/bodegas/');
         setBodegas(response.data)
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);
@@ -111,6 +115,23 @@ export default function Formulario({ vale, setVale }) {
 
   }, [])
 
+   //USE EFFECT PARA TRAER RESPONSABLES
+
+   useEffect(() => {
+
+    async function fetchResponsables() {
+      try {
+        const response = await axios.get(`http://localhost:3000/usuarios/${3}`); //3 ES USUARIOS RESPONSABLES
+        setResponsables(response.data)
+      } catch (error) {
+        console.error('Hubo un error fetch usuarios responsables: ' + error);
+      }
+    }
+
+    fetchResponsables()
+
+  }, [])
+
   const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
     { label: 'Area TI PSINET', value: 'Area TI PSINET', id: 2 },
@@ -118,16 +139,6 @@ export default function Formulario({ vale, setVale }) {
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
   ];
-
-  const opcionesResponsable = [
-    { label: 'Arturo Jeronimo', value: 'Arturo Jeronimo', id: 1 },
-    { label: 'Daniel Diaz', value: 'Daniel Diaz', id: 2 },
-    { label: 'Jose Castillo P.', value: 'Jose Castillo P.', id: 3 },
-    { label: 'Jose Castillo A.', value: 'Jose Castillo A.', id: 4 },
-    { label: 'Felipe Mardonez', value: 'Felipe Mardonez', id: 5 },
-    { label: 'Evans Jones', value: 'Evans Jones', id: 6 },
-
-  ]
 
   const opcionesResponsableBodega = [
     { label: 'Benjamin Cortes', value: 'Benjamin Cortes', id: 1 },
@@ -248,9 +259,9 @@ export default function Formulario({ vale, setVale }) {
               disablePortal
               freeSolo
               id="responsable"
-              options={opcionesResponsable}
+              options={responsables}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, responsableRetira: e.target.value })}
+              onChange={(e,value) => {setDatos({ ...datos, responsableRetira: value.id, responsableRetiraCorreo: value.correo })}}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
@@ -329,6 +340,7 @@ export default function Formulario({ vale, setVale }) {
           <Firmas
             setDatos={setDatos}
             datos={datos}
+            responsables={responsables}
           />
         </div>
 
