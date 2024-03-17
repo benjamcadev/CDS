@@ -78,7 +78,13 @@ export default function Firmas({ datos, setDatos, responsables }) {
                 </p>
 
                 <p className='block text-gray-700 uppercase '>
-                    {datos.responsableEntrega}
+                {
+                        responsables.map(function(responsable){
+                            if(responsable.id === datos.responsableEntrega){
+                                return responsable.label
+                            }    
+                        })
+                    }
                 </p>
 
                 <SignatureCanvas

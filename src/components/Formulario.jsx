@@ -47,6 +47,7 @@ export default function Formulario({ vale, setVale }) {
     responsableRetira: '',
     responsableRetiraCorreo: '',
     responsableEntrega: '',
+    responsableEntregaCorreo: '',
     descripcion: '',
     observaciones: '',
     firmaSolicitante: '',
@@ -80,6 +81,9 @@ export default function Formulario({ vale, setVale }) {
 
   //STATE PARA TRAER RESPONSABLES
   const [responsables, setResponsables] = useState([])
+
+  //STATE PARA TRAER RESPONSABLES DE BODEGA
+  const [responsablesBodega, setResponsablesBodega] = useState([])
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
@@ -115,14 +119,17 @@ export default function Formulario({ vale, setVale }) {
 
   }, [])
 
-   //USE EFFECT PARA TRAER RESPONSABLES
+   //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
 
    useEffect(() => {
 
     async function fetchResponsables() {
       try {
-        const response = await axios.get(`http://localhost:3000/usuarios/${3}`); //3 ES USUARIOS RESPONSABLES
-        setResponsables(response.data)
+        const response = await axios.get(`http://186.64.113.208:3000/usuarios/${3}`); //3 ES USUARIOS RESPONSABLES
+        const response2 = await axios.get(`http://186.64.113.208:3000/usuarios/${1}`); //1 ES USUARIOS ADMIN
+       setResponsables(response.data.concat(response2.data))
+       setResponsablesBodega(response2.data)
+
       } catch (error) {
         console.error('Hubo un error fetch usuarios responsables: ' + error);
       }
@@ -139,17 +146,6 @@ export default function Formulario({ vale, setVale }) {
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
   ];
-
-  const opcionesResponsableBodega = [
-    { label: 'Benjamin Cortes', value: 'Benjamin Cortes', id: 1 },
-    { label: 'Javiera Zamorano', value: 'Javiera Zamorano', id: 2 },
-    { label: 'Alejandro Cortes', value: 'Alejandro Cortes', id: 3 },
-    { label: 'Mauricio Barraza', value: 'Mauricio Barraza', id: 4 },
-    { label: 'Rodrigo Caminada', value: 'Rodrigo Caminada', id: 5 },
-  ]
-
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -272,9 +268,9 @@ export default function Formulario({ vale, setVale }) {
               disablePortal
               freeSolo
               id="responsableBodega"
-              options={opcionesResponsableBodega}
+              options={responsablesBodega}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, responsableEntrega: e.target.value })}
+              onChange={(e,value) => {setDatos({ ...datos, responsableEntrega: value.id, responsableEntregaCorreo: value.correo })}}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
