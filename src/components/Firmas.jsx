@@ -1,11 +1,9 @@
-import { useRef, useState } from 'react'
+import {  useRef } from 'react'
 
 //LIBRERIA DE FIRMA
 import SignatureCanvas from 'react-signature-canvas'
 
 //COMPONENTE MUI 
-import TextField from '@mui/material/TextField';
-
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Firmas({ datos, setDatos, responsables }) {
@@ -14,17 +12,22 @@ export default function Firmas({ datos, setDatos, responsables }) {
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
 
+  
+
 
     // FUNCIONES DE LAS FIRMAS
     const saveSign1 = () => {
         setDatos({ ...datos, firmaSolicitante: sigCanvas.current.getTrimmedCanvas().toDataURL("image/png") })
+        
         //console.log(sigCanvas.current.isEmpty()) 
     }
+
 
     const clearSign1 = (e) => {
         e.preventDefault()
         sigCanvas.current.clear();
-        setDatos({ ...datos, firmaSolicitante: '' })
+        setDatos({ ...datos, firmaSolicitante: '', fechaCierre: '' })
+        
     }
 
     const saveSign2 = () => {
@@ -36,6 +39,7 @@ export default function Firmas({ datos, setDatos, responsables }) {
         e.preventDefault()
         sigCanvas2.current.clear();
         setDatos({ ...datos, firmaBodega: '' })
+       
     }
 
     return (
@@ -46,20 +50,14 @@ export default function Firmas({ datos, setDatos, responsables }) {
                     FIRMA QUIEN RETIRA
                 </p>
                 <p className='block text-gray-700 uppercase '>
-                    {
-                        responsables.map(function(responsable){
-                            if(responsable.id === datos.responsableRetira){
-                                return responsable.label
-                            }    
-                        })
-                    }
+                    {datos.responsableRetira}
                 </p>
 
 
                 <SignatureCanvas
                     penColor='blue'
                     ref={sigCanvas}
-                    onEnd={() => saveSign1()}
+                    onEnd={() =>  saveSign1()}
                     canvasProps={{ className: 'sigCanvas border-4 border-gray-950', width: 300, height: 200, }}
                 />
 

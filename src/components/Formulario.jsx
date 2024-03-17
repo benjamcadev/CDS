@@ -41,6 +41,7 @@ export default function Formulario({ vale, setVale }) {
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    fechaCierre: '',
     area: '',
     solCodelco: '',
     bodegas: [],
@@ -64,7 +65,9 @@ export default function Formulario({ vale, setVale }) {
   const [alert, setAlert] = useState({
     estado: false,
     mensaje: 'Mensaje de prueba',
-    titulo: ''
+    titulo: '',
+    detalle_tipo: '',
+    time: null
   });
 
   //STATE DE DIALOG
@@ -94,8 +97,6 @@ export default function Formulario({ vale, setVale }) {
 
   //USE EFFECT PARA CAPTURAR RESPUESTA DEL DIALOGO
   useEffect(() => {
-
-
     if (dialogo.responseReturn) {
       console.log("Boton Aceptar")
       //ENVIAR DATOS CON VALE ABIERTO
@@ -120,16 +121,16 @@ export default function Formulario({ vale, setVale }) {
 
   }, [])
 
-   //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
+  //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
 
-   useEffect(() => {
+  useEffect(() => {
 
     async function fetchResponsables() {
       try {
         const response = await axios.get(`http://186.64.113.208:3000/usuarios/${3}`); //3 ES USUARIOS RESPONSABLES
         const response2 = await axios.get(`http://186.64.113.208:3000/usuarios/${1}`); //1 ES USUARIOS ADMIN
-       setResponsables(response.data.concat(response2.data))
-       setResponsablesBodega(response2.data)
+        setResponsables(response.data.concat(response2.data))
+        setResponsablesBodega(response2.data)
 
       } catch (error) {
         console.error('Hubo un error fetch usuarios responsables: ' + error);
@@ -139,6 +140,15 @@ export default function Formulario({ vale, setVale }) {
     fetchResponsables()
 
   }, [])
+
+  //USE EFFECT PARA DETECTAR SI HAY FIRMA Y GRABAR FECHA DE CIERRE
+  useEffect(() => {
+    if (!datos.firmaSolicitante == '') {
+      setDatos({ ...datos, fechaCierre: dayjs().format('YYYY-MM-DD HH:mm:ss') })
+    }
+  }, [datos.firmaSolicitante])
+
+
 
   const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
@@ -152,29 +162,37 @@ export default function Formulario({ vale, setVale }) {
     e.preventDefault()
 
     //VALIDAR DATOS VACIOS
-    if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.bodegas.length == 0) { setAlert({ ...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error' }); return }
-    if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error' }); return }
+    if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.bodegas.length == 0) { setAlert({ ...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.firmaSolicitante == '') {
       setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
     } else {
+
       enviarDatos()
     }
 
   }
 
-  const enviarDatos = () => {
-    console.log(datos)
+  const enviarDatos = async () => {
 
-    const myJSON = JSON.stringify(datos);
-
-    console.log(myJSON)
-
+    const requestJson = JSON.stringify(datos);
     //ENVIAR DATOS EN ENDPOINT
+    const response = await axios.post('http://localhost:3000/ticket/salida/', requestJson, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (response.status == 200) {
+      setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !',detalle_tipo: 'success_ticket', time: null  });
+    }else{
+
+    }
 
   }
 
@@ -258,7 +276,7 @@ export default function Formulario({ vale, setVale }) {
               id="responsable"
               options={responsables}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onChange={(e,value) => {setDatos({ ...datos, responsableRetira: value.id, responsableRetiraCorreo: value.correo })}}
+              onChange={(e, value) => { setDatos({ ...datos, responsableRetira: value.label, responsableRetiraCorreo: value.correo }) }}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
@@ -271,7 +289,7 @@ export default function Formulario({ vale, setVale }) {
               id="responsableBodega"
               options={responsablesBodega}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onChange={(e,value) => {setDatos({ ...datos, responsableEntrega: value.id, responsableEntregaCorreo: value.correo })}}
+              onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.id, responsableEntregaCorreo: value.correo }) }}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
