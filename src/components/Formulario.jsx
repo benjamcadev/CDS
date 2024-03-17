@@ -48,6 +48,7 @@ export default function Formulario({ vale, setVale }) {
     responsableRetiraCorreo: '',
     responsableEntrega: '',
     responsableEntregaCorreo: '',
+    ceco: '',
     descripcion: '',
     observaciones: '',
     firmaSolicitante: '',
@@ -275,8 +276,15 @@ export default function Formulario({ vale, setVale }) {
             />
           </div>
 
-
-
+          <div className="mb-5">
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="codelcoSolicitante">Centro de Costos</label>
+            <TextField
+              id="ceco"
+              size="normal"
+              fullWidth
+              variant="outlined"
+              onChange={(e) => setDatos({ ...datos, ceco: e.target.value })} />
+          </div>
 
         </div>
 
