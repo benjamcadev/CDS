@@ -182,7 +182,7 @@ export default function Formulario({ vale, setVale }) {
 
     const requestJson = JSON.stringify(datos);
     //ENVIAR DATOS EN ENDPOINT
-    const response = await axios.post('http://localhost:3000/ticket/salida/', requestJson, {
+    const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
       }

@@ -129,7 +129,7 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                     console.log(error);
                   });
 
-                  if (response.status == 200) {setOptions(response.data)}
+                  if (response.status == 200) {console.log(response.data); setOptions(response.data)}
                 
                 
                    
