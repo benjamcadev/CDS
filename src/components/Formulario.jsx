@@ -181,6 +181,8 @@ export default function Formulario({ vale, setVale }) {
   const enviarDatos = async () => {
 
     const requestJson = JSON.stringify(datos);
+    //ACTIVAR MENSAJE DE ESPERA
+    setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...',detalle_tipo: '', time: null  });
     //ENVIAR DATOS EN ENDPOINT
     const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
       headers: {
