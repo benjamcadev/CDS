@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 //IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
-import AutocompleteSearch from './autocompleteSearch'
+import AutocompleteSearch from './AutocompleteSearch'
 
 
 //COMPONENTE DE MATERIAL UI DATE TABLE

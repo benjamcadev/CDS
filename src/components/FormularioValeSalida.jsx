@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useReducer } from 'react'
 import * as React from 'react';
+import { useParams } from 'react-router-dom'
 
 
 
@@ -10,10 +11,10 @@ import Tabla from './Tabla'
 import Firmas from './Firmas'
 
 //IMPORTAR COMPONENTE DE MULTISELECT BODEGAS
-import MultipleSelectChipBodega from './selectBodegas'
+import MultipleSelectChipBodega from './SelectBodegas'
 
 // IMPORTAR COMPONENTE DE ALERT SNACKBAR
-import Alert from './alertSnackbar'
+import Alert from './AlertSnackbar'
 
 // IMPORTAR COMPONENTE DE DIALOG
 import Dialogo from './Dialogo'
@@ -35,9 +36,10 @@ import dayjs from 'dayjs'
 //LIBRERIA PARA HACER FETCH
 import axios from 'axios'
 
-export default function Formulario({ vale, setVale }) {
+export default function FormularioValeSalida() {
 
-
+    let { idTicket } = useParams();
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -67,7 +69,8 @@ export default function Formulario({ vale, setVale }) {
     mensaje: 'Mensaje de prueba',
     titulo: '',
     detalle_tipo: '',
-    time: null
+    time: null,
+    responseReturn: false
   });
 
   //STATE DE DIALOG
@@ -103,6 +106,14 @@ export default function Formulario({ vale, setVale }) {
       enviarDatos()
     }
   }, [dialogo])
+
+  //USE EFFECT PARA CAPTURAR RESPUESTA DEL ALERT
+  useEffect(() => {
+    if (alert.responseReturn) {
+      //REDIRECIONAR
+
+    }
+  }, [alert])
 
   //USE EFFECT PARA TRAER BODEGAS
 
@@ -148,6 +159,32 @@ export default function Formulario({ vale, setVale }) {
     }
   }, [datos.firmaSolicitante])
 
+  //USEEFFECT PARA CARGAR :id POR PARAMETROS DE URL
+  useEffect(() => {
+
+    async function fetchTicketSalida() {
+      //Traer ticket de la BD
+
+      //Agregar datos al state del ticket
+       setDatos({...datos, area: 'Teleco'})
+     
+      console.log(datos)
+    }
+
+    if (idTicket !== undefined) {
+     fetchTicketSalida(idTicket)
+    }
+
+
+
+  }, [])
+
+  useEffect(() => {
+    // action on update of movies
+    console.log('datos cambio')
+    forceUpdate();
+}, [datos]);
+
 
 
   const opcionesArea = [
@@ -182,19 +219,19 @@ export default function Formulario({ vale, setVale }) {
 
     const requestJson = JSON.stringify(datos);
     //ACTIVAR MENSAJE DE ESPERA
-    setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...',detalle_tipo: '', time: null  });
+    setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
     //ENVIAR DATOS EN ENDPOINT
     const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
       }
     }).catch((error) => {
-      setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null  });
+      setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
 
     })
 
     if (response.status == 200) {
-      setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !',detalle_tipo: 'success_ticket', time: null  });
+      setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null });
     }
 
   }

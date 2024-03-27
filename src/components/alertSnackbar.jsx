@@ -20,7 +20,7 @@ export default function alertSnackbar({ alert, setAlert }) {
 
     const handleAceptar = () => {
         //RE DIRECCIONAR AL TICKET EN LA BARRA DE DIRECCIONES
-        setAlert({ ...alert, estado: false });
+        setAlert({ ...alert, estado: false, responseReturn: true });
     }
 
 

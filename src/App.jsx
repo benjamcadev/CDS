@@ -1,27 +1,23 @@
-import {useState} from 'react'
-import Header from './components/Header'
-import Formulario from './components/Formulario'
+
+import ValeSalida from './components/ValeSalida'
+import { Route, Routes } from 'react-router-dom'
 
 function App() {
 
-
-  const [vale, setVale] = useState({})
+  const Home = () => <h1>Home</h1>
 
   return (
-    <div className='container mx-auto mt-5'>
-      <Header />
+    <div>
+      {/* Aca montamos un componente header global que vaya en todas las paginas */}
+      <Routes>
 
-      <Formulario 
-      vale={vale}
-      setVale={setVale
-      }/>
+        <Route path='/' element={<Home />} />
+        <Route path='/vale-salida/' element={<ValeSalida />} />
+        <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
 
+      </Routes>
 
     </div>
-
-
-
-
 
   )
 }
