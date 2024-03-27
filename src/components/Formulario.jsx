@@ -188,12 +188,13 @@ export default function Formulario({ vale, setVale }) {
       headers: {
         'Content-Type': 'application/json'
       }
+    }).catch((error) => {
+      setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null  });
+
     })
 
     if (response.status == 200) {
       setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !',detalle_tipo: 'success_ticket', time: null  });
-    }else{
-
     }
 
   }
