@@ -187,6 +187,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         defaultValue={''}
+                       
                         renderValue={(value) => {
                             return bodegas.map((option) => {
                                 if (option.idbodegas == value) {

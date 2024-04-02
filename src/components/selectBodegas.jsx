@@ -36,7 +36,7 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export default function MultipleSelectChipBodega({datos, setDatos, bodegas}) {
+export default function MultipleSelectChipBodega({datos, setDatos, bodegas, idTicket}) {
   const theme = useTheme();
   
   return (
@@ -48,6 +48,7 @@ export default function MultipleSelectChipBodega({datos, setDatos, bodegas}) {
           multiple
           fullWidth
           value={datos.bodegas}
+          disabled={datos.bodegas.length > 0 && idTicket ? true : false}
           onChange={(e) => setDatos({ ...datos, bodegas: e.target.value })}
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (

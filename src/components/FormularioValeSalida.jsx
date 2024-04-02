@@ -39,7 +39,7 @@ import axios from 'axios'
 export default function FormularioValeSalida() {
 
     let { idTicket } = useParams();
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+   // const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -166,7 +166,21 @@ export default function FormularioValeSalida() {
       //Traer ticket de la BD
 
       //Agregar datos al state del ticket
-       setDatos({...datos, area: 'Teleco'})
+       setDatos({...datos, 
+        fecha: '2024-03-27 10:38:31',
+        area: 'Sonda', 
+        solCodelco: 'Jaime Eade', 
+        bodegas: ['NETWORKING', 'UPS'],
+        responsableRetira: 'Felipe Mardonez',
+        responsableEntrega: 'Benjamin Cortes',
+        ceco: 'sm150',
+        descripcion: 'Descripcion guardada'
+    })
+
+    setRows([...rows, 
+    {bodega: 1, cantidad: "", descripcion: "", id: 1,item: 1, unidad: '', idArticulo: '', isNew: false}
+    ])
+       
      
       console.log(datos)
     }
@@ -179,11 +193,11 @@ export default function FormularioValeSalida() {
 
   }, [])
 
-  useEffect(() => {
-    // action on update of movies
-    console.log('datos cambio')
-    forceUpdate();
-}, [datos]);
+//   useEffect(() => {
+//     // action on update of movies
+//     console.log('datos cambio')
+//     forceUpdate();
+// }, [datos]);
 
 
 
@@ -265,6 +279,8 @@ export default function FormularioValeSalida() {
               <DatePicker
                 className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 defaultValue={dayjs()}
+                value={dayjs(datos.fecha)}
+                disabled={datos.fecha != '' && idTicket ? true : false}
                 id="fecha"
                 onChange={(newValue) => setDatos({ ...datos, fecha: dayjs(newValue).format('YYYY-MM-DD HH:mm:ss') })}
 
@@ -278,6 +294,8 @@ export default function FormularioValeSalida() {
             <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Area Solicitante</label>
             <Autocomplete
               disablePortal
+              value={datos.area}
+              disabled={datos.area != '' && idTicket ? true : false}
               freeSolo
               id="area"
               options={opcionesArea}
@@ -294,6 +312,8 @@ export default function FormularioValeSalida() {
               size="normal"
               fullWidth
               variant="outlined"
+              value={datos.solCodelco }
+              disabled={datos.solCodelco != '' && idTicket ? true : false}
               onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
           </div>
 
@@ -304,6 +324,7 @@ export default function FormularioValeSalida() {
               setDatos={setDatos}
               datos={datos}
               bodegas={bodegas}
+              idTicket={idTicket}
             />
           </div>
 
@@ -312,6 +333,8 @@ export default function FormularioValeSalida() {
             <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
             <Autocomplete
               disablePortal
+              value={datos.responsableRetira}
+              disabled={datos.responsableRetira != '' && idTicket ? true : false}
               freeSolo
               id="responsable"
               options={responsables}
@@ -326,6 +349,8 @@ export default function FormularioValeSalida() {
             <Autocomplete
               disablePortal
               freeSolo
+              value={datos.responsableEntrega}
+              disabled={datos.responsableEntrega != '' && idTicket ? true : false}
               id="responsableBodega"
               options={responsablesBodega}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
@@ -339,6 +364,8 @@ export default function FormularioValeSalida() {
             <TextField
               id="ceco"
               size="normal"
+              value={datos.ceco}
+              disabled={datos.ceco != '' && idTicket ? true : false}
               fullWidth
               variant="outlined"
               onChange={(e) => setDatos({ ...datos, ceco: e.target.value })} />
@@ -353,6 +380,8 @@ export default function FormularioValeSalida() {
             <TextField
               id="descripcion"
               size="normal"
+              value={datos.descripcion}
+              disabled={datos.descripcion != '' && idTicket ? true : false}
               fullWidth
               multiline
               onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
