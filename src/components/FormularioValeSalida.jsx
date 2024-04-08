@@ -38,8 +38,8 @@ import axios from 'axios'
 
 export default function FormularioValeSalida() {
 
-    let { idTicket } = useParams();
-   // const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+  let { idTicket } = useParams();
+  // const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -92,6 +92,18 @@ export default function FormularioValeSalida() {
   //STATE PARA TRAER RESPONSABLES DE BODEGA
   const [responsablesBodega, setResponsablesBodega] = useState([])
 
+  //STATE PARA ESPERAR CARGA DE FIRMAS
+  const [awaitSignature, setAwaitSignature] = useState(false)
+
+  //STATE PARA ESPERAR CARGA DE BODEGAS
+  const [awaitBodegas, setAwaitBodegas] = useState(false)
+
+  //STATE PARA DECIRLE AL SISTEMA QUE ES UNA FIRMA QUE YA ESTA GUARDADA
+  const [oldSignature, setOldSignature] = useState({
+    signatureBodega: false,
+    signatureRetira: false
+  })
+
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
@@ -123,6 +135,7 @@ export default function FormularioValeSalida() {
       try {
         const response = await axios.get('http://186.64.113.208:3000/bodegas/');
         setBodegas(response.data)
+        setAwaitBodegas(true)
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);
       }
@@ -164,40 +177,91 @@ export default function FormularioValeSalida() {
 
     async function fetchTicketSalida() {
       //Traer ticket de la BD
-
-      //Agregar datos al state del ticket
-       setDatos({...datos, 
-        fecha: '2024-03-27 10:38:31',
-        area: 'Sonda', 
-        solCodelco: 'Jaime Eade', 
-        bodegas: ['NETWORKING', 'UPS'],
-        responsableRetira: 'Felipe Mardonez',
-        responsableEntrega: 'Benjamin Cortes',
-        ceco: 'sm150',
-        descripcion: 'Descripcion guardada'
-    })
-
-    setRows([...rows, 
-    {bodega: 1, cantidad: "", descripcion: "", id: 1,item: 1, unidad: '', idArticulo: '', isNew: false}
-    ])
+      let response = ''
+      try {
+        response = await axios.get(`http://localhost:3000/ticket/salida/${idTicket}`);
+        console.log(response)
+      } catch (error) {
+  
+        if (error.response.data) {
+          setAlert({ ...alert, estado: true, mensaje: `${error.response.data.message}`, tipo: 'error', titulo: `${error.response.data.title}`, detalle_tipo: '', time: null });
+          return
+        }else{ setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null }); return}
        
+      }
+
      
-      console.log(datos)
+      //Agregar datos al state del ticket
+      const {fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
+      //SACAR LAS BODEGAS
+      let bodegasTicket = detalle.map((detalle_salida) => { return detalle_salida.bodegas_idbodegas})
+      //ELIMINAMOS BODEGAS DUPLICADAS
+      bodegasTicket = bodegasTicket.filter((value, index) => bodegasTicket.indexOf(value) === index)
+     //RECORRER BODEGAS DEL TICKET Y ASOCIAR NOMBRES
+      let bodegasNombre = []
+      let j = 0
+      console.log(bodegas)
+      for (let i = 0; i < bodegas.length; i++) {
+        if (bodegasTicket[j] === bodegas[i].idbodegas) {
+          bodegasNombre.push(bodegas[i].nombre)
+          j++
+        }
+        
+      }
+     console.log(bodegasNombre)
+      //TRANSFORMAR A BASE 64 LAS FIRMAS
+
+      
+
+      setDatos({
+        
+        fecha: fecha_creacion,
+        area: area_operacion,
+        solCodelco: cliente_trabajo,
+        bodegas: ['NETWORKING', 'UPS'],
+        responsableRetira: solicitante,
+        responsableEntrega: usuario_idusuario,
+        ceco: CC,
+        descripcion: motivo,
+        observaciones: observaciones,
+        firmaSolicitante: '',
+        firmaBodega: ''
+        
+        
+      })
+
+      setRows([...rows,
+      { bodega: 1, cantidad: "3", descripcion: "Jumper", id: 1, item: 1, unidad: 'Unidad', idArticulo: 352, isNew: false },
+      { bodega: 1, cantidad: "5", descripcion: "Cabezal", id: 2, item: 2, unidad: 'Unidad', idArticulo: 353, isNew: false }
+      ])
+
+
+      setAwaitSignature(true)
+
+      
     }
 
     if (idTicket !== undefined) {
-     fetchTicketSalida(idTicket)
+      setTimeout(()=>{
+        fetchTicketSalida(idTicket)
+       }, 2000)
+      
     }
-
-
 
   }, [])
 
-//   useEffect(() => {
-//     // action on update of movies
-//     console.log('datos cambio')
-//     forceUpdate();
-// }, [datos]);
+    useEffect(() => {
+
+     //SETEA EN CASO QUE LAS FIRMAS YA ESTAN GUARDADAS, PARA QUE NO SE PUEDA EDITAR Y SOLO SE RENDERIZE UN COMPONENTE DE IMG
+     if (datos.firmaBodega != '' && datos.firmaBodega) {
+      console.log('signature bodega')
+      setOldSignature({...oldSignature, signatureBodega: true})
+    }
+    if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {
+      console.log('signature retira')
+      setOldSignature({...oldSignature, signatureRetira: true})
+    }
+  }, [awaitSignature]);
 
 
 
@@ -211,16 +275,17 @@ export default function FormularioValeSalida() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
+    console.log("Validando datos...")
     //VALIDAR DATOS VACIOS
     if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.bodegas.length == 0) { setAlert({ ...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.responsableRetira == '' ) { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.firmaSolicitante == '') {
+   
+    if (datos.firmaSolicitante == '' ) {
       setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
     } else {
 
@@ -235,7 +300,7 @@ export default function FormularioValeSalida() {
     //ACTIVAR MENSAJE DE ESPERA
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
     //ENVIAR DATOS EN ENDPOINT
-    const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
+    const response = await axios.post('http://localhost:3000/ticket/salida/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -312,7 +377,7 @@ export default function FormularioValeSalida() {
               size="normal"
               fullWidth
               variant="outlined"
-              value={datos.solCodelco }
+              value={datos.solCodelco}
               disabled={datos.solCodelco != '' && idTicket ? true : false}
               onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
           </div>
@@ -349,7 +414,13 @@ export default function FormularioValeSalida() {
             <Autocomplete
               disablePortal
               freeSolo
-              value={datos.responsableEntrega}
+              value={
+                responsables.map(function (responsable) {
+                  if (responsable.id === datos.responsableEntrega) {
+                    return responsable.label
+                  }
+
+                }).join('')}
               disabled={datos.responsableEntrega != '' && idTicket ? true : false}
               id="responsableBodega"
               options={responsablesBodega}
@@ -418,6 +489,8 @@ export default function FormularioValeSalida() {
               fullWidth
               multiline
               onChange={(e) => setDatos({ ...datos, observaciones: e.target.value })}
+              value={datos.observaciones}
+              disabled={datos.observaciones != '' && idTicket ? true : false}
             />
           </div>
 
@@ -426,9 +499,13 @@ export default function FormularioValeSalida() {
 
         {/* Firmas */}
 
-        <div className="grid gap-4 mt-10 " >
 
+
+        <div className="grid gap-4 mt-10 " >
           <Firmas
+            awaitSignature={awaitSignature}
+            oldSignature={oldSignature}
+            setOldSignature={setOldSignature}
             setDatos={setDatos}
             datos={datos}
             responsables={responsables}

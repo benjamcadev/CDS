@@ -15,23 +15,31 @@ function sleep(duration) {
     });
 }
 
+function getValue(rows, id) {
 
-export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBodegasId, bodegasMaterial, setBodegasMaterial, alert, setAlert }) {
+    let newArr = [...rows];
+    let obj = newArr.find(o => o.id === id);
+    return obj.descripcion
+
+}
+
+
+export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBodegasId, bodegasMaterial, setBodegasMaterial, alert, setAlert }) {
 
 
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [inputValue, setInputValue] = useState({});
-    
-  
+
+
 
     const loading = open && options.length === 0;
 
     let headersList = {
         "Accept": "*/*",
-        "Content-Type": "application/json" 
-       }
-       
+        "Content-Type": "application/json"
+    }
+
 
     useEffect(() => {
         let active = true;
@@ -44,7 +52,7 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
             await sleep(1e3); // For demo purposes.
 
             if (active) {
-               
+
                 setOptions([]);
             }
         })();
@@ -65,7 +73,7 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
     return (
         <Autocomplete
             id="asynchronous-demo"
-           
+            value={getValue(rows, id)}
             freeSolo
             fullWidth
             open={open}
@@ -74,30 +82,29 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
             }}
             onClose={() => {
                 setOpen(false);
-              
-            }}
-            onChange={(e,value) => {
 
-                if(value)
-                {
+            }}
+            onChange={(e, value) => {
+
+                if (value) {
                     setBodegasId([value.id])
                     let newArr = [...rows];
                     let obj = newArr.find(o => o.id === id);
                     obj.idArticulo = value.id
                     setRows(newArr)
                 }
-               
+
             }}
-           
+
             onInputChange={async (e, newValue) => {
-               
-                
+
+
                 // setInputValue((old) => [...old, newValue]);
                 setInputValue((old) => {
-                  return {
-                    ...old,
-                    [id]: newValue,
-                  };
+                    return {
+                        ...old,
+                        [id]: newValue,
+                    };
                 });
                 // [...selectedRowIds, clickedRowId]
                 let newArr = [...rows];
@@ -105,86 +112,98 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                 obj.descripcion = newValue
                 setRows(newArr)
 
-                
+
 
                 //ACA INVOQUEMOS EL ENDPOINT
-              
-                   let bodyContent = JSON.stringify({
-                     "search_value": newValue
-                   });
-                   
-                   let reqOptions = {
-                     url: "http://186.64.113.208:3000/materiales/find",
-                     method: "POST",
-                     headers: headersList,
-                     data: bodyContent,
-                   }
-                   
-                   let response = await axios.request(reqOptions)
-                   .catch(function (error) {
-                    if (error.response.status == 404) {
-                       // console.log(error.response.data)
-                        setAlert({...alert, estado: true, mensaje: error.response.data.message , tipo: 'error', titulo: 'Error'})
+
+                if (obj.isNew) {
+
+                    let bodyContent = JSON.stringify({
+                        "search_value": newValue
+                    });
+
+                    let reqOptions = {
+                        url: "http://186.64.113.208:3000/materiales/find",
+                        method: "POST",
+                        headers: headersList,
+                        data: bodyContent,
                     }
-                    console.log(error);
-                  });
 
-                  if (response.status == 200) {console.log(response.data); setOptions(response.data)}
-                
-                
-                   
+                    let response = await axios.request(reqOptions)
+                        .catch(function (error) {
+                            if (error.response.status == 404) {
+                                // console.log(error.response.data)
+                                setAlert({ ...alert, estado: true, mensaje: error.response.data.message, tipo: 'error', titulo: 'Error' })
+                            }
+                            console.log(error);
+                        });
 
-              }}
-            isOptionEqualToValue={(option, value) => 
-            {
-                
+                    if (response.status == 200) { console.log(response.data); setOptions(response.data) }
+                }
+
+
+
+
+
+
+
+            }}
+            isOptionEqualToValue={(option, value) => {
+
                 option.Descripcion === value.Descripcion
             }
             }
             getOptionLabel={(option) => {
-               
-               return  option.Descripcion 
-            } 
+                if (option.Descripcion) {
+                    return option.Descripcion
+                } else {
+                    return option
+                }
 
-            
-                
-             }
+
+            }
+
+
+
+            }
             options={options}
             loading={loading}
-            
-           
+
+
             renderOption={(props, option) => (
-                
+
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
 
-                  {option.Descripcion} - {option.Codigo_SAP} - (Cantidad: {option.Stock}) 
+                    {option.Descripcion} - {option.Codigo_SAP} - (Cantidad: {option.Stock})
                 </Box>
-              )}
+            )}
 
             renderInput={(params) => (
+
+
                 <TextField
-                
+
                     fullWidth
                     {...params}
 
                     onKeyDown={(e) => {
                         e.key === " " && e.stopPropagation();
-                      }}
+                    }}
                     onBlur={async (e) => {
-                       
+
                         //ENDPOINT BUSCAR BODEGAS DEL MATERIAL
                         let reqOptions = {
-                            url: "http://186.64.113.208:3000/bodegas/find/"+bodegasId[0],
+                            url: "http://186.64.113.208:3000/bodegas/find/" + bodegasId[0],
                             method: "GET",
                             headers: headersList,
-                          }
+                        }
 
-                          
-                          let response = await axios.request(reqOptions);
-                          setBodegasMaterial(response.data)
-                          
-                    }}  
-                      
+
+                        let response = await axios.request(reqOptions);
+                        setBodegasMaterial(response.data)
+
+                    }}
+
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
@@ -195,6 +214,8 @@ export default function AutocompleteSearch({ id, rows, setRows,bodegasId, setBod
                         ),
                     }}
                 />
+
+
             )}
         />
     )

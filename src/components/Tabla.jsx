@@ -49,6 +49,14 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
         );
     }
 
+    function getValueBodega(rows, id) {
+
+        let newArr = [...rows];
+        let obj = newArr.find(o => o.id === id);
+        return obj.bodega
+    
+    }
+
 
 
     //-------------------------------- DATA GRID  -------------------------------------//
@@ -186,7 +194,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
                         sx={{ minWidth: 230 }}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        defaultValue={''}
+                        value={getValueBodega(rows, params.id)}
                        
                         renderValue={(value) => {
                             return bodegas.map((option) => {
@@ -283,7 +291,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
                 rows={rows}
                 columns={columns}
                 editMode="row"
-
+                
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
