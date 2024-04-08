@@ -6,11 +6,12 @@ import SignatureCanvas from 'react-signature-canvas'
 //COMPONENTE MUI 
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function Firmas({ datos, setDatos, responsables, awaitSignature, oldSignature, setOldSignature }) {
+export default function Firmas({ idTicket, datos, setDatos, responsables, awaitSignature, oldSignature, setOldSignature }) {
 
     //REFERENCIAS A LAS FIRMAS
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
+   
 
     // useEffect(() => {
 
@@ -102,7 +103,7 @@ export default function Firmas({ datos, setDatos, responsables, awaitSignature, 
                     }
                 </p>
 
-                {awaitSignature & datos.firmaBodega != '' & oldSignature.signatureBodega ?
+                {awaitSignature & datos.firmaBodega != '' & idTicket != '' ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaBodega} />
 

@@ -36,6 +36,10 @@ import dayjs from 'dayjs'
 //LIBRERIA PARA HACER FETCH
 import axios from 'axios'
 
+//IMPORTAR HELPERS
+import {getBodegas} from '../helpers/getBodegas'
+import {getSignature} from '../helpers/getSignature'
+
 export default function FormularioValeSalida() {
 
   let { idTicket } = useParams();
@@ -95,14 +99,13 @@ export default function FormularioValeSalida() {
   //STATE PARA ESPERAR CARGA DE FIRMAS
   const [awaitSignature, setAwaitSignature] = useState(false)
 
-  //STATE PARA ESPERAR CARGA DE BODEGAS
-  const [awaitBodegas, setAwaitBodegas] = useState(false)
-
   //STATE PARA DECIRLE AL SISTEMA QUE ES UNA FIRMA QUE YA ESTA GUARDADA
   const [oldSignature, setOldSignature] = useState({
     signatureBodega: false,
     signatureRetira: false
   })
+
+
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
@@ -134,8 +137,7 @@ export default function FormularioValeSalida() {
     async function fetchBodegas() {
       try {
         const response = await axios.get('http://186.64.113.208:3000/bodegas/');
-        setBodegas(response.data)
-        setAwaitBodegas(true)
+        setBodegas(response.data)  
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);
       }
@@ -144,6 +146,8 @@ export default function FormularioValeSalida() {
     fetchBodegas()
 
   }, [])
+
+   
 
   //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
 
@@ -180,7 +184,7 @@ export default function FormularioValeSalida() {
       let response = ''
       try {
         response = await axios.get(`http://localhost:3000/ticket/salida/${idTicket}`);
-        console.log(response)
+       
       } catch (error) {
   
         if (error.response.data) {
@@ -194,42 +198,49 @@ export default function FormularioValeSalida() {
       //Agregar datos al state del ticket
       const {fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
       //SACAR LAS BODEGAS
-      let bodegasTicket = detalle.map((detalle_salida) => { return detalle_salida.bodegas_idbodegas})
+      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodegas_idbodegas})
       //ELIMINAMOS BODEGAS DUPLICADAS
-      bodegasTicket = bodegasTicket.filter((value, index) => bodegasTicket.indexOf(value) === index)
-     //RECORRER BODEGAS DEL TICKET Y ASOCIAR NOMBRES
+      bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index)
+
+      //HELPER PARA OBTENER BODEGAS DESDE LA BD
+      const bodegasBD = await getBodegas()
+
+      //RECORRER BODEGAS DEL TICKET Y ASOCIAR NOMBRES
       let bodegasNombre = []
       let j = 0
-      console.log(bodegas)
-      for (let i = 0; i < bodegas.length; i++) {
-        if (bodegasTicket[j] === bodegas[i].idbodegas) {
-          bodegasNombre.push(bodegas[i].nombre)
+     
+      for (let i = 0; i < bodegasBD.length; i++) {
+        if (bodegasTicketId[j] === bodegasBD[i].idbodegas) {
+          bodegasNombre.push(bodegasBD[i].nombre)
           j++
         }
         
       }
-     console.log(bodegasNombre)
+
       //TRANSFORMAR A BASE 64 LAS FIRMAS
-
+      const signatures = await getSignature(idTicket)
       
-
       setDatos({
         
         fecha: fecha_creacion,
         area: area_operacion,
         solCodelco: cliente_trabajo,
-        bodegas: ['NETWORKING', 'UPS'],
+        bodegas: bodegasNombre,
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,
         ceco: CC,
         descripcion: motivo,
         observaciones: observaciones,
-        firmaSolicitante: '',
-        firmaBodega: ''
+        firmaSolicitante: signatures.base64_retira,
+        firmaBodega: signatures.base64_entrega
         
         
       })
 
+      console.log(detalle)
+
+      //EN EL BACKEND TENGO QUE HACER UN INNER JOIN DE LA TABLA DETALLE TICKET SALIDA Y ARTICULO PARA PODER TRAER LA DESCRIPCION Y UNIDAD
+      // ADEMAS EN LA BD AGREGAR CAMPO EXTRA DE UNIDAD MEDICION EN LA TABLA ARTICULO.
       setRows([...rows,
       { bodega: 1, cantidad: "3", descripcion: "Jumper", id: 1, item: 1, unidad: 'Unidad', idArticulo: 352, isNew: false },
       { bodega: 1, cantidad: "5", descripcion: "Cabezal", id: 2, item: 2, unidad: 'Unidad', idArticulo: 353, isNew: false }
@@ -237,15 +248,13 @@ export default function FormularioValeSalida() {
 
 
       setAwaitSignature(true)
+      
 
       
     }
 
     if (idTicket !== undefined) {
-      setTimeout(()=>{
-        fetchTicketSalida(idTicket)
-       }, 2000)
-      
+      fetchTicketSalida(idTicket)
     }
 
   }, [])
@@ -254,12 +263,12 @@ export default function FormularioValeSalida() {
 
      //SETEA EN CASO QUE LAS FIRMAS YA ESTAN GUARDADAS, PARA QUE NO SE PUEDA EDITAR Y SOLO SE RENDERIZE UN COMPONENTE DE IMG
      if (datos.firmaBodega != '' && datos.firmaBodega) {
-      console.log('signature bodega')
-      setOldSignature({...oldSignature, signatureBodega: true})
+      setOldSignature({ signatureBodega: true})
+     
     }
-    if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {
-      console.log('signature retira')
-      setOldSignature({...oldSignature, signatureRetira: true})
+    if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {  
+      setOldSignature({ signatureRetira: true})
+      
     }
   }, [awaitSignature]);
 
@@ -509,6 +518,7 @@ export default function FormularioValeSalida() {
             setDatos={setDatos}
             datos={datos}
             responsables={responsables}
+            idTicket={idTicket}
           />
         </div>
 
