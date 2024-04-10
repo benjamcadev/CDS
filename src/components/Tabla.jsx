@@ -19,7 +19,7 @@ import AutocompleteSearch from './AutocompleteSearch'
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
 
 
-export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
+export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicket }) {
 
 
     const [bodegasId, setBodegasId] = useState([]);
@@ -33,7 +33,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '',idArticulo: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', idArticulo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -54,7 +54,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
         let newArr = [...rows];
         let obj = newArr.find(o => o.id === id);
         return obj.bodega
-    
+
     }
 
 
@@ -126,7 +126,13 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
         setRowModesModel(newRowModesModel);
     };
 
-
+    const isEditable = (idTicket) => {
+        if (idTicket != '') {
+            return true
+        } else {
+            return false
+        }
+    }
 
     const columns = [
 
@@ -195,7 +201,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={getValueBodega(rows, params.id)}
-                       
+
                         renderValue={(value) => {
                             return bodegas.map((option) => {
                                 if (option.idbodegas == value) {
@@ -230,7 +236,6 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
             type: 'actions',
             headerName: 'Acciones',
             headerAlign: 'left',
-
             cellClassName: 'actions',
             getActions: ({ id }) => {
                 const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
@@ -254,7 +259,9 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
 
                     ];
                 }
+
                 return [
+
                     <GridActionsCellItem
                         icon={<EditIcon />}
                         label="Edit"
@@ -273,9 +280,11 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
         },
     ];
 
-
-
-
+    //EN CASO DE VENIR UN NUMERO DE TICKET EN LA BARRA DE DIRECCIONES DESHABILITA LA COLUMNA ACCIONES
+    if (idTicket) {
+        columns.splice(5,1)
+    }
+    
 
 
 
@@ -291,7 +300,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert }) {
                 rows={rows}
                 columns={columns}
                 editMode="row"
-                
+                isCellEditable={(params) => { if (idTicket) { params.isEditable = false } }}
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}

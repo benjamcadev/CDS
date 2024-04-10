@@ -198,7 +198,7 @@ export default function FormularioValeSalida() {
       //Agregar datos al state del ticket
       const {fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
       //SACAR LAS BODEGAS
-      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodegas_idbodegas})
+      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega})
       //ELIMINAMOS BODEGAS DUPLICADAS
       bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index)
 
@@ -237,20 +237,14 @@ export default function FormularioValeSalida() {
         
       })
 
-      console.log(detalle)
+      detalle.map((linea_detalle, key) => {
+        linea_detalle.item = key + 1
+        linea_detalle.id = key + 1
+    })
 
-      //EN EL BACKEND TENGO QUE HACER UN INNER JOIN DE LA TABLA DETALLE TICKET SALIDA Y ARTICULO PARA PODER TRAER LA DESCRIPCION Y UNIDAD
-      // ADEMAS EN LA BD AGREGAR CAMPO EXTRA DE UNIDAD MEDICION EN LA TABLA ARTICULO.
-      setRows([...rows,
-      { bodega: 1, cantidad: "3", descripcion: "Jumper", id: 1, item: 1, unidad: 'Unidad', idArticulo: 352, isNew: false },
-      { bodega: 1, cantidad: "5", descripcion: "Cabezal", id: 2, item: 2, unidad: 'Unidad', idArticulo: 353, isNew: false }
-      ])
-
-
+      setRows(detalle)
       setAwaitSignature(true)
-      
-
-      
+          
     }
 
     if (idTicket !== undefined) {
@@ -480,6 +474,7 @@ export default function FormularioValeSalida() {
               bodegas={bodegas}
               alert={alert}
               setAlert={setAlert}
+              idTicket={idTicket}
 
             />
           </div>
