@@ -300,7 +300,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
                 rows={rows}
                 columns={columns}
                 editMode="row"
-                isCellEditable={(params) => { if (idTicket) { params.isEditable = false } }}
+               
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}

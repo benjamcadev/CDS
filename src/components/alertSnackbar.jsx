@@ -4,10 +4,12 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
 
+import { useNavigate } from "react-router-dom"
 
 
 export default function alertSnackbar({ alert, setAlert }) {
 
+    let navigate = useNavigate()
 
 
     const handleClose = (event, reason) => {
@@ -20,7 +22,8 @@ export default function alertSnackbar({ alert, setAlert }) {
 
     const handleAceptar = () => {
         //RE DIRECCIONAR AL TICKET EN LA BARRA DE DIRECCIONES
-        setAlert({ ...alert, estado: false, responseReturn: true });
+        if (alert.detalle_tipo == 'success_ticket') { setAlert({ ...alert, estado: false, responseReturn: true }); navigate("/vale-salida/"+alert.value)  }
+       
     }
 
 

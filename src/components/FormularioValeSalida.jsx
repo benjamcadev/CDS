@@ -74,7 +74,8 @@ export default function FormularioValeSalida() {
     titulo: '',
     detalle_tipo: '',
     time: null,
-    responseReturn: false
+    responseReturn: false,
+    value: ''
   });
 
   //STATE DE DIALOG
@@ -313,7 +314,7 @@ export default function FormularioValeSalida() {
     })
 
     if (response.status == 200) {
-      setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null });
+      setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null, value: response.data.idTicket });
     }
 
   }
