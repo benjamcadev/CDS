@@ -333,10 +333,12 @@ export default function FormularioValeSalida() {
       />
 
       <form className="" onSubmit={handleSubmit}>
-
+      {idTicket ?  <h1 className="sm:text-2xl md:text-5xl font-bold tracking-tight pb-10 ">Ticket N° {idTicket}</h1> : ''}
+     
         {/* Inputs */}
 
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
+        
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Fecha</label>
 
