@@ -184,7 +184,7 @@ export default function FormularioValeSalida() {
       //Traer ticket de la BD
       let response = ''
       try {
-        response = await axios.get(`http://localhost:3000/ticket/salida/${idTicket}`);
+        response = await axios.get(`http://186.64.113.208:3000/ticket/salida/${idTicket}`);
        
       } catch (error) {
   
@@ -304,7 +304,7 @@ export default function FormularioValeSalida() {
     //ACTIVAR MENSAJE DE ESPERA
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
     //ENVIAR DATOS EN ENDPOINT
-    const response = await axios.post('http://localhost:3000/ticket/salida/', requestJson, {
+    const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
       }
