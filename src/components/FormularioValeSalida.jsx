@@ -43,7 +43,7 @@ import {getSignature} from '../helpers/getSignature'
 export default function FormularioValeSalida() {
 
   let { idTicket } = useParams();
-  // const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+ 
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -245,11 +245,13 @@ export default function FormularioValeSalida() {
 
       setRows(detalle)
       setAwaitSignature(true)
+     
           
     }
 
     if (idTicket !== undefined) {
       fetchTicketSalida(idTicket)
+     
     }
 
   }, [])

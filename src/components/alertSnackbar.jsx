@@ -22,7 +22,10 @@ export default function alertSnackbar({ alert, setAlert }) {
 
     const handleAceptar = () => {
         //RE DIRECCIONAR AL TICKET EN LA BARRA DE DIRECCIONES
-        if (alert.detalle_tipo == 'success_ticket') { setAlert({ ...alert, estado: false, responseReturn: true }); navigate("/vale-salida/"+alert.value)  }
+        if (alert.detalle_tipo == 'success_ticket') { 
+            setAlert({ ...alert, estado: false, responseReturn: true }); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            navigate("/vale-salida/"+alert.value)  }
        
     }
 
