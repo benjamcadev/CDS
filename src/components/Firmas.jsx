@@ -103,7 +103,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, awaitS
                     }
                 </p>
 
-                {awaitSignature & datos.firmaBodega != '' & idTicket != '' ?
+                {awaitSignature & datos.firmaBodega != '' & idTicket  ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaBodega} />
 
