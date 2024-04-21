@@ -5,9 +5,11 @@ export const getTypesUser = async() => {
 
     try {
         const response = await axios.get('http://localhost:3000/usuarios/types');
-        return response.data
+       
+        return response
       } catch (error) {
         console.error('Hubo un error fetch types users: ' + error);
+        return error
       }
    
 }

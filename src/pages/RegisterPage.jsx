@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 //COMPONENTES DE MUI
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -9,11 +9,12 @@ import FormControl from '@mui/material/FormControl';
 import Header from '../components/Header';
 //HELPERS
 import { getTypesUser } from '../helpers/getTypesUser'
-import { useEffect } from 'react';
 // IMPORTAR COMPONENTE DE ALERT SNACKBAR
 import Alert from '../components/alertSnackbar'
 //LIBRERIA PARA HACER FETCH
 import axios from 'axios'
+
+import {useAuth} from '../context/AuthContext'
 
 
 export default function RegisterPage() {
@@ -40,14 +41,24 @@ export default function RegisterPage() {
         value: ''
     });
 
+    //TRAYENDO LA FUNCION DE REGISTAR DESDE EL CONTEXT
+    const {signup, user} = useAuth()
+
+    console.log(user)
+
 
     useEffect(() => {
 
         async function fetchTiposUsuarios() {
             try {
                 const response = await getTypesUser();
-                setTiposUsuarios(response)
+               if (response.status == 200) {
+                 setTiposUsuarios(response.data)
                 setLoadingTiposUsuarios(false)
+               }else{
+                setAlert({ ...alert, estado: true, mensaje: `Error en fetchTiposUsuarios ${response.message}`, tipo: 'error', titulo: `${response.code}`, detalle_tipo: '', time: null });
+               }
+              
             } catch (error) {
                 console.error('Hubo un error fetch getTypesUser: ' + error);
             }
@@ -65,19 +76,23 @@ export default function RegisterPage() {
         //ACTIVAR MENSAJE DE ESPERA
         setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Registrando Usuario...', detalle_tipo: '', time: null });
         //ENVIAR DATOS EN ENDPOINT
-        const response = await axios.post('http://localhost:3000/auth/register', requestJson, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).catch((error) => {
-           
-            setAlert({ ...alert, estado: true, mensaje: `${error.response.data.error}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
+        const response = await signup(requestJson)
 
-        })
+        console.log(response)
+
+        if (response.status == 400) {
+            setAlert({ ...alert, estado: true, mensaje: `${response.data.message}`, tipo: 'error', titulo: `${response.statusText}`, detalle_tipo: '', time: null });
+        }
 
         if (response.status == 200) {
+            //response.data
             setAlert({ ...alert, estado: true, mensaje: 'Usuario Registrado Exitosamente', tipo: 'success', titulo: 'Usuario Registrado !', detalle_tipo: '', time: 8000 });
         }
+       
+        
+             
+        
+        
 
 
     }
