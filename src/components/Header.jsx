@@ -1,7 +1,7 @@
 import React from 'react'
 import logoPsinet from '/src/Logo-PSINet.png'
 
-export default function Header() {
+export default function Header({title}) {
   return (
     <nav className="bg-gray-800 rounded-md mb-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -12,7 +12,7 @@ export default function Header() {
             </div>
             <div className="">
               <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <h1 className="sm:text-xl md:text-3xl font-bold tracking-tight text-gray-50 ">Vale Salida de Materiales</h1>
+                <h1 className="sm:text-xl md:text-3xl font-bold tracking-tight text-gray-50 ">{title}</h1>
               </div>
 
             </div>

@@ -1,5 +1,7 @@
 
-import ValeSalida from './components/ValeSalida'
+import ValeSalida from './pages/ValeSalida'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import { Route, Routes } from 'react-router-dom'
 
 function App() {
@@ -12,6 +14,8 @@ function App() {
       <Routes>
 
         <Route path='/' element={<Home />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
         <Route path='/vale-salida/' element={<ValeSalida />} />
         <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
 
