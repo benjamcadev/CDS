@@ -14,6 +14,7 @@ import Alert from '../components/alertSnackbar'
 //LIBRERIA PARA HACER FETCH
 import axios from 'axios'
 
+//IMPORTANDO CONTEXT
 import {useAuth} from '../context/AuthContext'
 
 
@@ -42,9 +43,9 @@ export default function RegisterPage() {
     });
 
     //TRAYENDO LA FUNCION DE REGISTAR DESDE EL CONTEXT
-    const {signup, user} = useAuth()
+    const {signup, isAuthenticated} = useAuth()
 
-    console.log(user)
+   
 
 
     useEffect(() => {
@@ -78,10 +79,11 @@ export default function RegisterPage() {
         //ENVIAR DATOS EN ENDPOINT
         const response = await signup(requestJson)
 
-        console.log(response)
+      
 
         if (response.status == 400) {
             setAlert({ ...alert, estado: true, mensaje: `${response.data.message}`, tipo: 'error', titulo: `${response.statusText}`, detalle_tipo: '', time: null });
+            return
         }
 
         if (response.status == 200) {
@@ -121,7 +123,7 @@ export default function RegisterPage() {
                                 label='Nombre'
                                 id='nombre'
                                 size='normal'
-
+                                helperText='Nombre y Apellido'
                                 fullWidth
                                 value={register.nombre}
                                 onChange={(e) => setRegister({ ...register, nombre: e.target.value })}
@@ -148,7 +150,7 @@ export default function RegisterPage() {
                                 label='Usuario'
                                 id='usuario'
                                 size='normal'
-
+                                helperText='Ej: bcort015'
                                 type='text'
                                 fullWidth
                                 value={register.usuario}
@@ -162,7 +164,7 @@ export default function RegisterPage() {
                                 label='Contraseña'
                                 id='pass'
                                 size='normal'
-
+                                helperText='Minimo 6 caracteres'
                                 type='password'
                                 fullWidth
                                 value={register.pass}

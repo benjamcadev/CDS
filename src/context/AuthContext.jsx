@@ -1,6 +1,9 @@
 import { createContext, useState, useContext } from 'react'
 import axios from 'axios'
 
+import {loginRequest} from '../helpers/authRequest'
+import { Try } from '@mui/icons-material'
+
 
 
 export const AuthContext = createContext()
@@ -16,6 +19,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [errors, setErrors] = useState([])
 
     const signup = async (user) => {
         const response = await axios.post('http://localhost:3000/auth/register', user, {
@@ -25,17 +30,14 @@ export const AuthProvider = ({ children }) => {
         }).then((response) => {
             if (response.status == 200) {
                 setUser(response.data)
+                setIsAuthenticated(true)
                 return response
             }
-           
-          
-          
         }).catch((error) => {
             console.log(error)
+            setIsAuthenticated(false)
+            setUser(null)
             return error.response
-           
-           
-
         })
 
         return response
@@ -44,11 +46,32 @@ export const AuthProvider = ({ children }) => {
        
     }
 
+    const signin = async (user) => {
+        try {
+            const response = await loginRequest(user)
+           
+            if (response.status == 200) {
+                setUser(response.data)
+                setIsAuthenticated(true)
+                return response
+            }
+            return response
+        } catch (error) {
+            setIsAuthenticated(false)
+            setUser(null)
+            return error
+        }
+       
+    }
+
     return (
         <AuthContext.Provider 
         value={{
             signup,
-            user
+            signin,
+            user,
+            isAuthenticated,
+            errors
         }}>
             {children}
         </AuthContext.Provider>
