@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     const [errors, setErrors] = useState([])
 
     const signup = async (user) => {
-        const response = await axios.post('http://localhost:3000/auth/register', user, {
+        const response = await axios.post('http://186.64.113.208:3000/auth/register', user, {
             headers: {
                 'Content-Type': 'application/json'
             }

@@ -4,7 +4,7 @@ import axios from 'axios'
 export const getTypesUser = async() => {
 
     try {
-        const response = await axios.get('http://localhost:3000/usuarios/types');
+        const response = await axios.get('http://186.64.113.208:3000/usuarios/types');
        
         return response
       } catch (error) {
