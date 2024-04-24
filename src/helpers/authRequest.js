@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from './axios'
 
 export const loginRequest = async (user) => {
-    const response = await axios.post('http://186.64.113.208:3000/auth/login', user, {
+    const response = await axios.post('/auth/login', user, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -14,5 +14,10 @@ export const loginRequest = async (user) => {
         return error.response
     })
 
+    return response
+}
+
+export const verifyTokenRequest = (token) => {
+    const response = axios.get('/auth/verify')
     return response
 }

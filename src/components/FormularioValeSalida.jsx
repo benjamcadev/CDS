@@ -34,7 +34,7 @@ import 'dayjs/locale/es'
 import dayjs from 'dayjs'
 
 //LIBRERIA PARA HACER FETCH
-import axios from 'axios'
+import axios from '../helpers/axios'
 
 //IMPORTAR HELPERS
 import {getBodegas} from '../helpers/getBodegas'
@@ -137,7 +137,7 @@ export default function FormularioValeSalida() {
 
     async function fetchBodegas() {
       try {
-        const response = await axios.get('http://186.64.113.208:3000/bodegas/');
+        const response = await axios.get('bodegas/', {withCredentials: true});
         setBodegas(response.data)  
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);

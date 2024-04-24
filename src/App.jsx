@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './ProtectedRoute'
 
 function App() {
 
@@ -13,18 +14,22 @@ function App() {
     <div>
       {/* Aca montamos un componente header global que vaya en todas las paginas */}
 
-      <AuthProvider>
-      
-          <Routes>
+      <AuthProvider> {/* el AuthProvider tiene una especie de useState globales de los cuales podemos acceder de las rutas que estan en el  */}
 
-            <Route path='/' element={<Home />} />
-            <Route path='/login' element={<LoginPage />} />
-            <Route path='/register' element={<RegisterPage />} />
+        <Routes>
+
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
+
+          <Route element={<ProtectedRoute />}>
             <Route path='/vale-salida/' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
+          </Route>
 
-          </Routes>
-      
+
+        </Routes>
+
 
       </AuthProvider>
 

@@ -1,8 +1,9 @@
-import { createContext, useState, useContext } from 'react'
+import { createContext, useState, useContext, useEffect } from 'react'
 import axios from 'axios'
 
-import {loginRequest} from '../helpers/authRequest'
-import { Try } from '@mui/icons-material'
+import { loginRequest, verifyTokenRequest } from '../helpers/authRequest'
+import Cookies from 'js-cookie'
+
 
 
 
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [errors, setErrors] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const signup = async (user) => {
         const response = await axios.post('http://186.64.113.208:3000/auth/register', user, {
@@ -42,14 +44,14 @@ export const AuthProvider = ({ children }) => {
 
         return response
 
-       
-       
+
+
     }
 
     const signin = async (user) => {
         try {
             const response = await loginRequest(user)
-           
+
             if (response.status == 200) {
                 setUser(response.data)
                 setIsAuthenticated(true)
@@ -61,18 +63,57 @@ export const AuthProvider = ({ children }) => {
             setUser(null)
             return error
         }
-       
+
     }
 
+    useEffect(() => {
+        async function checkLogin() {
+            const cookies = Cookies.get()
+
+           
+
+            if (cookies.token) {
+                try {
+                    const res = await verifyTokenRequest(cookies.token)
+                    
+                    if (res.data) {
+                        setIsAuthenticated(true)
+                        setUser(res.data)
+                        setLoading(false)
+                       
+                    } else {
+                        setIsAuthenticated(false)
+                        setLoading(false)
+                        setUser(null)
+                        return
+                    }
+                } catch (error) {
+                    setIsAuthenticated(false)
+                    setUser(null)
+                    setLoading(false)
+                }
+
+            }else{
+                setIsAuthenticated(false)
+                setLoading(false)
+                setUser(null)
+                return
+            }
+        }
+
+        checkLogin()
+    }, [])
+
     return (
-        <AuthContext.Provider 
-        value={{
-            signup,
-            signin,
-            user,
-            isAuthenticated,
-            errors
-        }}>
+        <AuthContext.Provider
+            value={{
+                signup,
+                signin,
+                user,
+                isAuthenticated,
+                errors,
+                loading
+            }}>
             {children}
         </AuthContext.Provider>
 
