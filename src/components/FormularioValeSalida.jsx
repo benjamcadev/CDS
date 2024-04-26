@@ -156,8 +156,8 @@ export default function FormularioValeSalida() {
 
     async function fetchResponsables() {
       try {
-        const response = await axios.get(`http://186.64.113.208:3000/usuarios/${3}`); //3 ES USUARIOS RESPONSABLES
-        const response2 = await axios.get(`http://186.64.113.208:3000/usuarios/${1}`); //1 ES USUARIOS ADMIN
+        const response = await axios.get(`/usuarios/${3}`, {withCredentials: true}); //3 ES USUARIOS RESPONSABLES
+        const response2 = await axios.get(`/usuarios/${1}`, {withCredentials: true}); //1 ES USUARIOS ADMIN
         setResponsables(response.data.concat(response2.data))
         setResponsablesBodega(response2.data)
 
@@ -184,7 +184,7 @@ export default function FormularioValeSalida() {
       //Traer ticket de la BD
       let response = ''
       try {
-        response = await axios.get(`http://186.64.113.208:3000/ticket/salida/${idTicket}`);
+        response = await axios.get(`/ticket/salida/${idTicket}`, {withCredentials: true});
        
       } catch (error) {
   
@@ -306,10 +306,11 @@ export default function FormularioValeSalida() {
     //ACTIVAR MENSAJE DE ESPERA
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
     //ENVIAR DATOS EN ENDPOINT
-    const response = await axios.post('http://186.64.113.208:3000/ticket/salida/', requestJson, {
+    const response = await axios.post('/ticket/salida/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      withCredentials: true
     }).catch((error) => {
       setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
 

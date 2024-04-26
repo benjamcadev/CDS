@@ -4,7 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-import axios from 'axios'
+import axios from '../helpers/axios'
 
 
 function sleep(duration) {
@@ -123,7 +123,7 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                     });
 
                     let reqOptions = {
-                        url: "http://186.64.113.208:3000/materiales/find",
+                        url: "/materiales/find",
                         method: "POST",
                         headers: headersList,
                         data: bodyContent,
@@ -193,7 +193,7 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
 
                         //ENDPOINT BUSCAR BODEGAS DEL MATERIAL
                         let reqOptions = {
-                            url: "http://186.64.113.208:3000/bodegas/find/" + bodegasId[0],
+                            url: "/bodegas/find/" + bodegasId[0],
                             method: "GET",
                             headers: headersList,
                         }
