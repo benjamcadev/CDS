@@ -18,11 +18,12 @@ function App() {
 
         <Routes>
 
-          <Route path='/' element={<Home />} />
+          
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
 
           <Route element={<ProtectedRoute />}>
+          <Route path='/' element={<Home />} />
             <Route path='/vale-salida/' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
           </Route>

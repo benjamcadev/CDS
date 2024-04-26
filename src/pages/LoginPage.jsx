@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 //COMPONENTES DE MUI
 import TextField from '@mui/material/TextField';
@@ -16,6 +16,9 @@ import { useAuth } from '../context/AuthContext'
 import {Link, useNavigate} from 'react-router-dom'
 
 export default function LoginPage() {
+
+  //NAVEGACION
+  let navigate = useNavigate()
 
   //STATE DEL LOGIN
   const [login, setLogin] = useState({
@@ -37,9 +40,16 @@ export default function LoginPage() {
   //TRAYENDO LA FUNCION DE REGISTAR DESDE EL CONTEXT
   const { signin, isAuthenticated, errors } = useAuth()
 
-  //NAVEGACION
-  let navigate = useNavigate()
-
+  
+  //USE EFFECT PARA RE DIRIGIR AL HOME SI ESTA LOGEADO CON COOKIES
+  useEffect(() => {
+    
+    if(isAuthenticated){
+      navigate('/vale-salida/')
+    }
+  
+  }, [isAuthenticated])
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault()

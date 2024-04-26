@@ -21,3 +21,4 @@ export const verifyTokenRequest = (token) => {
     const response = axios.get('/auth/verify')
     return response
 }
+

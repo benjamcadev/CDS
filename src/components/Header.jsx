@@ -1,7 +1,17 @@
 import React from 'react'
 import logoPsinet from '/src/Logo-PSINet.png'
 
-export default function Header({title}) {
+//IMPORTANDO CONTEXT
+import { useAuth } from '../context/AuthContext'
+
+import { Link } from 'react-router-dom'
+
+export default function Header({ title }) {
+
+  //TRAYENDO LA FUNCION DE REGISTAR DESDE EL CONTEXT
+  const { user, logout, isAuthenticated } = useAuth()
+
+
   return (
     <nav className="bg-gray-800 rounded-md mb-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -17,6 +27,12 @@ export default function Header({title}) {
 
             </div>
           </div>
+
+          {isAuthenticated &&
+            <div>
+              <Link className='text-gray-50 sm:text-xs md:text-lg' to='/' onClick={() => { logout() }}>Cerrar Sesion</Link>
+            </div>}
+
 
 
         </div>
