@@ -71,7 +71,7 @@ export default function Sidebar() {
     <>
     {isAuthenticated ? 
     
-    <div className={`bg-gray-800 h-screen p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20'} h-auto relative duration-300 rounded-md`}>
+    <div className={`bg-gray-800 h-screen p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20'} h-screen relative duration-300 rounded-md`}>
       <FaAngleLeft
         className={` bg-white text-gray-800 text-3xl rounded-full absolute -right-3 top-9 border border-gray-800 cursor-pointer ${!open && "rotate-180"}`}
         onClick={() => setOpen(!open)}
@@ -82,12 +82,13 @@ export default function Sidebar() {
 
       <ul>
         {Menus.map((menu, index) => (
-          <>
+          <div key={index}>
+         
             <li key={index} className={` text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} `}>
-              <span className="text-2xl block float-left">
+              <span  className="text-2xl block float-left">
                 {menu.icon ? menu.icon : <FaBars /> }
               </span>
-              <span className={` text-base font-medium flex-1 duration-200 ${!open && "hidden"}`} >
+               <span className={` text-base font-medium flex-1 duration-200 ${!open && "hidden"}`} >
                <Link to={menu.link} onClick={menu.functionOnClick}>   {menu.title} </Link>
               </span>
               {menu.submenu && open && (
@@ -104,7 +105,7 @@ export default function Sidebar() {
                 ))}
               </ul>
             )}
-          </>
+          </div>
         ))}
       </ul>
 
