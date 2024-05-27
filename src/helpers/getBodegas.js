@@ -4,7 +4,7 @@ import axios from './axios'
 export const getBodegas = async() => {
 
     try {
-        const response = await axios.get('http://186.64.113.208:3000/bodegas/');
+        const response = await axios.get('/bodegas');
         return response.data
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);

@@ -1,10 +1,10 @@
 //LIBRERIA PARA HACER FETCH
-import axios from 'axios'
+import axios from './axios'
 
 export const getTypesUser = async() => {
 
     try {
-        const response = await axios.get('http://186.64.113.208:3000/usuarios/types');
+        const response = await axios.get('/usuarios/types');
        
         return response
       } catch (error) {

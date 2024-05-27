@@ -72,7 +72,7 @@ export default function LoginPage() {
 
   }
   return (
-    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+    <div className= " m-auto">
 
       <Alert
         alert={alert}
