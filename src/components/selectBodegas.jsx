@@ -18,14 +18,7 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Insumos',
-  'Networking',
-  'Carlitos',
-  'Legrand',
-  'UPS',
-  'Enlaces'
-];
+
 
 function getStyles(name, personName, theme) {
   return {
