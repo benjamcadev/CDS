@@ -6,6 +6,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,9 +20,10 @@ import AutocompleteSearch from './AutocompleteSearch'
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
+import { green, red, blue } from '@mui/material/colors';
 
 
-export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicket }) {
+export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setAlert, idTicket }) {
 
 
     const [bodegasId, setBodegasId] = useState([]);
@@ -33,7 +37,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', idArticulo: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', ubicacion: '', idArticulo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -53,7 +57,15 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
 
         let newArr = [...rows];
         let obj = newArr.find(o => o.id === id);
-        return obj.bodega
+
+        console.log(obj)
+
+        if (obj.bodega == '' && obj.ubicacion == '') {
+            return ''
+        } else {
+            return [obj.bodega, obj.ubicacion].toString()
+        }
+
 
     }
 
@@ -200,27 +212,50 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
                         sx={{ minWidth: 230 }}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
+
                         value={getValueBodega(rows, params.id)}
 
                         renderValue={(value) => {
-                            return bodegas.map((option) => {
-                                if (option.idbodegas == value) {
+                           
+                            const valueArray = value.split(",") //se splitio para sacar un warnign de MUI
+
+                            let bodegaValue = bodegas.map((option) => {
+                                if (option.idbodegas == valueArray[0]) {
                                     return option.nombre
                                 }
                             })
+                            bodegaValue = bodegaValue.filter(function (element) { //ELIMINANDO VALUES undefined DEL ARRAY DEVUELTO EN renderValue
+                                return element !== undefined
+                            })
+
+                            let ubicacionValue = ubicaciones.map((option) => {
+                                if (option.id_ubicacion_bodegas == valueArray[1]) {
+                                    return option.ubicacion
+                                }
+                            })
+
+                            ubicacionValue = ubicacionValue.filter(function (element) { //ELIMINANDO VALUES undefined DEL ARRAY DEVUELTO EN renderValue
+                                return element !== undefined
+                            })
+
+                            return bodegaValue.toString() + ' - ' + ubicacionValue.toString()
+                          
                         }}
                         onChange={(e) => {
+                            let valuesArray = e.target.value.split(",")
                             let newArr = [...rows];
                             let obj = newArr.find(o => o.id === params.id);
-                            obj.bodega = e.target.value
+                            obj.bodega = valuesArray[0]
+                            obj.ubicacion = valuesArray[1]
                             setRows(newArr)
 
                         }}
                     >
-
+                        <MenuItem disabled value=''><em>Selecciona una bodega</em></MenuItem>
                         {bodegasMaterial.map(function (option, key) {
+                          
                             return (
-                                <MenuItem sx={{ minWidth: 150 }} key={key} value={option.bodegas_idbodegas}>{option.nombreBodega} - Cantidad: {option.cantidad} </MenuItem>
+                                <MenuItem sx={{ minWidth: 150 }} key={key} value={[option.bodegas_idbodegas, option.ubicacion_id].toString()}><WarehouseIcon sx={{ color: green[500] }} /> {option.nombreBodega} | <ShoppingCartIcon sx={{ color: blue[500] }} /> {option.cantidad} | <LocationOnIcon sx={{ color: red[500] }} /> {option.nombreUbicacion} </MenuItem>
                             )
                         })}
 
@@ -282,9 +317,9 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
 
     //EN CASO DE VENIR UN NUMERO DE TICKET EN LA BARRA DE DIRECCIONES DESHABILITA LA COLUMNA ACCIONES
     if (idTicket) {
-        columns.splice(5,1)
+        columns.splice(5, 1)
     }
-    
+
 
 
 
@@ -300,7 +335,7 @@ export default function Tabla({ rows, setRows, bodegas, alert, setAlert, idTicke
                 rows={rows}
                 columns={columns}
                 editMode="row"
-               
+
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}

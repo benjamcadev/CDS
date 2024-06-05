@@ -91,6 +91,9 @@ export default function FormularioValeSalida() {
   //STATE PARA TRAER BODEGAS
   const [bodegas, setBodegas] = useState([])
 
+  //STATE PARA TRAER UBICACIONES BODEGA
+  const [ubicaciones, setUbicaciones] = useState([])
+
   //STATE PARA TRAER RESPONSABLES
   const [responsables, setResponsables] = useState([])
 
@@ -147,6 +150,24 @@ export default function FormularioValeSalida() {
     fetchBodegas()
 
   }, [])
+
+  //USE EFFECT PARA TRAER UBICACIONES BODEGAS
+
+  useEffect(() => {
+
+    async function fetchUbicaciones() {
+      try {
+        const response = await axios.get('bodegas/ubicacion/', {withCredentials: true});
+        setUbicaciones(response.data)  
+      } catch (error) {
+        console.error('Hubo un error fetch ubicaciones bodega: ' + error);
+      }
+    }
+
+    fetchUbicaciones()
+
+  }, [])
+
 
    
 
@@ -478,6 +499,7 @@ export default function FormularioValeSalida() {
               rows={rows}
               setRows={setRows}
               bodegas={bodegas}
+              ubicaciones={ubicaciones}
               alert={alert}
               setAlert={setAlert}
               idTicket={idTicket}
