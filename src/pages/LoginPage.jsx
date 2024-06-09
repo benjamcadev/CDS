@@ -58,7 +58,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
 
   useEffect(() => {
 
-    let timer1 = setTimeout(() => setShow(!showDarkMode), delay * 1000);
+    let timer1 = setTimeout(() => setShowDarkMode(!showDarkMode), delay * 1000);
     return () => {
       //clearTimeout(timer1);
     };
@@ -66,7 +66,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
 
   useEffect(() => {
 
-    let timer2 = setInterval(() => setShow(!showDarkMode), 15000);
+    let timer2 = setInterval(() => setShowDarkMode(!showDarkMode), 15000);
 
 
     return () => {
