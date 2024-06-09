@@ -1,7 +1,7 @@
 import axios from './axios'
 
 export const loginRequest = async (user) => {
-    const response = await axios.post('/auth/login', user, {
+    const response = await axios.post('/auth/login/', user, {
         headers: {
             'Content-Type': 'application/json'
         }
