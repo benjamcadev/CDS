@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react'
-import axios from 'axios'
+import axios from '../helpers/axios'
 
 import { loginRequest, verifyTokenRequest } from '../helpers/authRequest'
 import Cookies from 'js-cookie'
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const signup = async (user) => {
-        const response = await axios.post('http://186.64.113.208:3000/auth/register', user, {
+        const response = await axios.post('/auth/register', user, {
             headers: {
                 'Content-Type': 'application/json'
             }
