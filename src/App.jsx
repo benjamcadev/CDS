@@ -11,10 +11,10 @@ import ProtectedRoute from './ProtectedRoute'
 
 function App() {
 
-  const [show, setShow] = useState(true);
+  const [showDarkMode, setShowDarkMode] = useState(true);
 
   return (
-    <div className={`flex w-full h-full transition-all duration-700 ${show ? '' : 'bg-gray-900'}`} >
+    <div className={`flex w-full h-full transition-all duration-700 ${showDarkMode ? '' : 'bg-gray-900'}`} >
       <AuthProvider> {/* el AuthProvider tiene una especie de useState globales de los cuales podemos acceder de las rutas que estan en el  */}
 
         <Sidebar />
@@ -23,7 +23,7 @@ function App() {
         <Routes>
 
 
-          <Route path='/login' element={<LoginPage show={show} setShow={setShow} />} />
+          <Route path='/login' element={<LoginPage showDarkMode={showDarkMode} setShowDarkMode={setShowDarkMode} />} />
           <Route path='/register' element={<RegisterPage />} />
 
           <Route element={<ProtectedRoute />}>

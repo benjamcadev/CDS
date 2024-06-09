@@ -17,7 +17,7 @@ import { useAuth } from '../context/AuthContext'
 //REACT ROUTER
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function LoginPage({show, setShow}) {
+export default function LoginPage({showDarkMode, setShowDarkMode}) {
 
   //NAVEGACION
   let navigate = useNavigate()
@@ -58,7 +58,7 @@ export default function LoginPage({show, setShow}) {
 
   useEffect(() => {
 
-    let timer1 = setTimeout(() => setShow(!show), delay * 1000);
+    let timer1 = setTimeout(() => setShow(!showDarkMode), delay * 1000);
     return () => {
       //clearTimeout(timer1);
     };
@@ -66,14 +66,14 @@ export default function LoginPage({show, setShow}) {
 
   useEffect(() => {
 
-    let timer2 = setInterval(() => setShow(!show), 15000);
+    let timer2 = setInterval(() => setShow(!showDarkMode), 15000);
 
 
     return () => {
       //clearTimeout(timer1);
       clearInterval(timer2)
     };
-  }, [show])
+  }, [showDarkMode])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -88,7 +88,7 @@ export default function LoginPage({show, setShow}) {
     }
 
     if (response.status == 200) {
-      setShow(true)
+      setShowDarkMode(true)
       //response.data
       navigate("/vale-salida/")
     }
@@ -98,7 +98,7 @@ export default function LoginPage({show, setShow}) {
   }
   return (
     <div className="mx-auto my-11">
-      {show ?  '' : <Meteors number={50} />}
+      {showDarkMode ?  '' : <Meteors number={50} />}
      
 
       <Alert
@@ -107,19 +107,19 @@ export default function LoginPage({show, setShow}) {
       />
 
 
-      <div className={`rounded-md py-5 px-5 m-auto transition-all duration-700    ${show ? "bg-white shadow-md " : "shadow-xl bg-gray-900 "} `}>
+      <div className={`rounded-md py-5 px-5 m-auto transition-all duration-700    ${showDarkMode ? "bg-white shadow-md " : "shadow-xl bg-gray-900 "} `}>
         <header className='flex h-20 rounded-md p-4 justify-center  bg-gray-900 '>
-          <div className={` absolute transition-opacity ease-in duration-700 ${show ? "opacity-100" : "opacity-0"}`}  >
+          <div className={` absolute transition-opacity ease-in duration-700 ${showDarkMode ? "opacity-100" : "opacity-0"}`}  >
             <img className=" h-10 w-17 md:h-12 " src={logoPsinet} alt="Your Company" />
           </div>
 
-          <div className={` absolute transition-opacity ease-in duration-700 ${!show ? "opacity-100" : "opacity-0"}`}>
+          <div className={` absolute transition-opacity ease-in duration-700 ${!showDarkMode ? "opacity-100" : "opacity-0"}`}>
             <img className=" h-10 w-17 md:h-12 " src={logoPsinetPlanet} alt="Your Company" />
           </div>
         </header>
         <div className="text-center mt-8 ">
 
-          <h1 className={`text-3xl font-semibold transition-all duration-700 ${show ? 'text-gray-900' : 'text-gray-200'} `}>Inicio Sesion</h1>
+          <h1 className={`text-3xl font-semibold transition-all duration-700 ${showDarkMode ? 'text-gray-900' : 'text-gray-200'} `}>Inicio Sesion</h1>
           <p className="mt-2 text-gray-500">Inicia sesión a continuación para acceder a tu cuenta</p>
         </div>
         
@@ -130,24 +130,24 @@ export default function LoginPage({show, setShow}) {
 
 
            
-            <div className={`mb-5 ${show ? '' : ''}`} >
+            <div className={`mb-5 ${showDarkMode ? '' : ''}`} >
               <TextField
               variant='outlined'
               sx={{
                 // Root class for the input field
                 "& .MuiOutlinedInput-root": {
-                  color: `${show ? '#2e2e2e' : '#fff'}`,
+                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                   fontFamily: "Arial",
                   fontWeight: "bold",
                   // Class for the border around the input field
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: `${show ? '#2e2e2e' : '#fff'}`,
+                    borderColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                     borderWidth: "2px",
                   },
                 },
                 // Class for the label of the input field
                 "& .MuiInputLabel-outlined": {
-                  color: `${show ? '#2e2e2e' : '#fff'}`,
+                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                   fontWeight: "bold",
                 },
               }}
@@ -170,18 +170,18 @@ export default function LoginPage({show, setShow}) {
                sx={{
                 // Root class for the input field
                 "& .MuiOutlinedInput-root": {
-                  color: `${show ? '#2e2e2e' : '#fff'}`,
+                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                   fontFamily: "Arial",
                   fontWeight: "bold",
                   // Class for the border around the input field
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: `${show ? '#2e2e2e' : '#fff'}`,
+                    borderColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                     borderWidth: "2px",
                   },
                 },
                 // Class for the label of the input field
                 "& .MuiInputLabel-outlined": {
-                  color: `${show ? '#2e2e2e' : '#fff'}`,
+                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                   fontWeight: "bold",
                 },
               }}
