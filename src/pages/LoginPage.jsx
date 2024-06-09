@@ -97,7 +97,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
 
   }
   return (
-    <div className="mx-auto my-11">
+    <div className="mx-auto my-9">
       {showDarkMode ?  '' : <Meteors number={50} />}
      
 
@@ -110,16 +110,17 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
       <div className={`rounded-md py-5 px-5 m-auto transition-all duration-700    ${showDarkMode ? "bg-white shadow-md " : "shadow-xl bg-gray-900 "} `}>
         <header className='flex h-20 rounded-md p-4 justify-center  bg-gray-900 '>
           <div className={` absolute transition-opacity ease-in duration-700 ${showDarkMode ? "opacity-100" : "opacity-0"}`}  >
-            <img className=" h-10 w-17 md:h-12 " src={logoPsinet} alt="Your Company" />
+            <img className=" h-11 w-18 md:h-12 " src={logoPsinet} alt="Your Company" />
           </div>
 
           <div className={` absolute transition-opacity ease-in duration-700 ${!showDarkMode ? "opacity-100" : "opacity-0"}`}>
-            <img className=" h-10 w-17 md:h-12 " src={logoPsinetPlanet} alt="Your Company" />
+            <img className=" h-10 w-18 md:h-12 " src={logoPsinetPlanet} alt="Your Company" />
           </div>
         </header>
-        <div className="text-center mt-8 ">
+        <div className="text-center mt-6 ">
 
-          <h1 className={`text-3xl font-semibold transition-all duration-700 ${showDarkMode ? 'text-gray-900' : 'text-gray-200'} `}>Inicio Sesion</h1>
+          <h1 className={`text-2xl font-semibold transition-all duration-700 ${showDarkMode ? 'text-gray-900' : 'text-gray-200'} `}>CDS</h1>
+          <h4 className={` text-sm transition-all duration-700 ${showDarkMode ? 'text-gray-900' : 'text-gray-200'}`}>Control de Stock</h4>
           <p className="mt-2 text-gray-500">Inicia sesión a continuación para acceder a tu cuenta</p>
         </div>
         
