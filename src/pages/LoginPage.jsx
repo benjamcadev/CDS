@@ -88,6 +88,7 @@ export default function LoginPage({show, setShow}) {
     }
 
     if (response.status == 200) {
+      setShow(true)
       //response.data
       navigate("/vale-salida/")
     }
