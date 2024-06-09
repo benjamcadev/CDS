@@ -43,7 +43,7 @@ export default function LoginPage({show, setShow}) {
   const { signin, isAuthenticated, errors } = useAuth()
 
 
-  const delay = 2;
+  const delay = 5;
   
 
 
@@ -66,7 +66,7 @@ export default function LoginPage({show, setShow}) {
 
   useEffect(() => {
 
-    let timer2 = setInterval(() => setShow(!show), 5000);
+    let timer2 = setInterval(() => setShow(!show), 15000);
 
 
     return () => {
