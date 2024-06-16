@@ -12,6 +12,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, awaitS
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
    
+    console.log(datos)
 
     // useEffect(() => {
 
@@ -59,7 +60,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, awaitS
 
                 {/* SI EXISTE UNA FIRMA VA RENDERIZAR UN IMG O CANVAS, EN CASO QUE NO EXISTA FIRMA RENDERIZA COMPONENTE PARA FIRMAR */}
 
-                {awaitSignature & datos.firmaSolicitante != '' & oldSignature.signatureRetira ?
+                {  datos.firmaSolicitante != '' & idTicket  ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaSolicitante} />
 
@@ -103,7 +104,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, awaitS
                     }
                 </p>
 
-                {awaitSignature & datos.firmaBodega != '' & idTicket  ?
+                { datos.firmaBodega != '' & idTicket  ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaBodega} />
 

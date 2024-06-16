@@ -37,20 +37,20 @@ import dayjs from 'dayjs'
 import axios from '../helpers/axios'
 
 //IMPORTAR HELPERS
-import {getBodegas} from '../helpers/getBodegas'
-import {getSignature} from '../helpers/getSignature'
+import { getBodegas } from '../helpers/getBodegas'
+import { getSignature } from '../helpers/getSignature'
 
 export default function FormularioValeSalida() {
 
   let { idTicket } = useParams();
- 
+
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     fechaCierre: '',
     area: '',
     solCodelco: '',
-    
+
     responsableRetira: '',
     responsableRetiraCorreo: '',
     responsableEntrega: '',
@@ -140,8 +140,8 @@ export default function FormularioValeSalida() {
 
     async function fetchBodegas() {
       try {
-        const response = await axios.get('bodegas/', {withCredentials: true});
-        setBodegas(response.data)  
+        const response = await axios.get('bodegas/', { withCredentials: true });
+        setBodegas(response.data)
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);
       }
@@ -157,8 +157,8 @@ export default function FormularioValeSalida() {
 
     async function fetchUbicaciones() {
       try {
-        const response = await axios.get('bodegas/ubicacion/', {withCredentials: true});
-        setUbicaciones(response.data)  
+        const response = await axios.get('bodegas/ubicacion/', { withCredentials: true });
+        setUbicaciones(response.data)
       } catch (error) {
         console.error('Hubo un error fetch ubicaciones bodega: ' + error);
       }
@@ -169,7 +169,7 @@ export default function FormularioValeSalida() {
   }, [])
 
 
-   
+
 
   //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
 
@@ -177,8 +177,8 @@ export default function FormularioValeSalida() {
 
     async function fetchResponsables() {
       try {
-        const response = await axios.get(`/usuarios/${3}`, {withCredentials: true}); //3 ES USUARIOS RESPONSABLES
-        const response2 = await axios.get(`/usuarios/${1}`, {withCredentials: true}); //1 ES USUARIOS ADMIN
+        const response = await axios.get(`/usuarios/${3}`, { withCredentials: true }); //3 ES USUARIOS RESPONSABLES
+        const response2 = await axios.get(`/usuarios/${1}`, { withCredentials: true }); //1 ES USUARIOS ADMIN
         setResponsables(response.data.concat(response2.data))
         setResponsablesBodega(response2.data)
 
@@ -205,22 +205,22 @@ export default function FormularioValeSalida() {
       //Traer ticket de la BD
       let response = ''
       try {
-        response = await axios.get(`/ticket/salida/${idTicket}`, {withCredentials: true});
-       
+        response = await axios.get(`/ticket/salida/${idTicket}`, { withCredentials: true });
+
       } catch (error) {
-  
+
         if (error.response.data) {
           setAlert({ ...alert, estado: true, mensaje: `${error.response.data.message}`, tipo: 'error', titulo: `${error.response.data.title}`, detalle_tipo: '', time: null });
           return
-        }else{ setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null }); return}
-       
+        } else { setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null }); return }
+
       }
 
-     
+
       //Agregar datos al state del ticket
-      const {fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
+      const { fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
       //SACAR LAS BODEGAS
-      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega})
+      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega })
       //ELIMINAMOS BODEGAS DUPLICADAS
       bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index)
 
@@ -230,20 +230,20 @@ export default function FormularioValeSalida() {
       //RECORRER BODEGAS DEL TICKET Y ASOCIAR NOMBRES
       let bodegasNombre = []
       let j = 0
-     
+
       for (let i = 0; i < bodegasBD.length; i++) {
         if (bodegasTicketId[j] === bodegasBD[i].idbodegas) {
           bodegasNombre.push(bodegasBD[i].nombre)
           j++
         }
-        
+
       }
 
       //TRANSFORMAR A BASE 64 LAS FIRMAS
       const signatures = await getSignature(idTicket)
-      
+
       setDatos({
-        
+
         fecha: fecha_creacion,
         area: area_operacion,
         solCodelco: cliente_trabajo,
@@ -254,38 +254,38 @@ export default function FormularioValeSalida() {
         observaciones: observaciones,
         firmaSolicitante: signatures.base64_retira,
         firmaBodega: signatures.base64_entrega
-        
-        
+
+
       })
 
       detalle.map((linea_detalle, key) => {
         linea_detalle.item = key + 1
         linea_detalle.id = key + 1
-    })
+      })
 
       setRows(detalle)
       setAwaitSignature(true)
-     
-          
+
+
     }
 
     if (idTicket !== undefined) {
       fetchTicketSalida(idTicket)
-     
+
     }
 
   }, [])
 
-    useEffect(() => {
+  useEffect(() => {
 
-     //SETEA EN CASO QUE LAS FIRMAS YA ESTAN GUARDADAS, PARA QUE NO SE PUEDA EDITAR Y SOLO SE RENDERIZE UN COMPONENTE DE IMG
-     if (datos.firmaBodega != '' && datos.firmaBodega) {
-      setOldSignature({ signatureBodega: true})
-     
+    //SETEA EN CASO QUE LAS FIRMAS YA ESTAN GUARDADAS, PARA QUE NO SE PUEDA EDITAR Y SOLO SE RENDERIZE UN COMPONENTE DE IMG
+    if (datos.firmaBodega != '' && datos.firmaBodega) {
+      setOldSignature({ signatureBodega: true })
+
     }
-    if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {  
-      setOldSignature({ signatureRetira: true})
-      
+    if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {
+      setOldSignature({ signatureRetira: true })
+
     }
   }, [awaitSignature]);
 
@@ -303,7 +303,7 @@ export default function FormularioValeSalida() {
     e.preventDefault()
     //VALIDAR DATOS VACIOS
     if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.responsableRetira == '' ) { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
@@ -357,12 +357,12 @@ export default function FormularioValeSalida() {
       />
 
       <form className="" onSubmit={handleSubmit}>
-      {idTicket ?  <h1 className="sm:text-2xl md:text-5xl font-bold tracking-tight pb-10 ">Ticket N° {idTicket}</h1> : ''}
-     
+        {idTicket ? <h1 className="sm:text-2xl md:text-5xl font-bold tracking-tight pb-10 ">Ticket N° {idTicket}</h1> : ''}
+
         {/* Inputs */}
 
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-        
+
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Fecha</label>
 
@@ -412,7 +412,7 @@ export default function FormularioValeSalida() {
           </div>
 
 
-        
+
 
 
           <div className="mb-5">
@@ -537,11 +537,16 @@ export default function FormularioValeSalida() {
         </div>
 
 
-        <input
-          type="submit"
-          className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
-          value={'cerrar vale'}
-        />
+        {idTicket ?
+          ''
+          :
+          <input
+            type="submit"
+            className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
+            value={'cerrar vale'}
+          />
+        }
+
 
       </form >
 
