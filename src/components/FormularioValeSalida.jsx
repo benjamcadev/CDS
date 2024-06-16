@@ -50,7 +50,7 @@ export default function FormularioValeSalida() {
     fechaCierre: '',
     area: '',
     solCodelco: '',
-    bodegas: [],
+    
     responsableRetira: '',
     responsableRetiraCorreo: '',
     responsableEntrega: '',
@@ -247,7 +247,7 @@ export default function FormularioValeSalida() {
         fecha: fecha_creacion,
         area: area_operacion,
         solCodelco: cliente_trabajo,
-        bodegas: bodegasNombre,
+        
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,
         ceco: CC,
@@ -305,7 +305,6 @@ export default function FormularioValeSalida() {
     console.log("Validando datos...")
     //VALIDAR DATOS VACIOS
     if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.bodegas.length == 0) { setAlert({ ...alert, estado: true, mensaje: 'Falta seleccionar bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableRetira == '' ) { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
@@ -413,15 +412,7 @@ export default function FormularioValeSalida() {
           </div>
 
 
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="bodega">Bodega</label>
-            <MultipleSelectChipBodega
-              setDatos={setDatos}
-              datos={datos}
-              bodegas={bodegas}
-              idTicket={idTicket}
-            />
-          </div>
+        
 
 
           <div className="mb-5">

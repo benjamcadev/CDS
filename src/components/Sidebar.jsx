@@ -43,11 +43,7 @@ export default function Sidebar() {
       icon: <FaClipboardList />,
       link: "/",
       spacing: true,
-      submenu: true,
-      submenuItems: [
-        { title: "Buscar Materiales" },
-        { title: "Crear Material" },
-      ],
+     
     },
 
     { title: "Reportes", icon: <FaFileInvoice />, link: "/" },
@@ -72,7 +68,7 @@ export default function Sidebar() {
     <>
       {isAuthenticated ?
 
-        <div className={`bg-gray-800 max-h-screen overflow-y-auto no-scrollbar p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20'} h-screen relative  duration-300 rounded-md`}>
+        <div className={`bg-gray-800 max-h-screen overflow-y-auto  p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20 no-scrollbar'} h-screen relative  duration-300 rounded-md`}>
          
           <div className=" inline-flex">
             {open ? <img className='h-8 w-17 duration-500 md:h-12  ' src={logoPsinet} /> : <img className='h-8 w-17 duration-500 md:h-12  ' src={logoPsinetSmall} />}
@@ -121,6 +117,17 @@ export default function Sidebar() {
               </div>
             ))}
           </ul>
+
+          {open ?
+            <div className="mt-4">
+              <p className=" text-gray-400 text-xs font-medium">2024</p>
+              <Link to={"https://github.com/benjamcadev"} className=" text-gray-400 text-xs font-medium">by benjamcadev 👨🏻‍💻</Link>
+            
+            </div>
+            :
+            ''
+          }
+
 
 
         </div> : ''}
