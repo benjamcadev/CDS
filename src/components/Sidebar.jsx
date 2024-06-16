@@ -72,17 +72,20 @@ export default function Sidebar() {
     <>
       {isAuthenticated ?
 
-        <div className={`bg-gray-800 h-screen p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20'} h-screen relative duration-300 rounded-md`}>
-          <FaAngleLeft
-            className={` bg-white text-gray-800 text-3xl rounded-full absolute -right-3 top-9 border border-gray-800 cursor-pointer ${!open && "rotate-180"}`}
-            onClick={() => setOpen(!open)}
-          />
+        <div className={`bg-gray-800 max-h-screen overflow-y-auto no-scrollbar p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20'} h-screen relative  duration-300 rounded-md`}>
+         
           <div className=" inline-flex">
             {open ? <img className='h-8 w-17 duration-500 md:h-12  ' src={logoPsinet} /> : <img className='h-8 w-17 duration-500 md:h-12  ' src={logoPsinetSmall} />}
           </div>
+          
+          <FaAngleLeft
+            className={` bg-white text-gray-800 text-3xl rounded-full absolute -right-0 mr-1  sm:top-20 md:top-24 lg:top-24 border border-gray-800 cursor-pointer ${!open && "rotate-180 right-5 z-50"}`}
+            onClick={() => setOpen(!open)}
+          />
 
           {open ?
             <div>
+              
               <p className=" text-gray-300 text-xs font-medium">Bienvenido !</p>
               <p className=" text-gray-300 font-medium">{user.nombre}</p>
             </div>
@@ -90,9 +93,9 @@ export default function Sidebar() {
             ''
           }
 
-          <ul>
+          <ul className="">
             {Menus.map((menu, index) => (
-              <div key={index}>
+              <div  key={index}>
 
                 <li key={index} className={` text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} `}>
                   <span className="text-2xl block float-left">
