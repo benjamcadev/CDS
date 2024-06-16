@@ -247,7 +247,6 @@ export default function FormularioValeSalida() {
         fecha: fecha_creacion,
         area: area_operacion,
         solCodelco: cliente_trabajo,
-        
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,
         ceco: CC,
@@ -302,7 +301,6 @@ export default function FormularioValeSalida() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log("Validando datos...")
     //VALIDAR DATOS VACIOS
     if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableRetira == '' ) { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
@@ -310,13 +308,15 @@ export default function FormularioValeSalida() {
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-   
-    if (datos.firmaSolicitante == '' ) {
-      setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
-    } else {
+    if (datos.firmaSolicitante == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma de quien retira los materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    // if (datos.firmaSolicitante == '' ) {
+    //   setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
+    // } else {
 
-      enviarDatos()
-    }
+    //   enviarDatos()
+    // }
+
+    enviarDatos()
 
   }
 

@@ -58,8 +58,6 @@ export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setA
         let newArr = [...rows];
         let obj = newArr.find(o => o.id === id);
 
-        console.log(obj)
-
         if (obj.bodega == '' && obj.ubicacion == '') {
             return ''
         } else {
