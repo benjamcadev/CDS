@@ -8,8 +8,8 @@ import TextField from '@mui/material/TextField';
 import Alert from '../components/alertSnackbar'
 import Meteors from '../components/Meteors'
 
-import logoPsinet from '/src/Logo-PSINet.png'
-import logoPsinetPlanet from '/src/Logo-PSInet_planet.png'
+import logoPsinet from '../public/images/Logo-PSINet.png'
+import logoPsinetPlanet from '../public/images/Logo-PSINET_planet.png'
 
 //IMPORTANDO CONTEXT
 import { useAuth } from '../context/AuthContext'
