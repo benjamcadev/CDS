@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+
+// Importando react-router-dom para el enrutamiento y saber la ubicacion de la pagina actual para resaltar el menu
 import { useLocation, Link } from 'react-router-dom';
+
 import { useAuth } from '../context/AuthContext';
 
 // Iconos de react-icons
@@ -63,6 +66,7 @@ export default function Sidebar() {
           )}
           <ul>
             {Menus.map((menu, index) => (
+              // se usa locoation.pathname para saber la ubicacion de la pagina actual y resaltar el menu actual con bg-blue-600 
               <div key={index}>
                 <li className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} ${location.pathname === menu.link ? "bg-blue-600" : ""}`}>
                   <span className="text-2xl block float-left">
