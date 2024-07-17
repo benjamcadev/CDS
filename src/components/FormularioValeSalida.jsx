@@ -11,10 +11,10 @@ import Tabla from './Tabla'
 import Firmas from './Firmas'
 
 //IMPORTAR COMPONENTE DE MULTISELECT BODEGAS
-import MultipleSelectChipBodega from './SelectBodegas'
+//import MultipleSelectChipBodega from './SelectBodegas'
 
 // IMPORTAR COMPONENTE DE ALERT SNACKBAR
-import Alert from './AlertSnackbar'
+import Alert from './alertSnackbar'
 
 // IMPORTAR COMPONENTE DE DIALOG
 import Dialogo from './Dialogo'
