@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar'
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
+import { ArticulosPage } from './pages/ArticulosPage'
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/vale-salida/' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
+            <Route path='/Articulos' element={<ArticulosPage />} />
           </Route>
 
 

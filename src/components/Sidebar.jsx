@@ -41,7 +41,7 @@ export default function Sidebar() {
     {
       title: "Materiales",
       icon: <FaClipboardList />,
-      link: "/",
+      link: "/Articulos",
       spacing: true,
      
     },
