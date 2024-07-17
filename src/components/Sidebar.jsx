@@ -28,10 +28,20 @@ export default function Sidebar() {
   const Menus = [
     { title: "Dashboard", spacing: true, link: "/" },
     { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida" },
-    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada" },
-    { title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
-    { title: "Articulos", icon: <FaClipboardList />, link: "/materiales", spacing: true },
-    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
+
+    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/" },
+    { title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/" },
+
+    {
+      title: "Materiales",
+      icon: <FaClipboardList />,
+      link: "/Articulos",
+      spacing: true,
+     
+    },
+
+    { title: "Reportes", icon: <FaFileInvoice />, link: "/" },
+
     {
       title: "Opciones",
       icon: <FaGear />,
