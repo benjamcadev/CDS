@@ -29,8 +29,8 @@ export default function Sidebar() {
     { title: "Dashboard", spacing: true, link: "/" },
     { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida" },
 
-    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/" },
-    { title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/" },
+    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada" },
+    { title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
 
     {
       title: "Materiales",
@@ -40,12 +40,12 @@ export default function Sidebar() {
      
     },
 
-    { title: "Reportes", icon: <FaFileInvoice />, link: "/" },
+    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
 
     {
       title: "Opciones",
       icon: <FaGear />,
-      link: "/",
+      link: "/temporal",
       spacing: true,
       submenu: true,
       submenuItems: [
@@ -78,21 +78,23 @@ export default function Sidebar() {
             {Menus.map((menu, index) => (
               // se usa locoation.pathname para saber la ubicacion de la pagina actual y resaltar el menu actual con bg-blue-600 
               <div key={index}>
-                <li className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} ${location.pathname === menu.link ? "bg-blue-600" : ""}`}>
-                  <span className="text-2xl block float-left">
-                    {menu.icon ? menu.icon : <FaBars />}
-                  </span>
-                  <span className={`text-base font-medium flex-1 duration-200 ${!open && "hidden"}`}>
-                    <Link to={menu.link} onClick={menu.functionOnClick}>{menu.title}</Link>
-                  </span>
-                  {menu.submenu && open && (
-                    <FaChevronDown className={`${submenuOpen && "rotate-180"} duration-300`} onClick={() => setSubmenuOpen(!submenuOpen)} />
-                  )}
-                </li>
+                <Link to={menu.link} onClick={menu.functionOnClick}>
+                  <li className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} ${location.pathname === menu.link ? "bg-blue-600" : ""}`}>
+                    <span className="text-2xl block float-left">  
+                      {menu.icon ? menu.icon : <FaBars />}
+                    </span>
+                    <span className={`text-base font-medium flex-1 duration-200 ${!open && "hidden"}`}>
+                      {menu.title}
+                    </span>
+                    {menu.submenu && open && (
+                      <FaChevronDown className={`${submenuOpen && "rotate-180"} duration-300`} onClick={() => setSubmenuOpen(!submenuOpen)} />
+                    )}
+                  </li>
+                </Link>
                 {menu.submenu && submenuOpen && open && (
                   <ul>
                     {menu.submenuItems.map((submenuItem, subIndex) => (
-                      <li key={subIndex} className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-gray-600 rounded-md ${location.pathname === submenuItem.link ? "bg-blue-600" : ""}`}>
+                      <li key={subIndex} className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 px-5 hover:bg-gray-600 rounded-md`}>
                         <Link to={submenuItem.link}>{submenuItem.title}</Link>
                       </li>
                     ))}
