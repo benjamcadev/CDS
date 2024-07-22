@@ -1,13 +1,17 @@
 import { TextField } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const CustomTextField = ({ id, label, type = 'text', variant = 'outlined', fullWidth = true, validate, ...props }) => {
-  const [value, setValue] = useState('');
+const CustomTextField = ({ id, label, type = 'text', variant = 'outlined', fullWidth = true, value: initialValue, onChange, ...props }) => {
+  const [value, setValue] = useState(initialValue || '');
+
+  useEffect(() => {
+    setValue(initialValue || '');
+  }, [initialValue]);
 
   const handleChange = (event) => {
-    const newValue = event.target.value;
-    if (!validate || validate(newValue)) {
-      setValue(newValue);
+    setValue(event.target.value);
+    if (onChange) {
+      onChange(event);
     }
   };
 

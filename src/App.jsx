@@ -29,7 +29,7 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<Home />} />
-            <Route path='/vale-salida/' element={<ValeSalida />} />
+            <Route path='/vale-salida' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
             <Route path='/Articulos' element={<ArticulosPage />} />
           </Route>
@@ -47,4 +47,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
