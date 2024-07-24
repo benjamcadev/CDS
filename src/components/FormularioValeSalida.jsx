@@ -241,6 +241,7 @@ export default function FormularioValeSalida() {
 
       //TRANSFORMAR A BASE 64 LAS FIRMAS
       const signatures = await getSignature(idTicket)
+    
 
       setDatos({
 
