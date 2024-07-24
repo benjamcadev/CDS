@@ -27,12 +27,9 @@ export default function MaterialDataGrid() {
     try {
       setLoading(true);
       const data = await getArticulos(currentPage + 1, currentPageSize); // +1 porque la API espera un índice de página basado en 1
-
       const articulosConCantidad = await Promise.all(
         data.articulos.map(async (articulo) => {
-          const cantidadData = await getBodegaMaterial(articulo.idarticulo);
-          const totalCantidad = cantidadData.reduce((sum, item) => sum + item.cantidad, 0);
-          return { ...articulo, cantidad: totalCantidad, id: articulo.idarticulo };
+          return { ...articulo, id: articulo.idarticulo };
         })
       );
 
@@ -57,9 +54,7 @@ export default function MaterialDataGrid() {
   
       const articulosConCantidad = await Promise.all(
         data.map(async (articulo) => {
-          const cantidadData = await getBodegaMaterial(articulo.id);
-          const totalCantidad = cantidadData.reduce((sum, item) => sum + item.cantidad, 0);
-          return { ...articulo, cantidad: totalCantidad, id: articulo.id };
+          return { ...articulo, id: articulo.id };
         })
       );
 
@@ -125,7 +120,6 @@ export default function MaterialDataGrid() {
     { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'center', width: 150, align: 'center' },
     { field: 'unidad_medida', headerName: 'Unidad de Medida', width: 150, align: 'center' },
     { field: 'precio', headerName: 'Precio', headerAlign: 'center', type: 'number', width: 150, align: 'center' },
-    { field: 'Stock', headerName: 'Cantidad', headerAlign: 'center', type: 'number', width: 150, align: 'center' },
     {
       field: 'Detalle',
       headerName: 'Detalle Articulo',
