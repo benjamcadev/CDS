@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomTextField from '../UI/CustomTextField';
 import ButtonMui from '../UI/ButtonMui';
 import axios from '../../helpers/axios';
@@ -12,6 +12,8 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
+import { opcionesUnidadMedida } from '../../helpers/options';
+import { getCategorias } from '../../helpers/getCategories';
 
 
 const style = {
@@ -46,6 +48,19 @@ const CreateModal = ({ name, title, onSave }) => {
     imagen_base64: ImagenNot,
   });
   
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const data = await getCategorias();
+        setCategorias(data);
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+      }
+    };
+    fetchCategorias();
+  }, []);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -78,6 +93,18 @@ const CreateModal = ({ name, title, onSave }) => {
         }
       });
       console.log(response.data);
+      setFormData({
+        nombre: '',
+        sap: '',
+        codigo_interno: '',
+        sku: '',
+        unidad_medida: '',
+        precio: '',
+        cantidad: '',
+        comentario: '',
+        categoria_idcategoria: '',
+        imagen_base64: ImagenNot,
+      });
       handleClose();
       onSave(); // Actualizar la lista de artículos
     } catch (error) {
@@ -93,8 +120,10 @@ const CreateModal = ({ name, title, onSave }) => {
   const opcionesArea = [
     { label: 'GENERICO', value: 'GENERICO', id: 1 },
     { label: 'CABLES DE RED', value: 'CABLES DE RED', id: 2 },
+    {label: 'CCTV', value: 'CCTV', id: 3},
   ];
 
+ 
   return (
     <div>
       <ButtonMui name={name} handleOpen={handleOpen} />
@@ -113,7 +142,7 @@ const CreateModal = ({ name, title, onSave }) => {
         <Fade in={open}>
           <Box sx={style}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography id="transition-modal-title" variant="h5" component="h2">
+              <Typography id="transition-modal-title" sx={{ fontWeight: 'font-bold' }} variant="h5" component="h2">
                 {title}
               </Typography>
               <IconButton onClick={handleClose}>
@@ -175,13 +204,26 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.sku} 
                 onChange={handleChange} 
               />
-              <CustomTextField 
-                id="unidad_medida" 
-                label="Unidad De Medida (Obligatorio)" 
-                variant="outlined" 
-                value={formData.unidad_medida} 
-                onChange={handleChange} 
-              />
+               <FormControl variant="standard" sx={{ m: 0.5, minWidth: 120 }}>
+                <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
+                  <Select
+                    value={formData.unidad_medida}
+                    labelId="unidad_medida"
+                    id='unidad_medida'
+                    
+                    onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
+                    fullWidth
+                  >
+                    <MenuItem value="" disabled >
+                      ---Seleccione---
+                    </MenuItem>
+                    {opcionesUnidadMedida.map((opcion) => (
+                      <MenuItem key={opcion.id} value={opcion.label}>
+                        {opcion.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+              </FormControl>
               <CustomTextField 
                 id="precio" 
                 label="Precio (USD)"  
@@ -198,28 +240,27 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.comentario} 
                 onChange={handleChange} 
               />
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <FormControl variant="standard" sx={{ m: 0.5, minWidth: 120 }}>
                 <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
                   <Select
                     value={formData.categoria_idcategoria}
                     labelId="categoria_idcategoria"
-                    id='categoria_idcategoria'
-                    
+                    id="categoria_idcategoria"
                     onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
                     fullWidth
                   >
-                    <MenuItem value="" disabled >
-                      ---Seleccione---
+                  <MenuItem value="" disabled >
+                    ---Seleccione---
+                  </MenuItem>
+                  {categorias.map((categoria) => (
+                    <MenuItem key={categoria.idcategoria} value={categoria.idcategoria}>
+                      {categoria.nombre}
                     </MenuItem>
-                    {opcionesArea.map((opcion) => (
-                      <MenuItem key={opcion.id} value={opcion.id}>
-                        {opcion.label}
-                      </MenuItem>
-                    ))}
+                  ))}
                   </Select>
               </FormControl>
             </Box>
-            <Box sx={{ mt: 1.5, display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
               <Button fullWidth variant="contained" color="primary" onClick={handleSubmit}>
                 Guardar
               </Button>
