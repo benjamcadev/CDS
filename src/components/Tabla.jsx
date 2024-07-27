@@ -9,17 +9,21 @@ import CancelIcon from '@mui/icons-material/Close';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+
 
 
 //IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
 import AutocompleteSearch from './autocompleteSearch'
 
 
+
+
 //COMPONENTE DE MATERIAL UI DATE TABLE
-import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, } from '@mui/x-data-grid';
+import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell } from '@mui/x-data-grid';
 import { green, red, blue } from '@mui/material/colors';
 
 
@@ -136,14 +140,6 @@ export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setA
         setRowModesModel(newRowModesModel);
     };
 
-    const isEditable = (idTicket) => {
-        if (idTicket != '') {
-            return true
-        } else {
-            return false
-        }
-    }
-
     const columns = [
 
         {
@@ -195,6 +191,12 @@ export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setA
             flex: 0.3,
             minWidth: 130,
             type: 'number',
+            
+            renderCell: (params) => {
+                return (
+                    (params.value <= 0) ? 1 : params.value
+                )
+            }
         },
         {
             field: 'bodega',
