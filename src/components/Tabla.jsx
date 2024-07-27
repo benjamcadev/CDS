@@ -130,6 +130,7 @@ export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setA
     };
 
     const processRowUpdate = (newRow) => {
+        if(newRow.cantidad <= 0) {newRow.cantidad = 1 } 
         const updatedRow = { ...newRow, isNew: false };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
@@ -193,9 +194,11 @@ export default function Tabla({ rows, setRows, bodegas, ubicaciones, alert, setA
             type: 'number',
             
             renderCell: (params) => {
+
                 return (
                     (params.value <= 0) ? 1 : params.value
                 )
+               
             }
         },
         {
