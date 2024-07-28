@@ -5,13 +5,10 @@ import { useParams } from 'react-router-dom'
 
 
 //IMPORTAR COMPONENTE DE TABLA
-import Tabla from './Tabla'
+import TablaEntrada from './TablaEntrada'
 
 //IMPORTAR COMPONENTE DE FIRMA
 import Firmas from './Firmas'
-
-//IMPORTAR COMPONENTE DE MULTISELECT BODEGAS
-//import MultipleSelectChipBodega from './SelectBodegas'
 
 // IMPORTAR COMPONENTE DE ALERT SNACKBAR
 import Alert from './alertSnackbar'
@@ -40,7 +37,7 @@ import axios from '../helpers/axios'
 import { getBodegas } from '../helpers/getBodegas'
 import { getSignature } from '../helpers/getSignature'
 
-export default function FormularioValeSalida() {
+export default function FormularioValeEntrada() {
 
   let { idTicket } = useParams();
 
@@ -49,7 +46,7 @@ export default function FormularioValeSalida() {
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     fechaCierre: '',
     area: '',
-    solCodelco: '',
+    tipoTicket: '',
 
     responsableRetira: '',
     responsableRetiraCorreo: '',
@@ -247,7 +244,7 @@ export default function FormularioValeSalida() {
 
         fecha: fecha_creacion,
         area: area_operacion,
-        solCodelco: cliente_trabajo,
+        tipoTicket: cliente_trabajo,
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,
         ceco: CC,
@@ -401,15 +398,18 @@ export default function FormularioValeSalida() {
           </div>
 
           <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="codelcoSolicitante">Solicitante Codelco</label>
-            <TextField
-              id="codelcoSolicitante"
-              size="normal"
-              fullWidth
-              variant="outlined"
-              value={datos.solCodelco}
-              disabled={datos.solCodelco != '' && idTicket ? true : false}
-              onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoTicket">Tipo Ticket</label>
+            <Autocomplete
+              disablePortal
+              value={datos.tipoTicket}
+              disabled={datos.tipoTicket != '' && idTicket ? true : false}
+              freeSolo
+              id="tipoTicket"
+              options={responsables}
+              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+              onChange={(e, value) => { setDatos({ ...datos, tipoTicket: value.label }) }}
+              renderInput={(params) => <TextField {...params} />}
+            />
           </div>
 
 
@@ -487,7 +487,7 @@ export default function FormularioValeSalida() {
 
         <div className="grid gap-4 mt-10 mb-10 grid-cols-1" >
           <div className="mb-5">
-            <Tabla
+            <TablaEntrada
               rows={rows}
               setRows={setRows}
               bodegas={bodegas}
