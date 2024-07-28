@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import  { useEffect, useState, useRef, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import { getArticulos, searchArticulos } from '../helpers/getArticulos';
-import { getBodegaMaterial } from '../helpers/getBodegas';
+//import { getBodegaMaterial } from '../helpers/getBodegas';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DetailModal from './Modals/Detail.Modal';
 import { Button } from '@mui/material';
@@ -11,6 +11,7 @@ import CreateModal from './Modals/Create.Modals';
 
 
 export default function MaterialDataGrid() {
+
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -22,16 +23,17 @@ export default function MaterialDataGrid() {
   const [selectedArticulo, setSelectedArticulo] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchArticulos = async (currentPage, currentPageSize) => {
     try {
       setLoading(true);
-      const data = await getArticulos(currentPage + 1, currentPageSize); // +1 porque la API espera un índice de página basado en 1
-      const articulosConCantidad = await Promise.all(
-        data.articulos.map(async (articulo) => {
-          return { ...articulo, id: articulo.idarticulo };
-        })
-      );
+      setError(null);
+      const data = await getArticulos(currentPage + 1, currentPageSize);
+      const articulosConCantidad = data.articulos.map((articulo) => ({
+        ...articulo,
+        id: articulo.idarticulo,
+      }));
 
       setArticulos(articulosConCantidad);
       setTotalArticulos(data.total_Articulos);
@@ -44,42 +46,50 @@ export default function MaterialDataGrid() {
 
   const handleSearch = async () => {
     if (!searchValue.trim()) {
+      setIsSearching(false);
       fetchArticulos(paginationModel.page, paginationModel.pageSize);
       return;
     }
-  
+
     try {
       setLoading(true);
+      setError(null);
       const data = await searchArticulos(searchValue);
-  
-      const articulosConCantidad = await Promise.all(
-        data.map(async (articulo) => {
-          return { ...articulo, id: articulo.id };
-        })
+      const articulosConCantidad = data.map((articulo) => ({
+        ...articulo,
+        id: articulo.id,
+      }));
+
+      // Filtrar duplicados
+      const uniqueArticulos = articulosConCantidad.filter(
+        (articulo, index, self) =>
+          index === self.findIndex((t) => t.id === articulo.id)
       );
 
-      // Filtrar duplicados en el frontend si aún se presentan
-      const uniqueArticulos = [];
-      const ids = new Set();
-      for (const articulo of articulosConCantidad) {
-          if (!ids.has(articulo.id)) {
-              ids.add(articulo.id);
-              uniqueArticulos.push(articulo);
-          }
+      if (uniqueArticulos.length === 0) {
+        setIsSearching(false);
+        setSearchValue('');
+        fetchArticulos(paginationModel.page, paginationModel.pageSize);
+      } else {
+        setArticulos(uniqueArticulos);
+        setTotalArticulos(uniqueArticulos.length);
+        setIsSearching(true);
       }
-  
-      setArticulos(uniqueArticulos);
-      setTotalArticulos(data.length);
       setLoading(false);
     } catch (error) {
       setError(error);
       setLoading(false);
     }
-};
+  };
+
 
   useEffect(() => {
-    fetchArticulos(paginationModel.page, paginationModel.pageSize);
-  }, [paginationModel]);
+    if (isSearching) {
+      handleSearch();
+    } else {
+      fetchArticulos(paginationModel.page, paginationModel.pageSize);
+    }
+  }, [paginationModel, isSearching]);
 
   const rowCountRef = useRef(totalArticulos);
 
@@ -100,21 +110,21 @@ export default function MaterialDataGrid() {
     return rowCountRef.current;
   }, [totalArticulos]);
 
-    // Define la función handleSave que se pasará a CreateModal
-    const handleSave = () => {
-      fetchArticulos(paginationModel.page, paginationModel.pageSize);
-    };
+  const handleSave = () => {
+    setPaginationModel({ page: 0, pageSize: paginationModel.pageSize });
+    fetchArticulos(0, paginationModel.pageSize);
+  };
 
-    const handleUpdate = () => {
-      fetchArticulos(paginationModel.page, paginationModel.pageSize);
-    }
+  const handleUpdate = () => {
+    fetchArticulos(paginationModel.page, paginationModel.pageSize);
+  };
 
-    const handleDelete = () => {
-      fetchArticulos(paginationModel.page, paginationModel.pageSize);
-    }
+  const handleDelete = () => {
+    fetchArticulos(paginationModel.page, paginationModel.pageSize);
+  };
 
   const columns = [
-    { field: 'id', headerAlign:'center', headerName: 'ID', align: 'center', width: 85 },
+    { field: 'id', headerAlign: 'center', headerName: 'ID', align: 'center', width: 85 },
     { field: 'Descripcion', headerName: 'Descripción', width: 450 },
     { field: 'Codigo_SAP', headerName: 'SAP', headerAlign: 'center', width: 150, align: 'center' },
     { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'center', width: 150, align: 'center' },
@@ -136,8 +146,6 @@ export default function MaterialDataGrid() {
       ),
     },
   ];
-  
-  if (error) return <p>Error loading materials: {error.message}</p>;
 
   return (
     <Box sx={{ height: 650, width: '100%' }}>
@@ -147,19 +155,29 @@ export default function MaterialDataGrid() {
           onChange={(e) => setSearchValue(e.target.value)}
           onEnter={handleSearch}
         />
-        <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={ handleSave }  />
+        <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />
       </div>
-      <DataGrid
-        rows={articulos}
-        columns={columns}
-        getRowId={(row) => row.id}
-        rowCount={rowCount}
-        loading={loading}
-        paginationModel={paginationModel}
-        paginationMode="server"
-        onPaginationModelChange={setPaginationModel}
-        disableRowSelectionOnClick
-      />
+      {error && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt:3 }}>
+          <p>Material No Existe En la Base de datos</p>
+          <Button sx={{mt:2}} color='primary' variant='contained' onClick={() => fetchArticulos(paginationModel.page, paginationModel.pageSize)}>
+            Recargue la Tabla
+          </Button>
+        </Box>
+      )}
+      {!error && (
+        <DataGrid
+          rows={articulos}
+          columns={columns}
+          getRowId={(row) => row.id}
+          rowCount={rowCount}
+          loading={loading}
+          paginationModel={paginationModel}
+          paginationMode="server"
+          onPaginationModelChange={setPaginationModel}
+          disableRowSelectionOnClick
+        />
+      )}
       {selectedArticulo && (
         <DetailModal
           open={modalOpen}

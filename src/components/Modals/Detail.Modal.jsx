@@ -28,7 +28,7 @@ const DetailModal = ({ open, handleClose, article, onUpdate , onDelete }) => {
     <Modal open={open}>
       <Box sx={ style }>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography id="transition-modal-title" variant="h5" component="h2">
+          <Typography id="transition-modal-title" sx={{ fontWeight: 'font-bold' }} variant="h5" component="h2">
             Detalle del Artículo
           </Typography>
           <IconButton onClick={handleClose}>

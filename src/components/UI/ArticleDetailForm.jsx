@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { TextField, Button, Box, Grid, Typography } from '@mui/material';
+import { TextField, Button, Box, Grid, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import axios from '../../helpers/axios';
 import ImagenNot from '../../public/images/PageNotFound.png';
+import { opcionesUnidadMedida } from '../../helpers/options';
 
 const CustomTextField = ({ label, value, onChange, ...props }) => (
   <TextField
@@ -22,7 +23,6 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
     imagen_base64: ImagenNot,
   });
   const [stockBodegas, setStockBodegas] = useState([]);
-
 
   const getImagenUrl = async (idarticulo) => {
     try {
@@ -46,18 +46,17 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
   useEffect(() => {
     const fetchImageAndStock = async () => {
-      if (article.imagen_url) {
-        const imageBase64 = await getImagenUrl(article.idarticulo);
-        setFormData((prevState) => ({
-          ...prevState,
-          imagen_base64: imageBase64,
-        }));
-      }
-      const stockData = await getStockBodegas(article.idarticulo);
+      const imageBase64 = await getImagenUrl(article.id);
+      setFormData((prevState) => ({
+        ...prevState,
+        imagen_base64: imageBase64,
+      }));
+      const stockData = await getStockBodegas(article.id);
       setStockBodegas(stockData);
     };
     fetchImageAndStock();
   }, [article]);
+
 
   const handleChange = (e) => {
     setFormData({
@@ -68,16 +67,22 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData({ ...formData, imagen_base64: reader.result });
-    };
-    reader.readAsDataURL(file);
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+    if (file && validTypes.includes(file.type)) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, imagen_base64: reader.result });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.');
+    }
   };
 
   const handleUpdate = async () => {
     try {
-      const response = await axios.put('/materiales/update', formData, {
+      await axios.put('/materiales/update', formData, {
         headers: {
           'Content-Type': 'application/json',
           usuarioid: 1, // Reemplaza con el ID de usuario actual
@@ -92,7 +97,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete('/materiales/delete', {
+      await axios.delete('/materiales/delete', {
         headers: {
           'Content-Type': 'application/json',
           usuarioid: 1, // Reemplaza con el ID de usuario actual
@@ -106,10 +111,11 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
     }
   };
 
+
   const validatePositiveNumber = (value) => value >= 0;
 
   return (
-    <Box component="form" sx={{  }}>
+    <Box component="form">
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <img
           src={formData.imagen_base64}
@@ -127,52 +133,71 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           onChange={handleImageUpload}
         />
         <label htmlFor="contained-button-file">
-          <Button fullWidth variant="contained" component="span">
+          <Button 
+            fullWidth 
+            variant="contained" 
+            component="span">
             Subir Nueva Imagen Del Articulo
           </Button>
         </label>
       </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.2, mt: 0.2 }}>
+        <CustomTextField
+          id="Descripcion"
+          label="Nombre Del Articulo"
+          value={formData.Descripcion || ''}
+          onChange={handleChange}
+        />
+        <CustomTextField
+          id="Codigo_SAP"
+          label="SAP"
+          type="number"
+          value={formData.Codigo_SAP || ''}
+          onChange={handleChange}
+        />
+        <CustomTextField
+          id="Codigo_interno"
+          label="Codigo Interno"
+          disabled
+          value={formData.Codigo_interno || ''}
+          onChange={handleChange}
+        />
+        <CustomTextField
+          id="sku"
+          label="SKU"
+          type="number"
+          value={formData.SKU || ''}
+          onChange={handleChange}
+        />
 
-      <CustomTextField
-        id="Descripcion"
-        label="Nombre Del Articulo"
-        value={formData.Descripcion || ''}
-        onChange={handleChange}
+        <FormControl variant="standard" sx={{ m: 0.5, minWidth: 120 }}>
+          <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
+            <Select
+              value={formData.unidad_medida}
+              labelId="unidad_medida"
+              id='unidad_medida'
+              
+              onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
+              fullWidth
+            >
+              <MenuItem value="" disabled >
+                ---Seleccione---
+              </MenuItem>
+              {opcionesUnidadMedida.map((opcion) => (
+                <MenuItem key={opcion.id} value={opcion.label}>
+                  {opcion.label}
+                </MenuItem>
+              ))}
+            </Select>
+        </FormControl>
+        <CustomTextField
+          id="precio"
+          label="Precio"
+          type="number"
+          value={formData.precio || ''}
+          onChange={handleChange}
       />
-      <CustomTextField
-        id="Codigo_SAP"
-        label="SAP"
-        type="number"
-        value={formData.Codigo_SAP || ''}
-        onChange={handleChange}
-      />
-      <CustomTextField
-        id="Codigo_interno"
-        label="Codigo Interno"
-        disabled
-        value={formData.Codigo_interno || ''}
-        onChange={handleChange}
-      />
-      <CustomTextField
-        id="sku"
-        label="SKU"
-        type="number"
-        value={formData.SKU || ''}
-        onChange={handleChange}
-      />
-      <CustomTextField
-        id="unidad_medida"
-        label="Unidad De Medida (CAJA, UNIDAD)"
-        value={formData.unidad_medida || ''}
-        onChange={handleChange}
-      />
-      <CustomTextField
-        id="precio"
-        label="Precio"
-        type="number"
-        value={formData.precio || ''}
-        onChange={handleChange}
-      />
+      </Box>
       <Box sx={{ mt: 0.2 }}>
         <Typography variant="h7" sx={{ fontWeight: 'bold' }}>Stock Por Bodega</Typography>
         {stockBodegas.length > 0 ? (
