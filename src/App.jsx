@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ValeSalida from './pages/ValeSalida'
+import ValeEntrada from './pages/ValeEntrada'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Home from './pages/Home'
@@ -31,6 +32,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/vale-salida' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
+            <Route path='/vale-entrada' element={<ValeEntrada />} />
             <Route path='/Articulos' element={<ArticulosPage />} />
           </Route>
 
