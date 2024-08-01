@@ -1,8 +1,5 @@
-import { useState, useRef, useEffect, useReducer } from 'react'
-import * as React from 'react';
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-
-
 
 //IMPORTAR COMPONENTE DE TABLA
 import TablaEntrada from './TablaEntrada'
@@ -18,7 +15,8 @@ import Dialogo from './Dialogo'
 
 //COMPONENTES DE MATERIAL UI
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import { Autocomplete, Button, TextareaAutosize } from '@mui/material';
+
 
 
 //COMPONENTES MATERIAL UI DATE PICKERS
@@ -31,11 +29,14 @@ import 'dayjs/locale/es'
 import dayjs from 'dayjs'
 
 //LIBRERIA PARA HACER FETCH
+
 import axios from '../helpers/axios'
 
 //IMPORTAR HELPERS
 import { getBodegas } from '../helpers/getBodegas'
 import { getSignature } from '../helpers/getSignature'
+import { Compra, Devolucion, FirmasEntrada } from './Vale-Entrada';
+
 
 export default function FormularioValeEntrada() {
 
@@ -44,21 +45,37 @@ export default function FormularioValeEntrada() {
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    fechaCierre: '',
-    area: '',
     tipoTicket: '',
-
+    tipoCompra:'',
+    numeroDocumento:'',
+    tipoRecepcion:'',
     responsableRetira: '',
     responsableRetiraCorreo: '',
     responsableEntrega: '',
     responsableEntregaCorreo: '',
-    ceco: '',
     descripcion: '',
     observaciones: '',
     firmaSolicitante: '',
     firmaBodega: '',
     detalle: ''
-  })
+  });
+
+  const [compraData, setCompraData] = useState({
+    tipoCompra: '',
+    numeroDocumento: '',
+    tipoRecepcion: '',
+    foto: null,
+    descripcion: ''
+  });
+  
+  const [devolucionData, setDevolucionData] = useState({
+    tipoDevolucion: '',
+    numeroDocumento: ''
+  });
+
+
+  // Estado de los tipos de ticket
+  const [ tiposTicket, setTiposTicket ] = useState([]);
 
   //STATE DE LA TABLA
   const initialRows = [];
@@ -87,7 +104,7 @@ export default function FormularioValeEntrada() {
 
   //STATE PARA TRAER BODEGAS
   const [bodegas, setBodegas] = useState([])
-
+  
   //STATE PARA TRAER UBICACIONES BODEGA
   const [ubicaciones, setUbicaciones] = useState([])
 
@@ -106,30 +123,54 @@ export default function FormularioValeEntrada() {
     signatureRetira: false
   })
 
+  
+  const OpcionesTipoCompra = [
+    { label: 'Guia Despacho', value: 'Guia Despacho', id: 1 },
+    { label: 'Factura', value: 'Factura', id: 2 },
+    { label: 'SEP', value: 'Factura', id: 3 },
+  ];
+
+  const OpcionesTipoRecepcion = [
+    { label: 'BODEGA 6', value: 'BODEGA 6', id: 1 },
+    { label: 'TICA', value: 'TICA', id: 2 },
+  ];
+  
+
+
+  useEffect(() => {
+
+    const fetchTiposTicket = async () => {
+      try {
+        const response = await axios.get('tipo_ticket/');
+        setTiposTicket(response.data);
+        console.log({response})
+      } catch (error) {
+        console.error('Error fetching tipos ticket:', error);
+      }
+    };
+
+    fetchTiposTicket();
+  }, []);
 
 
 
   //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
-    setDatos({ ...datos, detalle: rows })
-  }, [rows])
+    setDatos({ ...datos, detalle: rows });
+  }, [rows]);
 
   //USE EFFECT PARA CAPTURAR RESPUESTA DEL DIALOGO
   useEffect(() => {
     if (dialogo.responseReturn) {
-      console.log("Boton Aceptar")
-      //ENVIAR DATOS CON VALE ABIERTO
-      enviarDatos()
+      enviarDatos();
     }
-  }, [dialogo])
+  }, [dialogo]);
 
   //USE EFFECT PARA CAPTURAR RESPUESTA DEL ALERT
   useEffect(() => {
     if (alert.responseReturn) {
-      //REDIRECIONAR
-
     }
-  }, [alert])
+  }, [alert]);
 
   //USE EFFECT PARA TRAER BODEGAS
 
@@ -148,30 +189,26 @@ export default function FormularioValeEntrada() {
 
   }, [])
 
+  
   //USE EFFECT PARA TRAER UBICACIONES BODEGAS
 
   useEffect(() => {
-
     async function fetchUbicaciones() {
       try {
         const response = await axios.get('bodegas/ubicacion/', { withCredentials: true });
         setUbicaciones(response.data)
+
       } catch (error) {
         console.error('Hubo un error fetch ubicaciones bodega: ' + error);
       }
     }
-
     fetchUbicaciones()
-
   }, [])
-
-
 
 
   //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
 
   useEffect(() => {
-
     async function fetchResponsables() {
       try {
         const response = await axios.get(`/usuarios/${3}`, { withCredentials: true }); //3 ES USUARIOS RESPONSABLES
@@ -183,9 +220,7 @@ export default function FormularioValeEntrada() {
         console.error('Hubo un error fetch usuarios responsables: ' + error);
       }
     }
-
     fetchResponsables()
-
   }, [])
 
   //USE EFFECT PARA DETECTAR SI HAY FIRMA Y GRABAR FECHA DE CIERRE
@@ -197,296 +232,278 @@ export default function FormularioValeEntrada() {
 
   //USEEFFECT PARA CARGAR :id POR PARAMETROS DE URL
   useEffect(() => {
-
-    async function fetchTicketSalida() {
-      //Traer ticket de la BD
-      let response = ''
+    async function fetchTicketEntrada() {
+      let response = '';
       try {
-        response = await axios.get(`/ticket/salida/${idTicket}`, { withCredentials: true });
-
+        response = await axios.get(`/ticket/entrada/${idTicket}`, { withCredentials: true });
       } catch (error) {
-
         if (error.response.data) {
           setAlert({ ...alert, estado: true, mensaje: `${error.response.data.message}`, tipo: 'error', titulo: `${error.response.data.title}`, detalle_tipo: '', time: null });
-          return
-        } else { setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null }); return }
-
+          return;
+        } else {
+          setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
+          return;
+        }
       }
 
+      const { fecha_creacion, cliente_trabajo, solicitante, usuario_idusuario, motivo, observaciones, detalle } = response.data;
+      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega });
+      bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index);
 
-      //Agregar datos al state del ticket
-      const { fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
-      //SACAR LAS BODEGAS
-      let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega })
-      //ELIMINAMOS BODEGAS DUPLICADAS
-      bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index)
+      const bodegasBD = await getBodegas();
 
-      //HELPER PARA OBTENER BODEGAS DESDE LA BD
-      const bodegasBD = await getBodegas()
-
-      //RECORRER BODEGAS DEL TICKET Y ASOCIAR NOMBRES
-      let bodegasNombre = []
-      let j = 0
+      let bodegasNombre = [];
+      let j = 0;
 
       for (let i = 0; i < bodegasBD.length; i++) {
         if (bodegasTicketId[j] === bodegasBD[i].idbodegas) {
-          bodegasNombre.push(bodegasBD[i].nombre)
-          j++
+          bodegasNombre.push(bodegasBD[i].nombre);
+          j++;
         }
-
       }
 
-      //TRANSFORMAR A BASE 64 LAS FIRMAS
-      const signatures = await getSignature(idTicket)
-    
+      const signatures = await getSignature(idTicket);
 
       setDatos({
-
         fecha: fecha_creacion,
-        area: area_operacion,
-        tipoTicket: cliente_trabajo,
-        responsableRetira: solicitante,
-        responsableEntrega: usuario_idusuario,
-        ceco: CC,
-        descripcion: motivo,
+        tipoTicket: tiposTicket,
+        tipoCompra: tipoCompra,
+        numeroDocumento: numeroDocumento,
+        tipoRecepcion: tipoRecepcion,
+        responsablesBodega: responsablesBodega,
+        descripcion: descripcion,
         observaciones: observaciones,
         firmaSolicitante: signatures.base64_retira,
         firmaBodega: signatures.base64_entrega
-
-
-      })
+      });
 
       detalle.map((linea_detalle, key) => {
-        linea_detalle.item = key + 1
-        linea_detalle.id = key + 1
-      })
+        linea_detalle.item = key + 1;
+        linea_detalle.id = key + 1;
+      });
 
-      setRows(detalle)
-      setAwaitSignature(true)
-
-
+      setRows(detalle);
+      setAwaitSignature(true);
     }
 
     if (idTicket !== undefined) {
-      fetchTicketSalida(idTicket)
-
+      fetchTicketEntrada(idTicket);
     }
-
-  }, [])
-
+  }, []);
+  
   useEffect(() => {
-
-    //SETEA EN CASO QUE LAS FIRMAS YA ESTAN GUARDADAS, PARA QUE NO SE PUEDA EDITAR Y SOLO SE RENDERIZE UN COMPONENTE DE IMG
     if (datos.firmaBodega != '' && datos.firmaBodega) {
-      setOldSignature({ signatureBodega: true })
-
+      setOldSignature({ signatureBodega: true });
     }
     if (datos.firmaSolicitante != '' && datos.firmaSolicitante) {
-      setOldSignature({ signatureRetira: true })
-
+      setOldSignature({ signatureRetira: true });
     }
   }, [awaitSignature]);
 
-
-
-  const opcionesArea = [
-    { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
-    { label: 'Area TI PSINET', value: 'Area TI PSINET', id: 2 },
-    { label: 'Sonda', value: 'Sonda', id: 3 },
-    { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
-
-  ];
-
   const handleSubmit = (e) => {
-    e.preventDefault()
-    //VALIDAR DATOS VACIOS
-    if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.detalle == '') { setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.firmaBodega == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma del responsable bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    if (datos.firmaSolicitante == '') { setAlert({ ...alert, estado: true, mensaje: 'No hay firma de quien retira los materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
-    // if (datos.firmaSolicitante == '' ) {
-    //   setDialogo({ ...dialogo, estado: true, mensaje: 'Hemos detectado que no hay firma de quien retira los materiales, ¿Deseas guardar el detalle del vale, y cerrarlo más tarde?', titulo: '¿Desea dejar el vale abierto?', boton1: 'Cancelar', boton2: 'Aceptar' });
-    // } else {
+    e.preventDefault();
+    if (validarDatos()) {
+      enviarDatos();
+    }
+  };
 
-    //   enviarDatos()
-    // }
-
-    enviarDatos()
-
-  }
+  const validarDatos = () => {
+    if (datos.tipoTicket === '') {
+      setAlert({ ...alert, estado: true, mensaje: 'Falta completar el tipo de ticket', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 });
+      return false;
+    }
+    if (datos.responsableEntrega === '') {
+      setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 });
+      return false;
+    }
+    if (datos.detalle.length === 0) {
+      setAlert({ ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 });
+      return false;
+    }
+    return true;
+  };
 
   const enviarDatos = async () => {
-
-    const requestJson = JSON.stringify(datos);
-    //ACTIVAR MENSAJE DE ESPERA
+    const tipoTicketSeleccionado = tiposTicket.find(ticket => ticket.nombre_tipo_ticket === datos.tipoTicket);
+    console.log(tipoTicketSeleccionado)
+    const tipo_ticket_idtipo_ticket = tipoTicketSeleccionado ? tipoTicketSeleccionado.id_tipo_ticket : null;
+  
+    console.log('Tipo Ticket ID:', tipo_ticket_idtipo_ticket); // Verificar el ID del tipo de ticket
+  
+    const requestJson = {
+      ...datos,
+      motivo: datos.descripcion,
+      responsable_bodega: datos.responsableEntrega,
+      foto_documentos: compraData.foto ? compraData.foto.name : '',
+      tipo_ticket_idtipo_ticket: tipo_ticket_idtipo_ticket,
+      usuario_idusuario: 1  // Asegúrate de que estás enviando el ID del usuario correcto
+    };
+  
+    // Activar mensaje de espera
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
-    //ENVIAR DATOS EN ENDPOINT
-    const response = await axios.post('/ticket/salida/', requestJson, {
+  
+    // Enviar datos en endpoint
+    const response = await axios.post('/ticket/entrada/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
       },
       withCredentials: true
     }).catch((error) => {
       setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
-
-    })
-
-    if (response.status == 200) {
+    });
+  
+    if (response.status === 200) {
       setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null, value: response.data.idTicket });
     }
+  };
 
-  }
-
-  return (
+  
+   return (
     <div className="bg-white shadow-md rounded-md py-5 px-5 ">
-
-      <Alert
-        alert={alert}
-        setAlert={setAlert}
-      />
-
-      <Dialogo
-        dialogo={dialogo}
-        setDialogo={setDialogo}
-
-      />
+      <Alert alert={alert} setAlert={setAlert} />
+      <Dialogo dialogo={dialogo} setDialogo={setDialogo} />
 
       <form className="" onSubmit={handleSubmit}>
         {idTicket ? <h1 className="sm:text-2xl md:text-5xl font-bold tracking-tight pb-10 ">Ticket N° {idTicket}</h1> : ''}
 
-        {/* Inputs */}
-
         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2">
-
           <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Fechaxx</label>
-
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale="es"
-            >
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Fecha Entrada</label>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
               <DatePicker
                 className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
                 defaultValue={dayjs()}
                 value={dayjs(datos.fecha)}
-                disabled={datos.fecha != '' && idTicket ? true : false}
+                disabled={datos.fecha !== '' && idTicket ? true : false}
                 id="fecha"
                 onChange={(newValue) => setDatos({ ...datos, fecha: dayjs(newValue).format('YYYY-MM-DD HH:mm:ss') })}
-
               />
             </LocalizationProvider>
-
-          </div>
-
-
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Area Solicitante</label>
-            <Autocomplete
-              disablePortal
-              value={datos.area}
-              disabled={datos.area != '' && idTicket ? true : false}
-              freeSolo
-              id="area"
-              options={opcionesArea}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, area: e.target.value })}
-              renderInput={(params) => <TextField {...params} />}
-            />
           </div>
 
           <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoTicket">Tipo Ticket</label>
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoTicket">Tipo de Ticket</label>
             <Autocomplete
               disablePortal
               value={datos.tipoTicket}
-              disabled={datos.tipoTicket != '' && idTicket ? true : false}
               freeSolo
               id="tipoTicket"
-              options={responsables}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onChange={(e, value) => { setDatos({ ...datos, tipoTicket: value.label }) }}
+              options={tiposTicket.map((tipo) => tipo.nombre_tipo_ticket)}
+              onChange={(e, value) => setDatos({ ...datos, tipoTicket: value })}
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
 
+          {/*{datos.tipoTicket === 'Compra' && (
+            <Compra compraData={compraData} setCompraData={setCompraData} />
+          )} */}
 
+          {datos.tipoTicket === 'Compra' && (
 
+            <>
+              <div className="mb-5">
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoCompra">Tipo de Compra</label>
+                <Autocomplete
+                  disablePortal
+                  value={datos.tipoCompra}
+                  freeSolo
+                  id="tipoCompra"
+                  options={OpcionesTipoCompra}
+                  isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+                  onBlur={(e) => setDatos({ ...datos, tipoCompra: e.target.value })}
+                  renderInput={(params) => <TextField {...params} />} 
+                />
+              </div>
+             
+              <div className="mb-5">
+                 <label className="block text-gray-700 uppercase font-bold" htmlFor="numeroDocumento">N° Documento</label>
+                   <TextField
+                    id="numeroDocumento"
+                    size="normal"
+                    value={datos.numeroDocumento}
+                    type='number'
+                    fullWidth
+                    onChange={(e) => setDatos({ ...datos, numeroDocumento: e.target.value })} 
+                  />
+              </div>
 
+               <div className="mb-5">
+                 <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoRecepcion">Tipo de Recepción</label>
+                  <Autocomplete
+                    disablePortal
+                    value={datos.tipoRecepcion}
+                    freeSolo
+                    id="tipoRecepcion"
+                    options={OpcionesTipoRecepcion}
+                    isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+                    onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
+                    renderInput={(params) => <TextField {...params} />} 
+                  />
+               </div>
+               
+               <div className="mb-5">
+                 <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
+                 <input
+                   accept="image/*"
+                   id="contained-button-file"
+                   multiple type="file"
+                   style={{ display: 'none' }} />
+                 <label
+                   htmlFor="contained-button-file">
+                   <Button
+                     fullWidth
+                     variant="contained"
+                     component="span">
+                     Subir Imagen Del Documento
+                   </Button>
+                 </label>
+               </div>
+               
+               <div  className="mb-5">
+                 <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">motivo</label>
+                  <TextField
+                    id="descripcion"
+                    size="normal"
+                    fullWidth
+                    multiline
+                    value={datos.descripcion}
 
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
-            <Autocomplete
-              disablePortal
-              value={datos.responsableRetira}
-              disabled={datos.responsableRetira != '' && idTicket ? true : false}
-              freeSolo
-              id="responsable"
-              options={responsables}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onChange={(e, value) => { setDatos({ ...datos, responsableRetira: value.label, responsableRetiraCorreo: value.correo }) }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </div>
+                    onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })} 
+                  />
+                </div>
 
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable Bodega</label>
-            <Autocomplete
-              disablePortal
-              freeSolo
-              value={
-                responsables.map(function (responsable) {
-                  if (responsable.id === datos.responsableEntrega) {
-                    return responsable.label
-                  }
+                <div className="mb-5">
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
+                  <Autocomplete
+                    disablePortal
+                    freeSolo
+                    value={
+                      responsables.map(function (responsable) {
+                        if (responsable.id === datos.responsableEntrega) {
+                          return responsable.label
+                        }
+                      }).join('')
+                    }
+                    disabled={datos.responsableEntrega !== '' && idTicket ? true : false}
+                    id="responsableBodega"
+                    options={responsablesBodega}
+                    isOptionEqualToValue={(option, value) => option.id === value.nombre}
+                    onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
+                
+              
+            </>
+          )}
 
-                }).join('')}
-              disabled={datos.responsableEntrega != '' && idTicket ? true : false}
-              id="responsableBodega"
-              options={responsablesBodega}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.id, responsableEntregaCorreo: value.correo }) }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </div>
-
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="codelcoSolicitante">Centro de Costos</label>
-            <TextField
-              id="ceco"
-              size="normal"
-              value={datos.ceco}
-              disabled={datos.ceco != '' && idTicket ? true : false}
-              fullWidth
-              variant="outlined"
-              onChange={(e) => setDatos({ ...datos, ceco: e.target.value })} />
-          </div>
+          {datos.tipoTicket === 'Devolucion' && (
+            <Devolucion devolucionData={devolucionData} setDevolucionData={setDevolucionData} />
+          )}
 
         </div>
-
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
-
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">Descripcion del Trabajo</label>
-            <TextField
-              id="descripcion"
-              size="normal"
-              value={datos.descripcion}
-              disabled={datos.descripcion != '' && idTicket ? true : false}
-              fullWidth
-              multiline
-              onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
-            />
-          </div>
-
-        </div>
-
-        {/* Tabla */}
-
-        <div className="grid gap-4 mt-10 mb-10 grid-cols-1" >
-          <div className="mb-5">
+        <div className="grid gap-4 mt-4 mb-10 grid-cols-1">
+          <div className="mb-4">
             <TablaEntrada
               rows={rows}
               setRows={setRows}
@@ -495,38 +512,11 @@ export default function FormularioValeEntrada() {
               alert={alert}
               setAlert={setAlert}
               idTicket={idTicket}
-
             />
           </div>
         </div>
-
-
-        {/* Observaciones */}
-
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
-
-          <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="observaciones">Observaciones</label>
-            <TextField
-              id="observaciones"
-              size="normal"
-              fullWidth
-              multiline
-              onChange={(e) => setDatos({ ...datos, observaciones: e.target.value })}
-              value={datos.observaciones}
-              disabled={datos.observaciones != '' && idTicket ? true : false}
-            />
-          </div>
-
-        </div>
-
-
-        {/* Firmas */}
-
-
-
-        <div className="grid gap-4 mt-10 " >
-          <Firmas
+        <div className="grid gap-4 mt-10">
+          <FirmasEntrada
             awaitSignature={awaitSignature}
             oldSignature={oldSignature}
             setOldSignature={setOldSignature}
@@ -536,8 +526,6 @@ export default function FormularioValeEntrada() {
             idTicket={idTicket}
           />
         </div>
-
-
         {idTicket ?
           ''
           :
@@ -547,11 +535,7 @@ export default function FormularioValeEntrada() {
             value={'cerrar vale'}
           />
         }
-
-
-      </form >
-
-
-    </div >
-  )
+      </form>
+    </div>
+  );
 }

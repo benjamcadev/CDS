@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 
 //IMPORTANDO ESTILOS MATERIAL UI
 import AddIcon from '@mui/icons-material/Add';
@@ -14,34 +14,30 @@ import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-
-
 //IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
 import AutocompleteSearch from './autocompleteSearch'
-
-
-
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell } from '@mui/x-data-grid';
 import { green, red, blue } from '@mui/material/colors';
+import { Autocomplete, TextField } from '@mui/material';
 
 
 export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, alert, setAlert, idTicket }) {
 
-
     const [bodegasId, setBodegasId] = useState([]);
     const [bodegasMaterial, setBodegasMaterial] = useState([])
-
 
     function EditToolbar(props) {
         const { setRows, setRowModesModel } = props;
 
 
-
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', ubicacion: '', idArticulo: '', isNew: true }]);
+            setRows((oldRows) => [
+                ...oldRows,
+                { id, item: id, unidad: '', descripcion: '', cantidad: '', bodega: '', ubicacion: '', reserva: '', idArticulo: '', isNew: true },
+            ]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -68,19 +64,11 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             return [obj.bodega, obj.ubicacion].toString()
         }
 
-
     }
-
-
 
     //-------------------------------- DATA GRID  -------------------------------------//
 
-
-
-
-
-    const [rowModesModel, setRowModesModel] = React.useState({});
-
+    const [rowModesModel, setRowModesModel] = useState({});
 
     const getLastId = () => {
 
@@ -91,8 +79,6 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
         }
         return lastId + 1
     }
-
-
 
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -106,16 +92,11 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
 
     const handleSaveClick = (id) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-
-
     };
 
     const handleDeleteClick = (id) => () => {
         setRows(rows.filter((row) => row.id !== id));
     };
-
-
-
 
     const handleCancelClick = (id) => () => {
         setRowModesModel({
@@ -154,17 +135,18 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
         {
             field: 'unidad',
             headerName: 'Unidad',
-            headerAlign: 'left',
+            headerAlign: 'center',
             editable: true,
             flex: 0.4,
             minWidth: 120,
             type: 'singleSelect',
             valueOptions: ["Unidad", "Paquete"],
         },
+
         {
             field: 'descripcion',
             headerName: 'Descripcion',
-            headerAlign: 'left',
+            headerAlign: 'center',
             flex: 1,
             minWidth: 200,
             renderCell: (params) => {
@@ -187,12 +169,11 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
         {
             field: 'cantidad',
             headerName: 'Cantidad',
-            headerAlign: 'left',
+            headerAlign: 'center',
             editable: true,
             flex: 0.3,
             minWidth: 130,
             type: 'number',
-            
             renderCell: (params) => {
 
                 return (
@@ -200,74 +181,71 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
                 )
                
             }
+            
         },
         {
             field: 'bodega',
             headerName: 'Bodega',
-            headerAlign: 'left',
+            headerAlign: 'center',
             flex: 0.5,
-            minWidth: 150,
-
+            minWidth: 190,
             renderCell: (params) => {
                 return (
-
-                    <Select
-                        sx={{ minWidth: 230 }}
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-
-                        value={getValueBodega(rows, params.id)}
-
-                        renderValue={(value) => {
-                           
-                            const valueArray = value.split(",") //se splitio para sacar un warnign de MUI
-
-                            let bodegaValue = bodegas.map((option) => {
-                                if (option.idbodegas == valueArray[0]) {
-                                    return option.nombre
-                                }
-                            })
-                            bodegaValue = bodegaValue.filter(function (element) { //ELIMINANDO VALUES undefined DEL ARRAY DEVUELTO EN renderValue
-                                return element !== undefined
-                            })
-
-                            let ubicacionValue = ubicaciones.map((option) => {
-                                if (option.id_ubicacion_bodegas == valueArray[1]) {
-                                    return option.ubicacion
-                                }
-                            })
-
-                            ubicacionValue = ubicacionValue.filter(function (element) { //ELIMINANDO VALUES undefined DEL ARRAY DEVUELTO EN renderValue
-                                return element !== undefined
-                            })
-
-                            return bodegaValue.toString() + ' - ' + ubicacionValue.toString()
-                          
-                        }}
-                        onChange={(e) => {
-                            let valuesArray = e.target.value.split(",")
+                    <Autocomplete
+                        fullWidth
+                        options={bodegas}
+                        getOptionLabel={(option) => option.nombre || ''}
+                        value={bodegas.find(bodega => bodega.idbodegas === params.row.bodega) || null}
+                        onChange={(event, newValue) => {
                             let newArr = [...rows];
                             let obj = newArr.find(o => o.id === params.id);
-                            obj.bodega = valuesArray[0]
-                            obj.ubicacion = valuesArray[1]
-                            setRows(newArr)
-
+                            obj.bodega = newValue ? newValue.idbodegas : '';
+                            setRows(newArr);
                         }}
-                    >
-                        <MenuItem disabled value=''><em>Selecciona una bodega</em></MenuItem>
-                        {bodegasMaterial.map(function (option, key) {
-                          
-                            return (
-                                <MenuItem sx={{ minWidth: 150 }} key={key} value={[option.bodegas_idbodegas, option.ubicacion_id].toString()}><WarehouseIcon sx={{ color: green[500] }} /> {option.nombreBodega} | <ShoppingCartIcon sx={{ color: blue[500] }} /> {option.cantidad} | <LocationOnIcon sx={{ color: red[500] }} /> {option.nombreUbicacion} </MenuItem>
-                            )
-                        })}
-
-
-                    </Select>
-
-
-                )
+                        renderInput={(params) => <TextField {...params} label="Selecciona una bodega" variant="outlined" />}
+                        isOptionEqualToValue={(option, value) => option.idbodegas === value.idbodegas}
+                    />
+                );
             },
+        },
+        {
+            field: 'ubicacion',
+            headerName: 'Ubicacion',
+            headerAlign: 'center',
+            flex: 0.5,
+            minWidth: 190,
+        
+            renderCell: (cellParams) => {
+                return (
+                    <Autocomplete
+                        fullWidth
+                        options={ubicaciones}
+                        getOptionLabel={(option) => option.ubicacion || 'No ubicacion'}
+                        value={ubicaciones.find((ubicacion) => ubicacion.id_ubicacion_bodegas === cellParams.row.ubicacion) || null}
+                        onChange={(event, newValue) => {
+                            if (newValue) {
+                                let newArr = [...rows];
+                                let obj = newArr.find((o) => o.id === cellParams.id);
+                                if (obj) {
+                                    obj.ubicacion = newValue.id_ubicacion_bodegas;
+                                    setRows(newArr);
+                                }
+                            }
+                        }}
+                        renderInput={(inputParams) => <TextField {...inputParams} label="Selecciona una ubicacion" variant="outlined" />}
+                        isOptionEqualToValue={(option, value) => option.id_ubicacion_bodegas === value.id_ubicacion_bodegas}
+                    />
+                );
+            },
+        },
+        {
+            field: 'reserva',
+            headerName: 'Reserva/OC',
+            headerAlign: 'center',
+            editable: true,
+            flex: 0.4,
+            minWidth: 120,
+            type: 'number',
         },
         {
             field: 'actions',
@@ -323,16 +301,11 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
         columns.splice(5, 1)
     }
 
-
-
-
-
     // -------------------------------- FIN DATA GRID   ---------------------------------//
-
 
     return (
         <div className='' style={{ height: 600, width: "100%" }}>
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado de Materiales Entrada</label>
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado De Materiales Entrada</label>
 
             <DataGrid
                 rows={rows}
