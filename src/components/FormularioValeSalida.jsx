@@ -413,9 +413,6 @@ export default function FormularioValeSalida() {
           </div>
 
 
-
-
-
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
             <Autocomplete

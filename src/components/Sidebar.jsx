@@ -30,7 +30,7 @@ export default function Sidebar() {
     { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida" },
 
     { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada" },
-    { title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
+    //{ title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
 
     {
       title: "Materiales",
@@ -40,7 +40,7 @@ export default function Sidebar() {
      
     },
 
-    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
+    //{ title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
 
     {
       title: "Opciones",
@@ -60,7 +60,7 @@ export default function Sidebar() {
   return (
     <>
       {isAuthenticated ? (
-        <div className={`bg-gray-800 max-h-screen overflow-y-auto p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20 no-scrollbar'} h-screen relative duration-300 rounded-md`}>
+        <div  style={{ height: '190vh' }}className={`bg-gray-800 h-full flex flex-col  overflow-y-auto p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
           <div className="inline-flex">
             {open ? <img className='h-8 w-17 duration-500 md:h-12' src={logoPsinet} /> : <img className='h-8 w-17 duration-500 md:h-12' src={logoPsinetSmall} />}
           </div>
@@ -74,7 +74,7 @@ export default function Sidebar() {
               <p className="text-gray-300 font-medium">{user.nombre}</p>
             </div>
           )}
-          <ul>
+          <ul className="mt-8">
             {Menus.map((menu, index) => (
               // se usa locoation.pathname para saber la ubicacion de la pagina actual y resaltar el menu actual con bg-blue-600 
               <div key={index}>
