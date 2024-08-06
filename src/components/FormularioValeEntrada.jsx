@@ -96,7 +96,7 @@ export default function FormularioValeEntrada() {
 
   useEffect(() => {
     if (alert.responseReturn) {
-      limpiarCampos();
+      //limpiarCampos();
     }
   }, [alert]);
 
@@ -266,7 +266,7 @@ export default function FormularioValeEntrada() {
     }
   };
 
-  const limpiarCampos = () => {
+ {/*  const limpiarCampos = () => {
     setDatos({
         fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         tipoTicket: 'Compra',
@@ -294,6 +294,7 @@ export default function FormularioValeEntrada() {
         value: ''
     });
   };
+  */}
   
 
   return (
@@ -301,6 +302,9 @@ export default function FormularioValeEntrada() {
       <Alert
         alert={alert}
         setAlert={setAlert}
+        setdatos={setDatos}
+        setRows={setRows}
+      
       />
       <Dialogo dialogo={dialogo} setDialogo={setDialogo} />
 

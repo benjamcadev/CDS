@@ -4,9 +4,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
+import dayjs from 'dayjs';
 
-export const alertSnackbarEntrada = ({ alert, setAlert }) => {
+export const alertSnackbarEntrada = ({ alert, setAlert, setdatos, setRows }) => {
     let navigate = useNavigate();
+    
+    const initialRows = [];
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -15,6 +18,7 @@ export const alertSnackbarEntrada = ({ alert, setAlert }) => {
 
         setAlert({ ...alert, estado: false });
         if (alert.detalle_tipo === 'success_ticket') {
+            console.log("Exito")
             //navigate("/vale-entrada");
             window.location.href = "/vale-entrada"; 
         }
@@ -25,6 +29,36 @@ export const alertSnackbarEntrada = ({ alert, setAlert }) => {
             setAlert({ ...alert, estado: false, responseReturn: true });
             window.scrollTo({ top: 0, behavior: 'smooth' });
             navigate("/vale-entrada");
+
+            setdatos({
+                fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                tipoTicket: '',
+                tipoCompra: '',
+                numeroDocumento: '',
+                tipoRecepcion: '',
+                responsableRetira: '',
+                responsableRetiraCorreo: '',
+                responsableEntrega: '',
+                responsableEntregaCorreo: '',
+                descripcion: '',
+                observaciones: '',
+                firmaSolicitante: '',
+                firmaBodega: '',
+                detalle: ''
+            });
+            setRows(initialRows);
+            setAlert({
+                estado: false,
+                mensaje: '',
+                titulo: '',
+                detalle_tipo: '',
+                time: null,
+                responseReturn: false,
+                value: ''
+            });
+            
+
+            //window.location.href = "/vale-entrada"; 
         }
     };
 
