@@ -8,10 +8,14 @@ const CustomTextField = ({ id, label, type = 'text', variant = 'outlined', fullW
     setValue(initialValue || '');
   }, [initialValue]);
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-    if (onChange) {
-      onChange(event);
+  const handleChange = (e) => {
+    if (type === "number") {
+      const newValue = e.target.value;
+      if (newValue === "" || (Number(newValue) >= 0 && Number.isInteger(Number(newValue)))) {
+        onChange(e);
+      }
+    } else {
+      onChange(e);
     }
   };
 

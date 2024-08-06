@@ -19,21 +19,14 @@ export default function alertSnackbar({ alert, setAlert }) {
     };
 
     const handleAceptar = () => {
-        console.log('Tipo de Ticket:', datos.tipoTicket)
         //RE DIRECCIONAR AL TICKET EN LA BARRA DE DIRECCIONES
-        if (alert.detalle_tipo === 'success_ticket') { 
+        if (alert.detalle_tipo == 'success_ticket') { 
             setAlert({ ...alert, estado: false, responseReturn: true }); 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-            if (datos.tipoTicket === 'Compra') {
-                navigate("/vale-entrada/" + alert.value);
-            } else {
-                navigate("/vale-salida/" + alert.value);
-            }
-        } else {
-            // Otras acciones si no es un success_ticket
-        }
-    };
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            navigate("/vale-salida/"+alert.value)  }
+       
+    }
+
 
     return (
         <div className="">

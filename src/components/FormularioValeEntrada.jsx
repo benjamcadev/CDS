@@ -1,54 +1,30 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-
-//IMPORTAR COMPONENTE DE TABLA
-import TablaEntrada from './TablaEntrada'
-
-//IMPORTAR COMPONENTE DE FIRMA
-import Firmas from './Firmas'
-
-// IMPORTAR COMPONENTE DE ALERT SNACKBAR
-import Alert from './alertSnackbar'
-
-// IMPORTAR COMPONENTE DE DIALOG
-import Dialogo from './Dialogo'
-
-//COMPONENTES DE MATERIAL UI
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import TablaEntrada from './TablaEntrada';
+import Firmas from './Firmas';
+import { alertSnackbarEntrada as Alert } from './Vale-Entrada/alertSnackbarEntrada';
+import Dialogo from './Dialogo';
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Button, TextareaAutosize } from '@mui/material';
-
-
-
-//COMPONENTES MATERIAL UI DATE PICKERS
+import { Autocomplete, Button } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import 'dayjs/locale/es'
-
-//LIBRERIA PARA TRABAJAR FECHAS
-import dayjs from 'dayjs'
-
-//LIBRERIA PARA HACER FETCH
-
-import axios from '../helpers/axios'
-
-//IMPORTAR HELPERS
-import { getBodegas } from '../helpers/getBodegas'
-import { getSignature } from '../helpers/getSignature'
+import 'dayjs/locale/es';
+import dayjs from 'dayjs';
+import axios from '../helpers/axios';
+import { getBodegas } from '../helpers/getBodegas';
+import { getSignature } from '../helpers/getSignature';
 import { Compra, Devolucion, FirmasEntrada } from './Vale-Entrada';
 
-
 export default function FormularioValeEntrada() {
-
   let { idTicket } = useParams();
-
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     tipoTicket: '',
-    tipoCompra:'',
-    numeroDocumento:'',
-    tipoRecepcion:'',
+    tipoCompra: '',
+    numeroDocumento: '',
+    tipoRecepcion: '',
     responsableRetira: '',
     responsableRetiraCorreo: '',
     responsableEntrega: '',
@@ -67,21 +43,15 @@ export default function FormularioValeEntrada() {
     foto: null,
     descripcion: ''
   });
-  
+
   const [devolucionData, setDevolucionData] = useState({
     tipoDevolucion: '',
     numeroDocumento: ''
   });
 
-
-  // Estado de los tipos de ticket
-  const [ tiposTicket, setTiposTicket ] = useState([]);
-
-  //STATE DE LA TABLA
+  const [tiposTicket, setTiposTicket] = useState([]);
   const initialRows = [];
   const [rows, setRows] = useState(initialRows);
-
-  //STATE DE ALERT SNACKBAR
   const [alert, setAlert] = useState({
     estado: false,
     mensaje: 'Mensaje de prueba',
@@ -92,7 +62,6 @@ export default function FormularioValeEntrada() {
     value: ''
   });
 
-  //STATE DE DIALOG
   const [dialogo, setDialogo] = useState({
     estado: false,
     mensaje: 'Mensaje de prueba',
@@ -102,28 +71,16 @@ export default function FormularioValeEntrada() {
     responseReturn: false
   });
 
-  //STATE PARA TRAER BODEGAS
-  const [bodegas, setBodegas] = useState([])
-  
-  //STATE PARA TRAER UBICACIONES BODEGA
-  const [ubicaciones, setUbicaciones] = useState([])
-
-  //STATE PARA TRAER RESPONSABLES
-  const [responsables, setResponsables] = useState([])
-
-  //STATE PARA TRAER RESPONSABLES DE BODEGA
-  const [responsablesBodega, setResponsablesBodega] = useState([])
-
-  //STATE PARA ESPERAR CARGA DE FIRMAS
-  const [awaitSignature, setAwaitSignature] = useState(false)
-
-  //STATE PARA DECIRLE AL SISTEMA QUE ES UNA FIRMA QUE YA ESTA GUARDADA
+  const [bodegas, setBodegas] = useState([]);
+  const [ubicaciones, setUbicaciones] = useState([]);
+  const [responsables, setResponsables] = useState([]);
+  const [responsablesBodega, setResponsablesBodega] = useState([]);
+  const [awaitSignature, setAwaitSignature] = useState(false);
   const [oldSignature, setOldSignature] = useState({
     signatureBodega: false,
     signatureRetira: false
-  })
+  });
 
-  
   const OpcionesTipoCompra = [
     { label: 'Guia Despacho', value: 'Guia Despacho', id: 1 },
     { label: 'Factura', value: 'Factura', id: 2 },
@@ -134,103 +91,80 @@ export default function FormularioValeEntrada() {
     { label: 'BODEGA 6', value: 'BODEGA 6', id: 1 },
     { label: 'TICA', value: 'TICA', id: 2 },
   ];
-  
-
 
   useEffect(() => {
-
     const fetchTiposTicket = async () => {
       try {
         const response = await axios.get('tipo_ticket/');
         setTiposTicket(response.data);
-        console.log({response})
+        console.log({ response });
       } catch (error) {
         console.error('Error fetching tipos ticket:', error);
       }
     };
-
     fetchTiposTicket();
   }, []);
 
-
-
-  //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
   useEffect(() => {
     setDatos({ ...datos, detalle: rows });
   }, [rows]);
 
-  //USE EFFECT PARA CAPTURAR RESPUESTA DEL DIALOGO
   useEffect(() => {
     if (dialogo.responseReturn) {
       enviarDatos();
     }
   }, [dialogo]);
 
-  //USE EFFECT PARA CAPTURAR RESPUESTA DEL ALERT
   useEffect(() => {
     if (alert.responseReturn) {
+      limpiarCampos();
     }
   }, [alert]);
 
-  //USE EFFECT PARA TRAER BODEGAS
-
   useEffect(() => {
-
     async function fetchBodegas() {
       try {
         const response = await axios.get('bodegas/', { withCredentials: true });
-        setBodegas(response.data)
+        setBodegas(response.data);
       } catch (error) {
         console.error('Hubo un error fetch bodegas: ' + error);
       }
     }
-
-    fetchBodegas()
-
-  }, [])
-
-  
-  //USE EFFECT PARA TRAER UBICACIONES BODEGAS
+    fetchBodegas();
+  }, []);
 
   useEffect(() => {
     async function fetchUbicaciones() {
       try {
         const response = await axios.get('bodegas/ubicacion/', { withCredentials: true });
-        setUbicaciones(response.data)
-
+        setUbicaciones(response.data);
       } catch (error) {
         console.error('Hubo un error fetch ubicaciones bodega: ' + error);
       }
     }
-    fetchUbicaciones()
-  }, [])
-
-
-  //USE EFFECT PARA TRAER RESPONSABLES y RESPONSABLES DE BODEGA
+    fetchUbicaciones();
+  }, []);
 
   useEffect(() => {
     async function fetchResponsables() {
       try {
         const response = await axios.get(`/usuarios/${3}`, { withCredentials: true }); //3 ES USUARIOS RESPONSABLES
         const response2 = await axios.get(`/usuarios/${1}`, { withCredentials: true }); //1 ES USUARIOS ADMIN
-        setResponsables(response.data.concat(response2.data))
-        setResponsablesBodega(response2.data)
-
+        setResponsables(response.data.concat(response2.data));
+        setResponsablesBodega(response2.data);
       } catch (error) {
         console.error('Hubo un error fetch usuarios responsables: ' + error);
       }
     }
-    fetchResponsables()
-  }, [])
+    fetchResponsables();
+  }, []);
 
-  //USE EFFECT PARA DETECTAR SI HAY FIRMA Y GRABAR FECHA DE CIERRE
   useEffect(() => {
     if (!datos.firmaSolicitante == '') {
-      setDatos({ ...datos, fechaCierre: dayjs().format('YYYY-MM-DD HH:mm:ss') })
+      setDatos({ ...datos, fechaCierre: dayjs().format('YYYY-MM-DD HH:mm:ss') });
     }
-  }, [datos.firmaSolicitante])
+  }, [datos.firmaSolicitante]);
 
-  //USEEFFECT PARA CARGAR :id POR PARAMETROS DE URL
   useEffect(() => {
     async function fetchTicketEntrada() {
       let response = '';
@@ -270,6 +204,7 @@ export default function FormularioValeEntrada() {
         tipoCompra: tipoCompra,
         numeroDocumento: numeroDocumento,
         tipoRecepcion: tipoRecepcion,
+        responsableEntrega: responsableEntrega,
         responsablesBodega: responsablesBodega,
         descripcion: descripcion,
         observaciones: observaciones,
@@ -289,8 +224,8 @@ export default function FormularioValeEntrada() {
     if (idTicket !== undefined) {
       fetchTicketEntrada(idTicket);
     }
-  }, []);
-  
+  }, [idTicket]);
+
   useEffect(() => {
     if (datos.firmaBodega != '' && datos.firmaBodega) {
       setOldSignature({ signatureBodega: true });
@@ -325,24 +260,19 @@ export default function FormularioValeEntrada() {
 
   const enviarDatos = async () => {
     const tipoTicketSeleccionado = tiposTicket.find(ticket => ticket.nombre_tipo_ticket === datos.tipoTicket);
-    console.log(tipoTicketSeleccionado)
     const tipo_ticket_idtipo_ticket = tipoTicketSeleccionado ? tipoTicketSeleccionado.id_tipo_ticket : null;
-  
-    console.log('Tipo Ticket ID:', tipo_ticket_idtipo_ticket); // Verificar el ID del tipo de ticket
-  
+
     const requestJson = {
       ...datos,
       motivo: datos.descripcion,
       responsable_bodega: datos.responsableEntrega,
       foto_documentos: compraData.foto ? compraData.foto.name : '',
       tipo_ticket_idtipo_ticket: tipo_ticket_idtipo_ticket,
-      usuario_idusuario: 1  // Asegúrate de que estás enviando el ID del usuario correcto
+      usuario_idusuario: 1  // ID del usuario logueado
     };
-  
-    // Activar mensaje de espera
+
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
-  
-    // Enviar datos en endpoint
+
     const response = await axios.post('/ticket/entrada/', requestJson, {
       headers: {
         'Content-Type': 'application/json'
@@ -351,16 +281,48 @@ export default function FormularioValeEntrada() {
     }).catch((error) => {
       setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
     });
-  
+
     if (response.status === 200) {
       setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null, value: response.data.idTicket });
     }
   };
 
+  const limpiarCampos = () => {
+    setDatos({
+        fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        tipoTicket: 'Compra',
+        tipoCompra: '',
+        numeroDocumento: '',
+        tipoRecepcion: '',
+        responsableRetira: '',
+        responsableRetiraCorreo: '',
+        responsableEntrega: '',
+        responsableEntregaCorreo: '',
+        descripcion: '',
+        observaciones: '',
+        firmaSolicitante: '',
+        firmaBodega: '',
+        detalle: ''
+    });
+    setRows(initialRows);
+    setAlert({
+        estado: false,
+        mensaje: '',
+        titulo: '',
+        detalle_tipo: '',
+        time: null,
+        responseReturn: false,
+        value: ''
+    });
+  };
   
-   return (
-    <div className="bg-white shadow-md rounded-md py-5 px-5 ">
-      <Alert alert={alert} setAlert={setAlert} />
+
+  return (
+    <div className="bg-white shadow-md rounded-md py-5 px-5">
+      <Alert
+        alert={alert}
+        setAlert={setAlert}
+      />
       <Dialogo dialogo={dialogo} setDialogo={setDialogo} />
 
       <form className="" onSubmit={handleSubmit}>
@@ -394,12 +356,7 @@ export default function FormularioValeEntrada() {
             />
           </div>
 
-          {/*{datos.tipoTicket === 'Compra' && (
-            <Compra compraData={compraData} setCompraData={setCompraData} />
-          )} */}
-
           {datos.tipoTicket === 'Compra' && (
-
             <>
               <div className="mb-5">
                 <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoCompra">Tipo de Compra</label>
@@ -409,99 +366,95 @@ export default function FormularioValeEntrada() {
                   freeSolo
                   id="tipoCompra"
                   options={OpcionesTipoCompra}
-                  isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
                   onBlur={(e) => setDatos({ ...datos, tipoCompra: e.target.value })}
-                  renderInput={(params) => <TextField {...params} />} 
+                  renderInput={(params) => <TextField {...params} />}
                 />
               </div>
-             
+
               <div className="mb-5">
-                 <label className="block text-gray-700 uppercase font-bold" htmlFor="numeroDocumento">N° Documento</label>
-                   <TextField
-                    id="numeroDocumento"
-                    size="normal"
-                    value={datos.numeroDocumento}
-                    type='number'
-                    fullWidth
-                    onChange={(e) => setDatos({ ...datos, numeroDocumento: e.target.value })} 
-                  />
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="numeroDocumento">N° Documento</label>
+                <TextField
+                  id="numeroDocumento"
+                  size="normal"
+                  value={datos.numeroDocumento}
+                  type='number'
+                  fullWidth
+                  onChange={(e) => setDatos({ ...datos, numeroDocumento: e.target.value })}
+                />
               </div>
 
-               <div className="mb-5">
-                 <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoRecepcion">Tipo de Recepción</label>
-                  <Autocomplete
-                    disablePortal
-                    value={datos.tipoRecepcion}
-                    freeSolo
-                    id="tipoRecepcion"
-                    options={OpcionesTipoRecepcion}
-                    isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-                    onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
-                    renderInput={(params) => <TextField {...params} />} 
-                  />
-               </div>
-               
-               <div className="mb-5">
-                 <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
-                 <input
-                   accept="image/*"
-                   id="contained-button-file"
-                   multiple type="file"
-                   style={{ display: 'none' }} />
-                 <label
-                   htmlFor="contained-button-file">
-                   <Button
-                     fullWidth
-                     variant="contained"
-                     component="span">
-                     Subir Imagen Del Documento
-                   </Button>
-                 </label>
-               </div>
-               
-               <div  className="mb-5">
-                 <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">motivo</label>
-                  <TextField
-                    id="descripcion"
-                    size="normal"
+              <div className="mb-5">
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoRecepcion">Tipo de Recepción</label>
+                <Autocomplete
+                  disablePortal
+                  value={datos.tipoRecepcion}
+                  freeSolo
+                  id="tipoRecepcion"
+                  options={OpcionesTipoRecepcion}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
+                <input
+                  accept="image/*"
+                  id="contained-button-file"
+                  multiple type="file"
+                  style={{ display: 'none' }} />
+                <label
+                  htmlFor="contained-button-file">
+                  <Button
                     fullWidth
-                    multiline
-                    value={datos.descripcion}
+                    variant="contained"
+                    component="span">
+                    Subir Imagen Del Documento
+                  </Button>
+                </label>
+              </div>
 
-                    onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })} 
-                  />
-                </div>
+              <div className="mb-5">
+                <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">observaciones</label>
+                <TextField
+                  id="descripcion"
+                  size="normal"
+                  fullWidth
+                  multiline
+                  value={datos.descripcion}
+                  onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
+                />
+              </div>
 
-                <div className="mb-5">
+              <div className="mb-5">
                 <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
-                  <Autocomplete
-                    disablePortal
-                    freeSolo
-                    value={
-                      responsables.map(function (responsable) {
-                        if (responsable.id === datos.responsableEntrega) {
-                          return responsable.label
-                        }
-                      }).join('')
-                    }
-                    disabled={datos.responsableEntrega !== '' && idTicket ? true : false}
-                    id="responsableBodega"
-                    options={responsablesBodega}
-                    isOptionEqualToValue={(option, value) => option.id === value.nombre}
-                    onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </div>
-                
-              
+                <Autocomplete
+                  disablePortal
+                  freeSolo
+                  value={
+                    responsables.map(function (responsable) {
+                      if (responsable.id === datos.responsableEntrega) {
+                        return responsable.label;
+                      }
+                    }).join('')
+                  }
+                  id="responsableBodega"
+                  options={responsablesBodega}
+                  isOptionEqualToValue={(option, value) => option.id === value.nombre}
+                  onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </div>
             </>
           )}
 
           {datos.tipoTicket === 'Devolucion' && (
             <Devolucion devolucionData={devolucionData} setDevolucionData={setDevolucionData} />
           )}
-
         </div>
+
         <div className="grid gap-4 mt-4 mb-10 grid-cols-1">
           <div className="mb-4">
             <TablaEntrada
@@ -515,6 +468,7 @@ export default function FormularioValeEntrada() {
             />
           </div>
         </div>
+
         <div className="grid gap-4 mt-10">
           <FirmasEntrada
             awaitSignature={awaitSignature}
@@ -526,15 +480,13 @@ export default function FormularioValeEntrada() {
             idTicket={idTicket}
           />
         </div>
-        {idTicket ?
-          ''
-          :
+        {!idTicket && (
           <input
             type="submit"
             className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
             value={'cerrar vale'}
           />
-        }
+        )}
       </form>
     </div>
   );

@@ -6,6 +6,7 @@ import SignatureCanvas from 'react-signature-canvas';
 //COMPONENTE MUI 
 import DeleteIcon from '@mui/icons-material/Delete';
 
+
 export const FirmasEntrada = ({ idTicket, datos, setDatos, responsables, awaitSignature, oldSignature, setOldSignature }) => {
 
     //REFERENCIAS A LAS FIRMAS

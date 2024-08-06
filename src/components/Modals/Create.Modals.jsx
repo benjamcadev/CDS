@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import CustomTextField from '../UI/CustomTextField';
 import ButtonMui from '../UI/ButtonMui';
+import AlertComponent from '../UI/AlertMui';
+import { getCategorias } from '../../helpers/getCategories';
+import { opcionesUnidadMedida } from '../../helpers/options';
 import axios from '../../helpers/axios';
 import ImagenNot from '../../public/images/PageNotFound.png';
 
@@ -12,9 +15,6 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
-import { opcionesUnidadMedida } from '../../helpers/options';
-import { getCategorias } from '../../helpers/getCategories';
-
 
 const style = {
   position: 'absolute',
@@ -30,7 +30,6 @@ const style = {
   '@media (min-width:600px)': {
     p: 4,
   },
-
 };
 
 const CreateModal = ({ name, title, onSave }) => {
@@ -49,6 +48,7 @@ const CreateModal = ({ name, title, onSave }) => {
   });
   
   const [categorias, setCategorias] = useState([]);
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -63,7 +63,10 @@ const CreateModal = ({ name, title, onSave }) => {
   }, []);
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setAlert({ open: false, message: '', severity: 'success' });
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -80,7 +83,11 @@ const CreateModal = ({ name, title, onSave }) => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.');
+      setAlert({ open: false, message: '', severity: 'error' });
+      setTimeout(() => {
+        setAlert({ open: true, message: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.', severity: 'error' });
+      }, 100); // Usar un pequeño retraso para restablecer la alerta
+      setTimeout(() => setAlert({ open: false, message: '', severity: 'error' }), 3000); // Desaparecer alerta después de 3 segundos
     }
   };
 
@@ -92,7 +99,7 @@ const CreateModal = ({ name, title, onSave }) => {
           usuarioid: 1 // ID CON PERMISOS DE ADMINISTRADOR
         }
       });
-      console.log(response.data);
+      //console.log(response.data);
       setFormData({
         nombre: '',
         sap: '',
@@ -105,23 +112,21 @@ const CreateModal = ({ name, title, onSave }) => {
         categoria_idcategoria: '',
         imagen_base64: ImagenNot,
       });
-      handleClose();
+
+      setAlert({ open: true, message: 'Artículo Creado Exitosamente', severity: 'success' });
       onSave(); // Actualizar la lista de artículos
+      setTimeout(() => {
+        setAlert({ open: false, message: '', severity: 'success' });
+        handleClose(); // Cerrar el modal después de que la alerta desaparezca
+      }, 2500); 
+      // Desaparecer alerta después de 2.5 segundos
     } catch (error) {
-      console.error('Error al crear el artículo:', error);
-    }
-  };
 
-  const validatePositiveNumber = (value) => {
-    const number = Number(value);
-    return number > 0 && Number.isInteger(number);
+      //console.error('Error al crear el artículo:', error);
+      setAlert({ open: true, message: 'Error al crear el artículo', severity: 'error' });
+      setTimeout(() => setAlert({ open: false, message: '', severity: 'error' }), 2500); // Desaparecer alerta después de 2.5 segundos
+    } 
   };
-
-  const opcionesArea = [
-    { label: 'GENERICO', value: 'GENERICO', id: 1 },
-    { label: 'CABLES DE RED', value: 'CABLES DE RED', id: 2 },
-    {label: 'CCTV', value: 'CCTV', id: 3},
-  ];
 
  
   return (
@@ -149,6 +154,13 @@ const CreateModal = ({ name, title, onSave }) => {
                 <CloseIcon />
               </IconButton>
             </Box>
+            {alert.open && (
+              <AlertComponent
+                message={alert.message}
+                severity={alert.severity}
+                onClose={() => setAlert({ open: false, message: '', severity: 'success' })}
+              />
+            )}
 
             <Box component="form" sx={{mt: 0.1}}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 1 }}>
@@ -167,6 +179,7 @@ const CreateModal = ({ name, title, onSave }) => {
                   multiple type="file" 
                   style={{ display: 'none' }} 
                   onChange={handleImageUpload} 
+
                 />
                 <label 
                   htmlFor="contained-button-file">
@@ -204,13 +217,12 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.sku} 
                 onChange={handleChange} 
               />
-               <FormControl variant="standard" sx={{ m: 0.5, minWidth: 120 }}>
+               <FormControl variant="outlined" sx={{  minWidth: 120 }}>
                 <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
                   <Select
                     value={formData.unidad_medida}
                     labelId="unidad_medida"
                     id='unidad_medida'
-                    
                     onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
                     fullWidth
                   >
@@ -240,7 +252,7 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.comentario} 
                 onChange={handleChange} 
               />
-              <FormControl variant="standard" sx={{ m: 0.5, minWidth: 120 }}>
+              <FormControl variant="outlined" sx={{  minWidth: 120 }}>
                 <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
                   <Select
                     value={formData.categoria_idcategoria}
