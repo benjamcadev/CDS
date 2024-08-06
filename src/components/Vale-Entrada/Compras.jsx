@@ -13,34 +13,32 @@ const OpcionesTipoRecepcion = [
   { label: 'TICA', value: 'TICA', id: 2 },
 ];
 
-export const Compra = ({ compraData, setCompraData }) => {
+export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) => {
   return (
     <>
-  
       <div className="mb-5">
         <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoCompra">Tipo de Compra</label>
         <Autocomplete
           disablePortal
-          value={compraData.tipoCompra}
+          value={datos.tipoCompra}
           freeSolo
           id="tipoCompra"
           options={OpcionesTipoCompra}
-          isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-          onBlur={(e) => setCompraData({ ...compraData, tipoCompra: e.target.value })}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onBlur={(e) => setDatos({ ...datos, tipoCompra: e.target.value })}
           renderInput={(params) => <TextField {...params} />}
         />
       </div>
-      
-
+    
       <div className="mb-5">
         <label className="block text-gray-700 uppercase font-bold" htmlFor="numeroDocumento">N° Documento</label>
         <TextField
           id="numeroDocumento"
           size="normal"
-          value={compraData.numeroDocumento}
+          value={datos.numeroDocumento}
           type='number'
           fullWidth
-          onChange={(e) => setCompraData({ ...compraData, numeroDocumento: e.target.value })}
+          onChange={(e) => setDatos({ ...datos, numeroDocumento: e.target.value })}
         />
       </div>
 
@@ -48,49 +46,64 @@ export const Compra = ({ compraData, setCompraData }) => {
         <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoRecepcion">Tipo de Recepción</label>
         <Autocomplete
           disablePortal
-          value={compraData.tipoRecepcion}
+          value={datos.tipoRecepcion}
           freeSolo
           id="tipoRecepcion"
           options={OpcionesTipoRecepcion}
-          isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-          onBlur={(e) => setCompraData({ ...compraData, tipoRecepcion: e.target.value })}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
           renderInput={(params) => <TextField {...params} />}
         />
       </div>
 
       <div className="mb-5">
         <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
-          <input 
-            accept="image/*" 
-            id="contained-button-file" 
-            multiple type="file" 
-            style={{ display: 'none' }} 
-
-          />
-        <label 
+        <input
+          accept="image/*"
+          id="contained-button-file"
+          multiple type="file"
+          style={{ display: 'none' }} />
+        <label
           htmlFor="contained-button-file">
           <Button
             fullWidth
-            variant="contained" 
+            variant="contained"
             component="span">
             Subir Imagen Del Documento
           </Button>
         </label>
       </div>
 
-      <div className="">
-        <div className="mb-5">
-          <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">motivo</label>
-          <TextField
-            id="descripcion"
-            size="normal"
-            fullWidth
-            multiline
-            value={compraData.descripcion}
-           
-            onChange={(e) => setCompraData({ ...compraData, descripcion: e.target.value })}
-          />
-        </div>
+      <div className="mb-5">
+        <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">observaciones</label>
+        <TextField
+          id="descripcion"
+          size="normal"
+          fullWidth
+          multiline
+          value={datos.descripcion}
+          onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
+        />
+      </div>
+
+      <div className="mb-5">
+        <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
+        <Autocomplete
+          disablePortal
+          freeSolo
+          value={
+            responsables.map(function (responsable) {
+              if (responsable.id === datos.responsableEntrega) {
+                return responsable.label;
+              }
+            }).join('')
+          }
+          id="responsableBodega"
+          options={responsablesBodega}
+          isOptionEqualToValue={(option, value) => option.id === value.nombre}
+          onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+          renderInput={(params) => <TextField {...params} />}
+        />
       </div>
     </>
   );
