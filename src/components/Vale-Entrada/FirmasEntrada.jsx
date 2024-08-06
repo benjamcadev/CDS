@@ -40,7 +40,7 @@ export const FirmasEntrada = ({ idTicket, datos, setDatos, responsables, awaitSi
 
     return (
         <div className="grid sm:grid-cols-1 md:grid-cols-2">
-            {datos.tipoTicket !== 'Compra' && (
+            {datos.tipoTicket !== 'Compra' && datos.tipoTicket !== 'Inventario'  && (
                 <div className="mb-5">
                     <p className="block text-gray-700 uppercase font-bold">
                         FIRMA QUIEN REINTEGRA MATERIAL
@@ -70,6 +70,7 @@ export const FirmasEntrada = ({ idTicket, datos, setDatos, responsables, awaitSi
                     }
                 </div>
             )}
+            
             
             <div className="mb-5">
                 <p className="block text-gray-700 uppercase font-bold">

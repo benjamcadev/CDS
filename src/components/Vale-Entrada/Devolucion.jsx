@@ -1,28 +1,42 @@
-import { Button } from '@mui/material';
+import { Autocomplete, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
-export const Devolucion = ({ devolucionData, setDevolucionData }) => {
+export const Devolucion = ({ datos, setDatos, responsables, responsablesBodega, idTicket }) => {
   return (
+    // sintaxis abreviada para el componente <Fragment> de React
     <>
       <div className="mb-5">
-        <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBod">Responsable Bodega</label>
-        <TextField
-          id="responsableBod"
-          size="normal"
-          value={devolucionData.responsableBod}
-          fullWidth
-          onChange={(e) => setDevolucionData({ ...devolucionData, responsableBod: e.target.value })}
+        <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
+        <Autocomplete
+          disablePortal
+          freeSolo
+          value={
+            responsables.map(function (responsable) {
+              if (responsable.id === datos.responsableEntrega) {
+                return responsable.label;
+              }
+            }).join('')
+          }
+          id="responsableBodega"
+          options={responsablesBodega}
+          isOptionEqualToValue={(option, value) => option.id === value.nombre}
+          onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+          renderInput={(params) => <TextField {...params} />}
         />
       </div>
 
       <div className="mb-5">
-        <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Entrega</label>
-        <TextField
-          id="responsableBodega"
-          size="normal"
-          value={devolucionData.responsableBodega}
-          fullWidth
-          onChange={(e) => setDevolucionData({ ...devolucionData, responsableBodega: e.target.value })}
+        <label className="block text-gray-700 uppercase font-bold" htmlFor="responsable">Responsable</label>
+        <Autocomplete
+          disablePortal
+          value={datos.responsableRetira}
+          disabled={datos.responsableRetira != '' && idTicket ? true : false}
+          freeSolo
+          id="responsable"
+          options={responsables}
+          isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
+          onChange={(e, value) => { setDatos({ ...datos, responsableRetira: value.label, responsableRetiraCorreo: value.correo }) }}
+          renderInput={(params) => <TextField {...params} />}
         />
       </div>
 
@@ -53,8 +67,8 @@ export const Devolucion = ({ devolucionData, setDevolucionData }) => {
             size="normal"
             fullWidth
             multiline
-            value={devolucionData.descripcion}
-            disabled={devolucionData.descripcion != '' && devolucionData.idTicket ? true : false}
+            value={datos.descripcion}
+            disabled={datos.descripcion != '' && datos.idTicket ? true : false}
             onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
           />
         </div>

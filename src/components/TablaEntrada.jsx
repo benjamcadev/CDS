@@ -1,4 +1,6 @@
 import  { useState } from 'react'
+//IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
+import AutocompleteSearch from './autocompleteSearch'
 
 //IMPORTANDO ESTILOS MATERIAL UI
 import AddIcon from '@mui/icons-material/Add';
@@ -6,24 +8,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
-import RemoveIcon from '@mui/icons-material/Remove';
 import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-
-//IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
-import AutocompleteSearch from './autocompleteSearch'
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
-import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell } from '@mui/x-data-grid';
-import { green, red, blue } from '@mui/material/colors';
+import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons } from '@mui/x-data-grid';
 import { Autocomplete, TextField } from '@mui/material';
 
 
-export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, alert, setAlert, idTicket }) {
+export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicaciones, alert, setAlert, idTicket }) {
 
     const [bodegasId, setBodegasId] = useState([]);
     const [bodegasMaterial, setBodegasMaterial] = useState([])
@@ -123,14 +115,12 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
     };
 
     const columns = [
-
         {
             field: 'item',
             headerName: 'Item',
             headerAlign: 'left',
             type: 'number',
             flex: 0.1,
-
         },
         {
             field: 'unidad',
@@ -142,29 +132,25 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             type: 'singleSelect',
             valueOptions: ["Unidad", "Paquete"],
         },
-
         {
             field: 'descripcion',
             headerName: 'Descripcion',
             headerAlign: 'center',
             flex: 1,
             minWidth: 200,
-            renderCell: (params) => {
-                return (
-                    <AutocompleteSearch
-                        id={params.id}
-                        setRows={setRows}
-                        rows={rows}
-                        bodegasId={bodegasId}
-                        setBodegasId={setBodegasId}
-                        bodegasMaterial={bodegasMaterial}
-                        setBodegasMaterial={setBodegasMaterial}
-                        alert={alert}
-                        setAlert={setAlert}
-                    />
-                )
-            },
-
+            renderCell: (params) => (
+                <AutocompleteSearch
+                    id={params.id}
+                    setRows={setRows}
+                    rows={rows}
+                    bodegasId={bodegasId}
+                    setBodegasId={setBodegasId}
+                    bodegasMaterial={bodegasMaterial}
+                    setBodegasMaterial={setBodegasMaterial}
+                    alert={alert}
+                    setAlert={setAlert}
+                />
+            ),
         },
         {
             field: 'cantidad',
@@ -174,14 +160,7 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             flex: 0.3,
             minWidth: 130,
             type: 'number',
-            renderCell: (params) => {
-
-                return (
-                    (params.value <= 0) ? 1 : params.value
-                )
-               
-            }
-            
+            renderCell: (params) => (params.value <= 0 ? 1 : params.value),
         },
         {
             field: 'bodega',
@@ -189,24 +168,22 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             headerAlign: 'center',
             flex: 0.5,
             minWidth: 190,
-            renderCell: (params) => {
-                return (
-                    <Autocomplete
-                        fullWidth
-                        options={bodegas}
-                        getOptionLabel={(option) => option.nombre || ''}
-                        value={bodegas.find(bodega => bodega.idbodegas === params.row.bodega) || null}
-                        onChange={(event, newValue) => {
-                            let newArr = [...rows];
-                            let obj = newArr.find(o => o.id === params.id);
-                            obj.bodega = newValue ? newValue.idbodegas : '';
-                            setRows(newArr);
-                        }}
-                        renderInput={(params) => <TextField {...params} label="Selecciona una bodega" variant="outlined" />}
-                        isOptionEqualToValue={(option, value) => option.idbodegas === value.idbodegas}
-                    />
-                );
-            },
+            renderCell: (params) => (
+                <Autocomplete
+                    fullWidth
+                    options={bodegas}
+                    getOptionLabel={(option) => option.nombre || ''}
+                    value={bodegas.find((bodega) => bodega.idbodegas === params.row.bodega) || null}
+                    onChange={(event, newValue) => {
+                        let newArr = [...rows];
+                        let obj = newArr.find(o => o.id === params.id);
+                        obj.bodega = newValue ? newValue.idbodegas : '';
+                        setRows(newArr);
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Selecciona una bodega" variant="outlined" />}
+                    isOptionEqualToValue={(option, value) => option.idbodegas === value.idbodegas}
+                />
+            ),
         },
         {
             field: 'ubicacion',
@@ -214,31 +191,31 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             headerAlign: 'center',
             flex: 0.5,
             minWidth: 190,
-        
-            renderCell: (cellParams) => {
-                return (
-                    <Autocomplete
-                        fullWidth
-                        options={ubicaciones}
-                        getOptionLabel={(option) => option.ubicacion || 'No ubicacion'}
-                        value={ubicaciones.find((ubicacion) => ubicacion.id_ubicacion_bodegas === cellParams.row.ubicacion) || null}
-                        onChange={(event, newValue) => {
-                            if (newValue) {
-                                let newArr = [...rows];
-                                let obj = newArr.find((o) => o.id === cellParams.id);
-                                if (obj) {
-                                    obj.ubicacion = newValue.id_ubicacion_bodegas;
-                                    setRows(newArr);
-                                }
+            renderCell: (cellParams) => (
+                <Autocomplete
+                    fullWidth
+                    options={ubicaciones}
+                    getOptionLabel={(option) => option.ubicacion || 'No ubicacion'}
+                    value={ubicaciones.find((ubicacion) => ubicacion.id_ubicacion_bodegas === cellParams.row.ubicacion) || null}
+                    onChange={(event, newValue) => {
+                        if (newValue) {
+                            let newArr = [...rows];
+                            let obj = newArr.find((o) => o.id === cellParams.id);
+                            if (obj) {
+                                obj.ubicacion = newValue.id_ubicacion_bodegas;
+                                setRows(newArr);
                             }
-                        }}
-                        renderInput={(inputParams) => <TextField {...inputParams} label="Selecciona una ubicacion" variant="outlined" />}
-                        isOptionEqualToValue={(option, value) => option.id_ubicacion_bodegas === value.id_ubicacion_bodegas}
-                    />
-                );
-            },
+                        }
+                    }}
+                    renderInput={(inputParams) => <TextField {...inputParams} label="Selecciona una ubicacion" variant="outlined" />}
+                    isOptionEqualToValue={(option, value) => option.id_ubicacion_bodegas === value.id_ubicacion_bodegas}
+                />
+            ),
         },
-        {
+    ];
+
+    if (datos.tipoTicket !== 'Inventario' && datos.tipoTicket !== 'Devolucion') {
+        columns.push({
             field: 'reserva',
             headerName: 'Reserva/OC',
             headerAlign: 'center',
@@ -246,56 +223,57 @@ export default function TablaEntrada({ rows, setRows, bodegas, ubicaciones, aler
             flex: 0.4,
             minWidth: 120,
             type: 'number',
-        },
-        {
-            field: 'actions',
-            type: 'actions',
-            headerName: 'Acciones',
-            headerAlign: 'left',
-            cellClassName: 'actions',
-            getActions: ({ id }) => {
-                const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-                if (isInEditMode) {
-                    return [
-                        <GridActionsCellItem
-                            icon={<SaveIcon />}
-                            label="Save"
-                            sx={{
-                                color: 'primary.main',
-                            }}
-                            onClick={handleSaveClick(id)}
-                        />,
-                        <GridActionsCellItem
-                            icon={<CancelIcon />}
-                            label="Cancel"
-                            className="textPrimary"
-                            onClick={handleCancelClick(id)}
-                            color="inherit"
-                        />,
+        });
+    }
 
-                    ];
-                }
-
+    columns.push({
+        field: 'actions',
+        type: 'actions',
+        headerName: 'Acciones',
+        headerAlign: 'left',
+        cellClassName: 'actions',
+        getActions: ({ id }) => {
+            const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+            if (isInEditMode) {
                 return [
-
                     <GridActionsCellItem
-                        icon={<EditIcon />}
-                        label="Edit"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
+                        icon={<SaveIcon />}
+                        label="Save"
+                        sx={{
+                            color: 'primary.main',
+                        }}
+                        onClick={handleSaveClick(id)}
                     />,
                     <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
+                        icon={<CancelIcon />}
+                        label="Cancel"
+                        className="textPrimary"
+                        onClick={handleCancelClick(id)}
                         color="inherit"
                     />,
                 ];
-            },
-        },
-    ];
+            }
 
+            return [
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label="Edit"
+                    className="textPrimary"
+                    onClick={handleEditClick(id)}
+                    color="inherit"
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label="Delete"
+                    onClick={handleDeleteClick(id)}
+                    color="inherit"
+                />,
+            ];
+        },
+    });
+    
+     
+    
     //EN CASO DE VENIR UN NUMERO DE TICKET EN LA BARRA DE DIRECCIONES DESHABILITA LA COLUMNA ACCIONES
     if (idTicket) {
         columns.splice(5, 1)

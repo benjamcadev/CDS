@@ -216,7 +216,7 @@ export default function FormularioValeSalida() {
 
 
       //Agregar datos al state del ticket
-      const { fecha_creacion,  ticket_trabajo, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
+      const { fecha_creacion,  ticketTrabajo , cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
       //SACAR LAS BODEGAS
       let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega })
       //ELIMINAMOS BODEGAS DUPLICADAS
@@ -244,7 +244,7 @@ export default function FormularioValeSalida() {
       setDatos({
 
         fecha: fecha_creacion,
-        ticketTrabajo: ticket_trabajo,
+        ticketTrabajo: ticketTrabajo,
         solCodelco: cliente_trabajo,
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,

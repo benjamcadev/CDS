@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import TablaEntrada from './TablaEntrada';
-import Firmas from './Firmas';
+import axios from '../helpers/axios';
+import { getSignature } from '../helpers/getSignature';
+import { getBodegas } from '../helpers/getBodegas';
+import dayjs from 'dayjs';
+import { AjusteInventario, Compra, Devolucion, FirmasEntrada, Inventario } from './Vale-Entrada';
 import { alertSnackbarEntrada as Alert } from './Vale-Entrada/alertSnackbarEntrada';
+
 import Dialogo from './Dialogo';
 import TextField from '@mui/material/TextField';
 import { Autocomplete, Button } from '@mui/material';
@@ -10,11 +15,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/es';
-import dayjs from 'dayjs';
-import axios from '../helpers/axios';
-import { getBodegas } from '../helpers/getBodegas';
-import { getSignature } from '../helpers/getSignature';
-import { Compra, Devolucion, FirmasEntrada } from './Vale-Entrada';
 
 export default function FormularioValeEntrada() {
   let { idTicket } = useParams();
@@ -36,18 +36,7 @@ export default function FormularioValeEntrada() {
     detalle: ''
   });
 
-  const [compraData, setCompraData] = useState({
-    tipoCompra: '',
-    numeroDocumento: '',
-    tipoRecepcion: '',
-    foto: null,
-    descripcion: ''
-  });
 
-  const [devolucionData, setDevolucionData] = useState({
-    tipoDevolucion: '',
-    numeroDocumento: ''
-  });
 
   const [tiposTicket, setTiposTicket] = useState([]);
   const initialRows = [];
@@ -81,16 +70,6 @@ export default function FormularioValeEntrada() {
     signatureRetira: false
   });
 
-  const OpcionesTipoCompra = [
-    { label: 'Guia Despacho', value: 'Guia Despacho', id: 1 },
-    { label: 'Factura', value: 'Factura', id: 2 },
-    { label: 'SEP', value: 'Factura', id: 3 },
-  ];
-
-  const OpcionesTipoRecepcion = [
-    { label: 'BODEGA 6', value: 'BODEGA 6', id: 1 },
-    { label: 'TICA', value: 'TICA', id: 2 },
-  ];
 
   useEffect(() => {
     const fetchTiposTicket = async () => {
@@ -266,7 +245,7 @@ export default function FormularioValeEntrada() {
       ...datos,
       motivo: datos.descripcion,
       responsable_bodega: datos.responsableEntrega,
-      foto_documentos: compraData.foto ? compraData.foto.name : '',
+      foto_documentos: datos.foto ? datos.foto.name : '',
       tipo_ticket_idtipo_ticket: tipo_ticket_idtipo_ticket,
       usuario_idusuario: 1  // ID del usuario logueado
     };
@@ -355,104 +334,25 @@ export default function FormularioValeEntrada() {
               renderInput={(params) => <TextField {...params} />}
             />
           </div>
-
+          
+        {/* Sección de Compra, Inventario, Devolucion, Ajuste de inventario */}
+        
           {datos.tipoTicket === 'Compra' && (
-            <>
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoCompra">Tipo de Compra</label>
-                <Autocomplete
-                  disablePortal
-                  value={datos.tipoCompra}
-                  freeSolo
-                  id="tipoCompra"
-                  options={OpcionesTipoCompra}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  onBlur={(e) => setDatos({ ...datos, tipoCompra: e.target.value })}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </div>
+           <Compra datos={datos} setDatos={setDatos} responsables={responsables} responsablesBodega={responsablesBodega} />
+          )}
 
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="numeroDocumento">N° Documento</label>
-                <TextField
-                  id="numeroDocumento"
-                  size="normal"
-                  value={datos.numeroDocumento}
-                  type='number'
-                  fullWidth
-                  onChange={(e) => setDatos({ ...datos, numeroDocumento: e.target.value })}
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="tipoRecepcion">Tipo de Recepción</label>
-                <Autocomplete
-                  disablePortal
-                  value={datos.tipoRecepcion}
-                  freeSolo
-                  id="tipoRecepcion"
-                  options={OpcionesTipoRecepcion}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
-                <input
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple type="file"
-                  style={{ display: 'none' }} />
-                <label
-                  htmlFor="contained-button-file">
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    component="span">
-                    Subir Imagen Del Documento
-                  </Button>
-                </label>
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="descripcion">observaciones</label>
-                <TextField
-                  id="descripcion"
-                  size="normal"
-                  fullWidth
-                  multiline
-                  value={datos.descripcion}
-                  onChange={(e) => setDatos({ ...datos, descripcion: e.target.value })}
-                />
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
-                <Autocomplete
-                  disablePortal
-                  freeSolo
-                  value={
-                    responsables.map(function (responsable) {
-                      if (responsable.id === datos.responsableEntrega) {
-                        return responsable.label;
-                      }
-                    }).join('')
-                  }
-                  id="responsableBodega"
-                  options={responsablesBodega}
-                  isOptionEqualToValue={(option, value) => option.id === value.nombre}
-                  onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </div>
-            </>
+          {datos.tipoTicket === 'Inventario' && (
+            <Inventario datos={datos} setDatos={setDatos} responsables={responsables} responsablesBodega={responsablesBodega} />
           )}
 
           {datos.tipoTicket === 'Devolucion' && (
-            <Devolucion devolucionData={devolucionData} setDevolucionData={setDevolucionData} />
+            <Devolucion datos={datos} setDatos={setDatos} responsables={responsables} responsablesBodega={responsablesBodega} idTicket={idTicket} />
           )}
+
+          {datos.tipoTicket === 'Ajuste de Inventario' && (
+            <AjusteInventario datos={datos} setDatos={setDatos} responsables={responsables} responsablesBodega={responsablesBodega} />
+          )}
+
         </div>
 
         <div className="grid gap-4 mt-4 mb-10 grid-cols-1">
@@ -460,6 +360,7 @@ export default function FormularioValeEntrada() {
             <TablaEntrada
               rows={rows}
               setRows={setRows}
+              datos={datos}
               bodegas={bodegas}
               ubicaciones={ubicaciones}
               alert={alert}
