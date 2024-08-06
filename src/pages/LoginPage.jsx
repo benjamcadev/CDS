@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 
 //COMPONENTES DE MUI
@@ -137,6 +136,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
               <TextField
               variant='outlined'
               sx={{
+                
                 // Root class for the input field
                 "& .MuiOutlinedInput-root": {
                   color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
