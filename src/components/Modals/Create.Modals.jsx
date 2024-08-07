@@ -21,14 +21,17 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '80%',
-  maxWidth: 440,
+  width: '90%',
+  maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
   p: 2,
+  overflowY: 'auto', // Añade overflow para permitir el desplazamiento si es necesario
+  maxHeight: '90vh', //  modal no se extienda más allá de la vista
   '@media (min-width:600px)': {
-    p: 4,
+    p: 2,
+    maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
   },
 };
 

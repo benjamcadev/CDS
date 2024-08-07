@@ -47,7 +47,7 @@ export const alertSnackbarEntrada = ({ alert, setAlert, setdatos, setRows }) => 
 
         setAlert({ ...alert, estado: false });
         if (alert.detalle_tipo === 'success_ticket') {
-            console.log("Exito")
+            //console.log("Exito")
             navigate("/vale-entrada");
             limpiarCampos();
         }

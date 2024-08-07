@@ -40,7 +40,7 @@ export default function Sidebar() {
      
     },
 
-    //{ title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
+    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
 
     {
       title: "Opciones",
@@ -60,9 +60,15 @@ export default function Sidebar() {
   return (
     <>
       {isAuthenticated ? (
-        <div  style={{ height: '190vh' }}className={`bg-gray-800 h-full flex flex-col  overflow-y-auto p-5 pt-8 mr-4 ${open ? 'w-72' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
+        //<div  style={{ height: '190vh' }}className={`bg-gray-800 h-full flex flex-col  overflow-y-auto p-5 pt-8 mr-4 duration-300 ${open ? 'w-' : 'w-20 no-scrollbar'} relative  `}>
+        <div style={{ height: '185vh' }} className={`bg-gray-800 h-screen flex flex-col  overflow-y-auto p-5 pt-8 mr-4  ${open ? 'w-64' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
+          
           <div className="inline-flex">
-            {open ? <img className='h-8 w-17 duration-500 md:h-12' src={logoPsinet} /> : <img className='h-8 w-17 duration-500 md:h-12' src={logoPsinetSmall} />}
+            {open ? (
+              <img className='h-8 duration-500 md:h-12' src={logoPsinet} alt="Logo" />
+            ) : (
+              <img className='h-8 duration-500 md:h-12' src={logoPsinetSmall} alt="Logo" />
+            )}
           </div>
           <FaAngleLeft
             className={`bg-white text-gray-800 text-3xl rounded-full absolute -right-0 mr-1 sm:top-20 md:top-24 lg:top-24 border border-gray-800 cursor-pointer ${!open && "rotate-180 right-5 z-50"}`}
@@ -104,7 +110,7 @@ export default function Sidebar() {
             ))}
           </ul>
           {open && (
-            <div className="mt-4">
+            <div className="mt-auto">
               <p className="text-gray-400 text-xs font-medium">2024</p>
               <Link to={"https://github.com/benjamcadev"} className="text-gray-400 text-xs font-medium">by benjamcadev 👨🏻‍💻</Link>
             </div>
