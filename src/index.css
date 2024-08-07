@@ -42,3 +42,19 @@ font-family: "Poppins", sans-serif;
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+@keyframes meteor {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(100vw);
+    }
+}
+
+.animate-meteor-effect {
+    animation-name: meteor;
+    animation-timing-function: linear;
+}

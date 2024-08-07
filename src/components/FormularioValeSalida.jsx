@@ -2,8 +2,6 @@ import { useState, useRef, useEffect, useReducer } from 'react'
 import * as React from 'react';
 import { useParams } from 'react-router-dom'
 
-
-
 //IMPORTAR COMPONENTE DE TABLA
 import Tabla from './Tabla'
 
@@ -48,7 +46,7 @@ export default function FormularioValeSalida() {
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     fechaCierre: '',
-    area: '',
+    ticketTrabajo: '',
     solCodelco: '',
 
     responsableRetira: '',
@@ -218,7 +216,7 @@ export default function FormularioValeSalida() {
 
 
       //Agregar datos al state del ticket
-      const { fecha_creacion, area_operacion, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
+      const { fecha_creacion,  ticketTrabajo , cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle } = response.data;
       //SACAR LAS BODEGAS
       let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega })
       //ELIMINAMOS BODEGAS DUPLICADAS
@@ -246,7 +244,7 @@ export default function FormularioValeSalida() {
       setDatos({
 
         fecha: fecha_creacion,
-        area: area_operacion,
+        ticketTrabajo: ticketTrabajo,
         solCodelco: cliente_trabajo,
         responsableRetira: solicitante,
         responsableEntrega: usuario_idusuario,
@@ -292,18 +290,18 @@ export default function FormularioValeSalida() {
 
 
 
-  const opcionesArea = [
+  {/*const opcionesArea = [
     { label: 'Area Telecomunicaciones PSINET', value: 'Area Telecomunicaciones PSINET', id: 1 },
     { label: 'Area TI PSINET', value: 'Area TI PSINET', id: 2 },
     { label: 'Sonda', value: 'Sonda', id: 3 },
     { label: 'IBM/ Coasin', value: 'IBM/ Coasin', id: 4 },
 
-  ];
+   ]; */}
 
   const handleSubmit = (e) => {
     e.preventDefault()
     //VALIDAR DATOS VACIOS
-    if (datos.area == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    if (datos.ticketTrabajo == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
@@ -386,18 +384,15 @@ export default function FormularioValeSalida() {
 
 
           <div className="mb-5">
-            <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Area Solicitante</label>
-            <Autocomplete
-              disablePortal
-              value={datos.area}
-              disabled={datos.area != '' && idTicket ? true : false}
-              freeSolo
-              id="area"
-              options={opcionesArea}
-              isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-              onBlur={(e) => setDatos({ ...datos, area: e.target.value })}
-              renderInput={(params) => <TextField {...params} />}
-            />
+            <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Nro° Ticket de Trabajo</label>
+            <TextField
+              id="areaSolicitante"
+              size="normal"
+              fullWidth
+              variant="outlined"
+              value={datos.ticketTrabajo}
+              disabled={datos.ticketTrabajo != '' && idTicket ? true : false}
+              onChange={(e) => setDatos({ ...datos, ticketTrabajo: e.target.value })} />
           </div>
 
           <div className="mb-5">
@@ -411,9 +406,6 @@ export default function FormularioValeSalida() {
               disabled={datos.solCodelco != '' && idTicket ? true : false}
               onChange={(e) => setDatos({ ...datos, solCodelco: e.target.value })} />
           </div>
-
-
-
 
 
           <div className="mb-5">

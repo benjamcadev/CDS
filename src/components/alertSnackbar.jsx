@@ -1,16 +1,14 @@
 import React from 'react'
+import { useNavigate } from "react-router-dom"
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
 
-import { useNavigate } from "react-router-dom"
-
 
 export default function alertSnackbar({ alert, setAlert }) {
 
     let navigate = useNavigate()
-
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -48,9 +46,7 @@ export default function alertSnackbar({ alert, setAlert }) {
                         Aceptar
                         </Button>
                     </div> : ''}
-                    
-
-
+                
                 </Alert>
             </Snackbar>
         </div>

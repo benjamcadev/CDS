@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ValeSalida from './pages/ValeSalida'
+import ValeEntrada from './pages/ValeEntrada'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Home from './pages/Home'
@@ -15,7 +16,7 @@ function App() {
   const [showDarkMode, setShowDarkMode] = useState(true);
 
   return (
-    <div className={`flex w-full h-screen transition-all duration-700 ${showDarkMode ? '' : 'bg-gray-900'}`} >
+    <div className={`flex min-h-screen transition-all duration-700 ${showDarkMode ? '' : 'bg-gray-900'}`} >
       <AuthProvider> {/* el AuthProvider tiene una especie de useState globales de los cuales podemos acceder de las rutas que estan en el  */}
 
         <Sidebar />
@@ -31,6 +32,7 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/vale-salida' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
+            <Route path='/vale-entrada' element={<ValeEntrada />} />
             <Route path='/Articulos' element={<ArticulosPage />} />
           </Route>
 
