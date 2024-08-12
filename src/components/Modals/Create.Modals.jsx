@@ -44,7 +44,8 @@ const style = {
 
 const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
-  const [cameraOpen, setCameraOpen] = useState(false);
+  
+  const [cameraOpen, setCameraOpen] = useState(false); 
   const [formData, setFormData] = useState({
     nombre: '',
     sap: '',
@@ -170,6 +171,9 @@ const CreateModal = ({ name, title, onSave }) => {
     }
   };
 
+  const openCamera = () => setCameraOpen(true);
+  const closeCamera = () => setCameraOpen(false);
+
 
  
   return (
@@ -225,15 +229,27 @@ const CreateModal = ({ name, title, onSave }) => {
                     Subir Imagen Del Articulo
                   </Button>
                 </label>
-              <Box sx={{ ml:2 }}>
+                <Box sx={{ ml: 2 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    component="span"
+                    onClick={openCamera}
+                  >
+                    <CameraAltIcon />
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+             {/* Modal para abrir la cámara */}
+             <Modal open={cameraOpen} onClose={closeCamera}>
+              <Box sx={{ ...style, maxWidth: '200%', textAlign: 'center' }}>
                 <WebcamCapture setImage={(img) => {
                   setFormData({ ...formData, imagen_base64: img });
                   closeCamera();
                 }} />
               </Box>
-              </Box>
-              
-            </Box>
+            </Modal>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1.5 }}>
               <CustomTextField 
