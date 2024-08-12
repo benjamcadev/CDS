@@ -202,7 +202,7 @@ const CreateModal = ({ name, title, onSave }) => {
                   <img
                     src={formData.imagen_base64}
                     alt="Artículo"
-                    style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
+                    style={{ maxHeight: '210px', maxWidth: '100%', objectFit: 'contain' }}
                   />
                 )}
               </Box>

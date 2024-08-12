@@ -187,7 +187,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
         <img
           src={formData.imagen_base64}
           alt="Artículo"
-          style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
+          style={{ maxHeight: '210px', maxWidth: '100%', objectFit: 'contain' }}
         />
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
