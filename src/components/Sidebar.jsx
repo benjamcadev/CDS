@@ -111,8 +111,11 @@ export default function Sidebar() {
           </ul>
           {open && (
             <div className="mt-auto">
-              <p className="text-gray-400 text-xs font-medium">2024</p>
-              <Link to={"https://github.com/benjamcadev"} className="text-gray-400 text-xs font-medium">by benjamcadev 👨🏻‍💻</Link>
+              <p className="text-gray-400 text-xs font-medium">© 2024</p>
+              <Link to={"https://github.com/benjamcadev"} className="text-gray-400 text-xs font-medium">By benjamcadev 👨🏻‍💻</Link>
+              <div>  
+               <Link to={"https://github.com/FrancoDev7"} className="text-gray-400 text-xs font-medium">By FrancoDev7 👨🏻‍💻</Link>
+              </div>
             </div>
           )}
         </div>

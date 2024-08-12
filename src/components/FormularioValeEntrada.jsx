@@ -24,6 +24,7 @@ export default function FormularioValeEntrada() {
     tipoTicket: '',
     tipoCompra: '',
     numeroDocumento: '',
+    foto_documentos: '',
     tipoRecepcion: '',
     responsableRetira: '',
     responsableRetiraCorreo: '',
@@ -159,7 +160,7 @@ export default function FormularioValeEntrada() {
         }
       }
 
-      const { fecha_creacion, cliente_trabajo, solicitante, usuario_idusuario, motivo, observaciones, detalle } = response.data;
+      const { fecha_creacion,  usuario_idusuario,  observaciones, detalle } = response.data;
       let bodegasTicketId = detalle.map((detalle_salida) => { return detalle_salida.bodega });
       bodegasTicketId = bodegasTicketId.filter((value, index) => bodegasTicketId.indexOf(value) === index);
 
@@ -183,6 +184,7 @@ export default function FormularioValeEntrada() {
         tipoCompra: tipoCompra,
         numeroDocumento: numeroDocumento,
         tipoRecepcion: tipoRecepcion,
+        foto_documentos: foto_documentos,
         responsableEntrega: responsableEntrega,
         responsablesBodega: responsablesBodega,
         descripcion: descripcion,
@@ -245,7 +247,7 @@ export default function FormularioValeEntrada() {
       ...datos,
       motivo: datos.descripcion,
       responsable_bodega: datos.responsableEntrega,
-      foto_documentos: datos.foto ? datos.foto.name : '',
+      foto_documentos: datos.foto_documentos,
       tipo_ticket_idtipo_ticket: tipo_ticket_idtipo_ticket,
       usuario_idusuario: 1  // ID del usuario logueado
     };
@@ -306,9 +308,16 @@ export default function FormularioValeEntrada() {
               id="tipoTicket"
               options={tiposTicket.map((tipo) => tipo.nombre_tipo_ticket)}
               onChange={(e, value) => setDatos({ ...datos, tipoTicket: value })}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField 
+                  {...params} 
+                  inputProps={{ ...params.inputProps, readOnly: true }}                  
+                />
+              )}
             />
           </div>
+
+
           
         {/* Sección de Compra, Inventario, Devolucion, Ajuste de inventario */}
         

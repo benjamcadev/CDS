@@ -10,21 +10,38 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
+
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons } from '@mui/x-data-grid';
-import { Autocomplete, TextField } from '@mui/material';
+import { Alert, Autocomplete, TextField } from '@mui/material';
 
 
 export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicaciones, alert, setAlert, idTicket }) {
 
     const [bodegasId, setBodegasId] = useState([]);
     const [bodegasMaterial, setBodegasMaterial] = useState([])
+    //const [showAlert, setShowAlert] = useState(false);
 
     function EditToolbar(props) {
         const { setRows, setRowModesModel } = props;
 
-
         const handleClick = () => {
+            if (rows.length >= 20) {
+                MySwal.fire({
+                    title: "Límite alcanzado",
+                    text: "No se pueden agregar más de 20 artículos.",
+                    icon: "warning",
+                    
+                }).then(() => {
+                    // Aquí se puede agregar alguna lógica si es necesario después de mostrar la alerta
+                });
+                return;
+            }
+
             const id = getLastId();
             setRows((oldRows) => [
                 ...oldRows,
@@ -36,27 +53,24 @@ export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicacione
             }));
         };
 
+
         return (
             <GridToolbarContainer className="mt-3">
-                <Button size="small" variant='contained' color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                <Button
+                    size="small"
+                    variant='contained'
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={handleClick}
+                    disabled={rows.length >= 21}
+                >
                     Agregar Material
                 </Button>
+                
             </GridToolbarContainer>
         );
     }
 
-    function getValueBodega(rows, id) {
-
-        let newArr = [...rows];
-        let obj = newArr.find(o => o.id === id);
-
-        if (obj.bodega == '' && obj.ubicacion == '') {
-            return ''
-        } else {
-            return [obj.bodega, obj.ubicacion].toString()
-        }
-
-    }
 
     //-------------------------------- DATA GRID  -------------------------------------//
 
@@ -282,14 +296,13 @@ export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicacione
     // -------------------------------- FIN DATA GRID   ---------------------------------//
 
     return (
-        <div className='' style={{ height: 600, width: "100%" }}>
+        <div className='' style={{ height: 700, width: "100%" }}>
             <label className="block text-gray-700 uppercase font-bold" htmlFor="fecha">Listado De Materiales Entrada</label>
 
             <DataGrid
                 rows={rows}
                 columns={columns}
                 editMode="row"
-
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}

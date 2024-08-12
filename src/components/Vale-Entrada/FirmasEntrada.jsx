@@ -38,14 +38,19 @@ export const FirmasEntrada = ({ idTicket, datos, setDatos, responsables, awaitSi
         setDatos({ ...datos, firmaBodega: '' });
     }
 
+    if (!datos.tipoTicket) {
+        return null;
+    }
+
+ 
     return (
         <div className="grid sm:grid-cols-1 md:grid-cols-2">
             {datos.tipoTicket !== 'Compra' && datos.tipoTicket !== 'Inventario'  && (
                 <div className="mb-5">
-                    <p className="block text-gray-700 uppercase font-bold">
+                    <p className="block  text-gray-700 uppercase font-bold">
                         FIRMA QUIEN REINTEGRA MATERIAL
                     </p>
-                    <p className='block text-gray-700 uppercase '>
+                    <p className='mt-2 block text-gray-700 uppercase '>
                         {datos.responsableRetira}
                     </p>
 
@@ -75,6 +80,9 @@ export const FirmasEntrada = ({ idTicket, datos, setDatos, responsables, awaitSi
             <div className="mb-5">
                 <p className="block text-gray-700 uppercase font-bold">
                     FIRMA RESPONSABLE BODEGA
+                </p>
+                <p className='mt-2 block text-gray-700 uppercase '>
+                    {datos.responsableEntrega}
                 </p>
 
                 <p className='block text-gray-700 uppercase '>

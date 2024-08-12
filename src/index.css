@@ -58,3 +58,7 @@ font-family: "Poppins", sans-serif;
     animation-name: meteor;
     animation-timing-function: linear;
 }
+
+.zIndexModal {
+    z-index: 1400 !important; /* Asegura que el SweetAlert esté por encima del modal */
+  }

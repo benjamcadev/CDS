@@ -5,6 +5,12 @@ import ImagenNot from '../../public/images/PageNotFound.png';
 import { opcionesUnidadMedida } from '../../helpers/options';
 import AlertComponent from './AlertMui';
 
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
+
 const CustomTextField = ({ label, value, onChange, ...props }) => (
   <TextField
     label={label}
@@ -71,14 +77,27 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
     const file = e.target.files[0];
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
-    if (file && validTypes.includes(file.type)) {
+    if (file && !validTypes.includes(file.type)) {
+      MySwal.fire({
+        icon: 'error',
+        title: 'Formato de archivo incorrecto',
+        text: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.',
+        customClass: {
+          container: 'zIndexModal',
+        }
+      });
+
+      // Restablece el input de archivo para que pueda detectar el mismo archivo de nuevo
+      e.target.value = null;
+      return;
+    }
+
+    if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData({ ...formData, imagen_base64: reader.result });
       };
       reader.readAsDataURL(file);
-    } else {
-      alert('Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.');
     }
   };
 
@@ -90,49 +109,73 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           usuarioid: 1, // Reemplaza con el ID de usuario actual
         },
       });
-      setAlert({ open: true, message: 'Artículo Actualizado Exitosamente', severity: 'success' });
+
+      MySwal.fire({
+        icon: 'success',
+        title: 'Artículo Actualizado Exitosamente',
+        text: 'El artículo ha sido actualizado correctamente.',
+        customClass: {
+          container: 'zIndexModal',
+        }
+      });
+
       onUpdate(); // Actualizar la lista de artículos
-      setTimeout(() => {
-        setAlert({ open: false, message: '', severity: 'success' });
-        onClose(); // Cerrar el modal después de actualizar
-      }, 3000); // Cerrar la alerta después de 3 segundos
+      onClose(); // Cerrar el modal después de actualizar
     } catch (error) {
-      console.error('Error al actualizar el artículo:', error);
-      setAlert({ open: true, message: 'Error al actualizar el artículo', severity: 'error' });
-      setTimeout(() => {
-        setAlert({ open: false, message: '', severity: 'error' });
-      }, 3000); // Cerrar la alerta después de 3 segundos
+      MySwal.fire({
+        icon: 'error',
+        title: 'Error al actualizar el artículo',
+        text: 'Ocurrió un error al intentar actualizar el artículo. Inténtalo de nuevo más tarde.',
+      });
     }
   };
 
   const handleDelete = async () => {
-    try {
-      await axios.delete('/materiales/delete', {
-        headers: {
-          'Content-Type': 'application/json',
-          usuarioid: 1, // Reemplaza con el ID de usuario actual
-        },
-        data: { idarticulo: formData.idarticulo },
-      });
+    MySwal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esto, se eliminará el artículo y su stock en todas las bodegas.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        container: 'zIndexModal',
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete('/materiales/delete', {
+            headers: {
+              'Content-Type': 'application/json',
+              usuarioid: 1, // Reemplaza con el ID de usuario actual
+            },
+            data: { idarticulo: formData.idarticulo },
+          });
 
-      setAlert({ open: true, message: 'Artículo Eliminado Exitosamente', severity: 'success' });
-      setTimeout(() => {
-        setAlert({ open: false, message: '', severity: 'success' });
-        onClose(); // Cerrar el modal después de eliminar
-        onDelete(); // Actualizar la lista de artículos
-      }, 2500); // Cerrar la alerta después de 2.5 segundos
+          MySwal.fire({
+            icon: 'success',
+            title: 'Artículo Eliminado Exitosamente',
+            text: 'El artículo ha sido eliminado correctamente.',
+          });
 
-    } catch (error) {
-      //console.error('Error al eliminar el artículo:', error);
-      setAlert({ open: true, message: 'Error al eliminar el artículo', severity: 'error' });
-      setTimeout(() => {
-        setAlert({ open: false, message: '', severity: 'error' });
-      }, 3000); // Cerrar la alerta después de 3 segundos
-    }
+          onClose(); // Cerrar el modal después de eliminar
+          onDelete(); // Actualizar la lista de artículos
+        } catch (error) {
+          MySwal.fire({
+            icon: 'error',
+            title: 'Error al eliminar el artículo',
+            text: 'Ocurrió un error al intentar eliminar el artículo. Inténtalo de nuevo más tarde.',
+          });
+        }
+      }
+    });
   };
 
+
   return (
-    <Box component="form">
+    <Box component="form"  sx={{ mt: 0.1 }}>
       {alert.open && (
         <AlertComponent
           message={alert.message}
@@ -140,7 +183,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           onClose={() => setAlert({ open: false, message: '', severity: 'success' })}
         />
       )}
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 1 }}>
         <img
           src={formData.imagen_base64}
           alt="Artículo"
@@ -194,7 +237,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           onChange={handleChange}
         />
 
-        <FormControl variant="outlined" sx={{ m: 0.5, }}>
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
             <Select
               value={formData.unidad_medida}

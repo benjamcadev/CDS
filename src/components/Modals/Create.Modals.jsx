@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import CustomTextField from '../UI/CustomTextField';
 import ButtonMui from '../UI/ButtonMui';
-import AlertComponent from '../UI/AlertMui';
+
 import { getCategorias } from '../../helpers/getCategories';
 import { opcionesUnidadMedida } from '../../helpers/options';
 import axios from '../../helpers/axios';
@@ -15,6 +15,11 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal)
 
 const style = {
   position: 'absolute',
@@ -51,7 +56,7 @@ const CreateModal = ({ name, title, onSave }) => {
   });
   
   const [categorias, setCategorias] = useState([]);
-  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -68,7 +73,19 @@ const CreateModal = ({ name, title, onSave }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
-    setAlert({ open: false, message: '', severity: 'success' });
+    setFormData({
+      nombre: '',
+      sap: '',
+      codigo_interno: '',
+      sku: '',
+      unidad_medida: '',
+      precio: '',
+      cantidad: '',
+      comentario: '',
+      categoria_idcategoria: '',
+      imagen_base64: ImagenNot,
+    });
+    
   };
 
   const handleChange = (e) => {
@@ -79,21 +96,29 @@ const CreateModal = ({ name, title, onSave }) => {
     const file = e.target.files[0];
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
-    if (file && validTypes.includes(file.type)) {
+    if (file && !validTypes.includes(file.type)) {
+      MySwal.fire({
+        icon: 'error',
+        title: 'Formato de archivo incorrecto',
+        text: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.',
+        customClass: {
+          container: 'zIndexModal',
+        }
+      });
+
+      // Restablece el input de archivo para que pueda detectar el mismo archivo de nuevo
+      e.target.value = null;
+      return;
+    }
+
+    if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData({ ...formData, imagen_base64: reader.result });
       };
       reader.readAsDataURL(file);
-    } else {
-      setAlert({ open: false, message: '', severity: 'error' });
-      setTimeout(() => {
-        setAlert({ open: true, message: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.', severity: 'error' });
-      }, 100); // Usar un pequeño retraso para restablecer la alerta
-      setTimeout(() => setAlert({ open: false, message: '', severity: 'error' }), 3000); // Desaparecer alerta después de 3 segundos
     }
   };
-
   const handleSubmit = async () => {
     try {
       const response = await axios.post('/materiales/create', formData, {
@@ -102,7 +127,17 @@ const CreateModal = ({ name, title, onSave }) => {
           usuarioid: 1 // ID CON PERMISOS DE ADMINISTRADOR
         }
       });
-      //console.log(response.data);
+
+      MySwal.fire({
+        icon: 'success',
+        title: 'Artículo Creado Exitosamente',
+        text: 'Puedes continuar creando más artículos.',
+        customClass: {
+          container: 'zIndexModal', // Asegura que el SweetAlert esté por delante del modal
+        },
+        confirmButtonText: 'OK',
+      });
+
       setFormData({
         nombre: '',
         sap: '',
@@ -116,20 +151,23 @@ const CreateModal = ({ name, title, onSave }) => {
         imagen_base64: ImagenNot,
       });
 
-      setAlert({ open: true, message: 'Artículo Creado Exitosamente', severity: 'success' });
       onSave(); // Actualizar la lista de artículos
-      setTimeout(() => {
-        setAlert({ open: false, message: '', severity: 'success' });
-        handleClose(); // Cerrar el modal después de que la alerta desaparezca
-      }, 2500); 
-      // Desaparecer alerta después de 2.5 segundos
+      //Cerramos el modal
+      handleClose();
+      
+      // No cerramos el modal aquí, permitimos que el usuario continúe
     } catch (error) {
-
-      //console.error('Error al crear el artículo:', error);
-      setAlert({ open: true, message: 'Error al crear el artículo', severity: 'error' });
-      setTimeout(() => setAlert({ open: false, message: '', severity: 'error' }), 2500); // Desaparecer alerta después de 2.5 segundos
-    } 
+      MySwal.fire({
+        icon: 'error',
+        title: 'Error al crear el artículo',
+        text: 'Ocurrió un error al intentar crear el artículo. Inténtalo de nuevo más tarde.',
+        customClass: {
+          container: 'zIndexModal', // Asegura que el SweetAlert esté por delante del modal
+        },
+      });
+    }
   };
+
 
  
   return (
@@ -157,15 +195,8 @@ const CreateModal = ({ name, title, onSave }) => {
                 <CloseIcon />
               </IconButton>
             </Box>
-            {alert.open && (
-              <AlertComponent
-                message={alert.message}
-                severity={alert.severity}
-                onClose={() => setAlert({ open: false, message: '', severity: 'success' })}
-              />
-            )}
 
-            <Box component="form" sx={{mt: 0.1}}>
+            <Box component="form" sx={{ mt: 0.1 }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 1 }}>
                 {formData.imagen_base64 && (
                   <img
@@ -174,7 +205,7 @@ const CreateModal = ({ name, title, onSave }) => {
                     style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain' }}
                   />
                 )}
-            </Box>
+              </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
                 <input 
                   accept="image/*" 
@@ -182,10 +213,8 @@ const CreateModal = ({ name, title, onSave }) => {
                   multiple type="file" 
                   style={{ display: 'none' }} 
                   onChange={handleImageUpload} 
-
                 />
-                <label 
-                  htmlFor="contained-button-file">
+                <label htmlFor="contained-button-file">
                   <Button 
                     fullWidth 
                     variant="contained" 
@@ -196,7 +225,7 @@ const CreateModal = ({ name, title, onSave }) => {
               </Box>
             </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1.5 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1.5 }}>
               <CustomTextField 
                 id="nombre" 
                 label="Descripción del Articulo (Obligatorio)" 
@@ -220,7 +249,7 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.sku} 
                 onChange={handleChange} 
               />
-               <FormControl variant="outlined" sx={{  minWidth: 120 }}>
+               <FormControl variant="outlined" sx={{ minWidth: 120 }}>
                 <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
                   <Select
                     value={formData.unidad_medida}
@@ -255,7 +284,7 @@ const CreateModal = ({ name, title, onSave }) => {
                 value={formData.comentario} 
                 onChange={handleChange} 
               />
-              <FormControl variant="outlined" sx={{  minWidth: 120 }}>
+              <FormControl variant="outlined" sx={{ minWidth: 120 }}>
                 <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
                   <Select
                     value={formData.categoria_idcategoria}

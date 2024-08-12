@@ -386,6 +386,7 @@ export default function FormularioValeSalida() {
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Nro° Ticket de Trabajo</label>
             <TextField
+              type='number'
               id="areaSolicitante"
               size="normal"
               fullWidth

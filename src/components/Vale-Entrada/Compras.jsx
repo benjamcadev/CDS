@@ -1,4 +1,5 @@
-import { Autocomplete, Button, TextareaAutosize } from '@mui/material';
+import { useState } from 'react';
+import { Autocomplete, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
 
@@ -14,6 +15,22 @@ const OpcionesTipoRecepcion = [
 ];
 
 export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) => {
+
+  const [imagenSubida, setImagenSubida] = useState(false); 
+  // Estado para rastrear si la imagen ha sido subida
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setDatos({ ...datos, foto_documentos: reader.result });
+        };
+        reader.readAsDataURL(file);
+        setImagenSubida(true); // Marcar como que la imagen ha sido subida
+    }
+  };
+
+
   return (
     <>
       <div className="mb-5">
@@ -26,7 +43,12 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
           options={OpcionesTipoCompra}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           onBlur={(e) => setDatos({ ...datos, tipoCompra: e.target.value })}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => ( 
+            <TextField 
+              {...params}
+              inputProps={{ ...params.inputProps, readOnly: true }}    
+            />
+          )}
         />
       </div>
     
@@ -52,7 +74,12 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
           options={OpcionesTipoRecepcion}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           onBlur={(e) => setDatos({ ...datos, tipoRecepcion: e.target.value })}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => ( 
+            <TextField 
+              {...params}
+              inputProps={{ ...params.inputProps, readOnly: true }}    
+            />
+          )}
         />
       </div>
 
@@ -61,15 +88,22 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
         <input
           accept="image/*"
           id="contained-button-file"
-          multiple type="file"
-          style={{ display: 'none' }} />
-        <label
-          htmlFor="contained-button-file">
+          multiple
+          type="file"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            handleImageUpload(e); // Llama a la función que se pasa como prop para actualizar el estado en FormularioValeEntrada
+          }}
+
+        />
+        <label htmlFor="contained-button-file">
           <Button
             fullWidth
             variant="contained"
-            component="span">
-            Subir Imagen Del Documento
+            component="span"
+            style={{ backgroundColor: imagenSubida ? 'green' : '' }} // Cambiar color a verde si la imagen ha sido subida
+          >
+            {imagenSubida ? 'Documento Subido' : 'Subir Imagen Del Documento'}
           </Button>
         </label>
       </div>
@@ -102,7 +136,12 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
           options={responsablesBodega}
           isOptionEqualToValue={(option, value) => option.id === value.nombre}
           onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => ( 
+            <TextField 
+              {...params}
+              inputProps={{ ...params.inputProps, readOnly: true }}    
+            />
+          )}
         />
       </div>
     </>
