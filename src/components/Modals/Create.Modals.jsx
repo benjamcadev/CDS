@@ -15,9 +15,11 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import WebcamCapture from '../WebcamCapture';
 
 const MySwal = withReactContent(Swal)
 
@@ -42,6 +44,7 @@ const style = {
 
 const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     sap: '',
@@ -57,7 +60,6 @@ const CreateModal = ({ name, title, onSave }) => {
   
   const [categorias, setCategorias] = useState([]);
   
-
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -202,7 +204,7 @@ const CreateModal = ({ name, title, onSave }) => {
                   <img
                     src={formData.imagen_base64}
                     alt="Artículo"
-                    style={{ maxHeight: '210px', maxWidth: '100%', objectFit: 'contain' }}
+                    style={{ maxHeight: '300px', maxWidth: '100%', objectFit: 'contain' }}
                   />
                 )}
               </Box>
@@ -211,6 +213,7 @@ const CreateModal = ({ name, title, onSave }) => {
                   accept="image/*" 
                   id="contained-button-file" 
                   multiple type="file" 
+                  capture="environment" 
                   style={{ display: 'none' }} 
                   onChange={handleImageUpload} 
                 />
@@ -222,7 +225,14 @@ const CreateModal = ({ name, title, onSave }) => {
                     Subir Imagen Del Articulo
                   </Button>
                 </label>
+              <Box sx={{ ml:2 }}>
+                <WebcamCapture setImage={(img) => {
+                  setFormData({ ...formData, imagen_base64: img });
+                  closeCamera();
+                }} />
               </Box>
+              </Box>
+              
             </Box>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1.5 }}>
