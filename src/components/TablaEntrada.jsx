@@ -35,6 +35,7 @@ export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicacione
                     title: "Límite alcanzado",
                     text: "No se pueden agregar más de 20 artículos.",
                     icon: "warning",
+                    confirmButtonColor: '#3085d6',
                     
                 }).then(() => {
                     // Aquí se puede agregar alguna lógica si es necesario después de mostrar la alerta

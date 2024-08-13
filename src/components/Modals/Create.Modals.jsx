@@ -104,6 +104,7 @@ const CreateModal = ({ name, title, onSave }) => {
         icon: 'error',
         title: 'Formato de archivo incorrecto',
         text: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.',
+        confirmButtonColor: '#3085d6',
         customClass: {
           container: 'zIndexModal',
         }
@@ -138,6 +139,7 @@ const CreateModal = ({ name, title, onSave }) => {
         customClass: {
           container: 'zIndexModal', // Asegura que el SweetAlert esté por delante del modal
         },
+        confirmButtonColor: '#3085d6',
         confirmButtonText: 'OK',
       });
 
@@ -164,6 +166,7 @@ const CreateModal = ({ name, title, onSave }) => {
         icon: 'error',
         title: 'Error al crear el artículo',
         text: 'Ocurrió un error al intentar crear el artículo. Inténtalo de nuevo más tarde.',
+        confirmButtonColor: '#3085d6',
         customClass: {
           container: 'zIndexModal', // Asegura que el SweetAlert esté por delante del modal
         },

@@ -114,6 +114,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
         icon: 'success',
         title: 'Artículo Actualizado Exitosamente',
         text: 'El artículo ha sido actualizado correctamente.',
+        confirmButtonColor: '#3085d6',
         customClass: {
           container: 'zIndexModal',
         }
