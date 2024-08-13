@@ -8,6 +8,7 @@ import AlertComponent from './AlertMui';
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { useAuth } from '../../context/AuthContext';
 
 const MySwal = withReactContent(Swal)
 
@@ -24,6 +25,8 @@ const CustomTextField = ({ label, value, onChange, ...props }) => (
 );
 
 export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
+
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     ...article,
@@ -82,6 +85,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
         icon: 'error',
         title: 'Formato de archivo incorrecto',
         text: 'Por favor, sube una imagen en formato PNG, JPEG, JPG o WEBP.',
+        confirmButtonColor: '#3085d6',
         customClass: {
           container: 'zIndexModal',
         }
@@ -191,6 +195,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           style={{ maxHeight: '300px', maxWidth: '100%', objectFit: 'contain' }}
         />
       </Box>
+      {user.tipoUser === 1 ? (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
         <input
           accept="image/*"
@@ -209,6 +214,9 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           </Button>
         </label>
       </Box>
+      ) : (
+        <div></div>
+      )}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.3, mt: 0.2 }}>
         <CustomTextField
           id="Descripcion"
@@ -295,14 +303,21 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           <Typography variant="body2">No hay stock en ninguna bodega.</Typography>
         )}
       </Box>
-      <Box sx={{ mt: 1.5, display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="contained" color="primary" onClick={handleUpdate}>
-          Editar Articulo
-        </Button>
-        <Button variant="contained" color="warning" onClick={handleDelete}>
-          Eliminar
-        </Button>
-      </Box>
+      {/* Solo se muestra si el usuario es administrador en caso contrario se esconden   */}
+      {user.tipoUser === 1 ? (
+        <Box sx={{ mt: 1.5, display: 'flex', justifyContent: 'space-between' }}>
+          <Button variant="contained" color="primary" onClick={handleUpdate}>
+            Editar Articulo
+          </Button>
+          <Button variant="contained" color="warning" onClick={handleDelete}>
+            Eliminar
+          </Button>
+          
+        </Box>
+      ) : (
+        <div></div>
+      )
+    }
     </Box>
   );
 };

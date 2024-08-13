@@ -24,12 +24,15 @@ export default function Sidebar() {
       setOpen(false);
     }
   }, []);
+  
 
   const Menus = [
     { title: "Dashboard", spacing: true, link: "/" },
-    { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida" },
+    { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida" , visible: user?.tipoUser === 1 || user?.tipoUser === 3 },
 
-    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada" },
+  
+  
+    { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada", visible: user?.tipoUser === 1},
     //{ title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
 
     {
@@ -37,10 +40,11 @@ export default function Sidebar() {
       icon: <FaClipboardList />,
       link: "/Articulos",
       spacing: true,
+      visible: user?.tipoUser === 1 || user?.tipoUser === 3
      
     },
 
-    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" },
+    { title: "Reportes", icon: <FaFileInvoice />, link: "/reportes" , visible: user?.tipoUser === 1 },
 
     {
       title: "Opciones",
@@ -48,6 +52,7 @@ export default function Sidebar() {
       link: "/temporal",
       spacing: true,
       submenu: true,
+      visible: user?.tipoUser === 1,
       submenuItems: [
         { title: "Usuarios", link: "/usuarios" },
         { title: "Registrar Usuarios", link: "/register" },
@@ -56,6 +61,10 @@ export default function Sidebar() {
     },
     { title: "Cerrar Sesion", icon: <FaArrowRightFromBracket />, link: "", functionOnClick: logout },
   ];
+
+   // Filtrar menús visibles antes de renderizar
+   const filteredMenus = Menus.filter(menu => menu.visible !== false);
+
 
   return (
     <>
@@ -75,14 +84,13 @@ export default function Sidebar() {
             onClick={() => setOpen(!open)}
           />
           {open && (
-            <div>
-              <p className="text-gray-300 text-xs font-medium">Bienvenido!</p>
-              <p className="text-gray-300 font-medium">{user.nombre}</p>
+            <div className="mt-5">
+              <p className="text-gray-300 text-xs font-medium uppercase">Bienvenido!</p>
+              <p className="text-gray-300  font-bold uppercase">{user.nombre}</p>
             </div>
           )}
-          <ul className="mt-8">
-            {Menus.map((menu, index) => (
-              // se usa locoation.pathname para saber la ubicacion de la pagina actual y resaltar el menu actual con bg-blue-600 
+          <ul className="mt-4">
+            {filteredMenus.map((menu, index) => (
               <div key={index}>
                 <Link to={menu.link} onClick={menu.functionOnClick}>
                   <li className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-gray-600 rounded-md ${menu.spacing ? "mt-9" : "mt-2"} ${location.pathname === menu.link ? "bg-blue-600" : ""}`}>
@@ -110,7 +118,7 @@ export default function Sidebar() {
             ))}
           </ul>
           {open && (
-            <div className=" mt-6 ">
+            <div className="mt-6">
               <p className="text-gray-400 text-xs font-medium">© 2024</p>
               <Link to={"https://github.com/benjamcadev"} className="text-gray-400 text-xs font-medium">By benjamcadev 👨🏻‍💻</Link>
               <div>  

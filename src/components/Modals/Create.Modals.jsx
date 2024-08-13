@@ -23,6 +23,8 @@ import WebcamCapture from '../WebcamCapture';
 
 const MySwal = withReactContent(Swal)
 
+
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -44,6 +46,7 @@ const style = {
 
 const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
+  
   
   const [cameraOpen, setCameraOpen] = useState(false); 
   const [formData, setFormData] = useState({
@@ -123,6 +126,7 @@ const CreateModal = ({ name, title, onSave }) => {
       reader.readAsDataURL(file);
     }
   };
+  
   const handleSubmit = async () => {
     try {
       const response = await axios.post('/materiales/create', formData, {

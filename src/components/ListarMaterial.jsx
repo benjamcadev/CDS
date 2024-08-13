@@ -8,6 +8,7 @@ import DetailModal from './Modals/Detail.Modal';
 import { Button } from '@mui/material';
 import SearchBar from './UI/SearchBar';
 import CreateModal from './Modals/Create.Modals';
+import { useAuth } from '../context/AuthContext';
 
 
 export default function MaterialDataGrid() {
@@ -24,6 +25,7 @@ export default function MaterialDataGrid() {
   const [modalOpen, setModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const { user } = useAuth();
 
   const fetchArticulos = async (currentPage, currentPageSize) => {
     try {
@@ -155,7 +157,11 @@ export default function MaterialDataGrid() {
           onChange={(e) => setSearchValue(e.target.value)}
           onEnter={handleSearch}
         />
-        <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />
+        {user.tipoUser === 1 ? (
+          <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />
+        ) : (
+          <div></div>
+        )}
       </div>
       {error && (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt:3 }}>
