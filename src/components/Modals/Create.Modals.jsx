@@ -21,7 +21,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import WebcamCapture from '../WebcamCapture';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 const MySwal = withReactContent(Swal)
 
