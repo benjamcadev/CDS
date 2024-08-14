@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Autocomplete, Button } from '@mui/material';
+import { Autocomplete, Box, Button, Modal } from '@mui/material';
 import TextField from '@mui/material/TextField';
+import WebcamCapture from '../WebcamCapture';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
 const OpcionesTipoCompra = [
@@ -14,8 +16,29 @@ const OpcionesTipoRecepcion = [
   { label: 'TICA', value: 'TICA', id: 2 },
 ];
 
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '90%',
+  maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 2,
+  overflowY: 'auto', // Añade overflow para permitir el desplazamiento si es necesario
+  maxHeight: '90vh', //  modal no se extienda más allá de la vista
+  '@media (min-width:600px)': {
+    p: 2,
+    maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
+  },
+};
+
 export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) => {
 
+  const [cameraOpen, setCameraOpen] = useState(false); 
   const [imagenSubida, setImagenSubida] = useState(false); 
   // Estado para rastrear si la imagen ha sido subida
   const handleImageUpload = (e) => {
@@ -29,6 +52,10 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
         setImagenSubida(true); // Marcar como que la imagen ha sido subida
     }
   };
+
+  
+  const openCamera = () => setCameraOpen(true);
+  const closeCamera = () => setCameraOpen(false);
 
 
   return (
@@ -83,7 +110,7 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
         />
       </div>
 
-      <div className="mb-5">
+      <div className="mb-5 flex">
         <label className="block text-gray-700 uppercase font-bold" htmlFor="foto">Foto Documento</label>
         <input
           accept="image/*"
@@ -106,6 +133,26 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
             {imagenSubida ? 'Documento Subido' : 'Subir Imagen Del Documento'}
           </Button>
         </label>
+        <Box sx={{ ml: 2 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              component="span"
+              onClick={openCamera}
+            >
+            <CameraAltIcon />
+          </Button>
+          </Box>
+        {/* Modal para abrir la cámara */}
+        <Modal open={cameraOpen} onClose={closeCamera}>
+          <Box sx={{ ...style,  maxWidth: '200%', textAlign: 'center' }}>
+            <WebcamCapture setImage={(img) => {
+              setDatos({ ...datos, imagen_base64: img });
+              setImagenSubida(true);
+              closeCamera();
+            }} />
+          </Box>
+        </Modal>
       </div>
 
       <div className="mb-5">

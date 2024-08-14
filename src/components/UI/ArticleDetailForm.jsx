@@ -163,6 +163,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
             icon: 'success',
             title: 'Artículo Eliminado Exitosamente',
             text: 'El artículo ha sido eliminado correctamente.',
+            confirmButtonColor: '#3085d6',
           });
 
           onClose(); // Cerrar el modal después de eliminar
@@ -172,6 +173,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
             icon: 'error',
             title: 'Error al eliminar el artículo',
             text: 'Ocurrió un error al intentar eliminar el artículo. Inténtalo de nuevo más tarde.',
+            confirmButtonColor: '#3085d6',
           });
         }
       }

@@ -120,9 +120,23 @@ export default function Sidebar() {
           {open && (
             <div className="mt-6">
               <p className="text-gray-400 text-xs font-medium">© 2024</p>
-              <Link to={"https://github.com/benjamcadev"} className="text-gray-400 text-xs font-medium">By benjamcadev 👨🏻‍💻</Link>
+              <a 
+                href="https://github.com/benjamcadev" 
+                className="text-gray-400 text-xs font-medium" 
+                target="_blank" 
+                rel="noopener noreferrer"
+               >
+                By benjamcadev 👨🏻‍💻
+              </a>
               <div>  
-               <Link to={"https://github.com/FrancoDev7"} className="text-gray-400 text-xs font-medium">By FrancoDev7 👨🏻‍💻</Link>
+                <a 
+                  href="https://github.com/FrancoDev7" 
+                  className="text-gray-400 text-xs font-medium" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  By FrancoDev7 👨🏻‍💻
+                </a>
               </div>
             </div>
           )}
