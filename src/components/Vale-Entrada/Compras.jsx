@@ -147,7 +147,7 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
         <Modal open={cameraOpen} onClose={closeCamera}>
           <Box sx={{ ...style,  maxWidth: '200%', textAlign: 'center' }}>
             <WebcamCapture setImage={(img) => {
-              setDatos({ ...datos, imagen_base64: img });
+              setDatos({ ...datos, foto_documentos: img });
               setImagenSubida(true);
               closeCamera();
             }} />
