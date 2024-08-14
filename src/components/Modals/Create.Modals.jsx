@@ -21,9 +21,11 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import WebcamCapture from '../WebcamCapture';
 
+import { useAuth } from '../context/AuthContext';
+
 const MySwal = withReactContent(Swal)
 
-
+const { user } = useAuth();
 
 const style = {
   position: 'absolute',
@@ -132,7 +134,7 @@ const CreateModal = ({ name, title, onSave }) => {
       const response = await axios.post('/materiales/create', formData, {
         headers: {
           'Content-Type': 'application/json',
-          usuarioid: 1 // ID CON PERMISOS DE ADMINISTRADOR
+          usuarioid: user.id // ID CON PERMISOS DE ADMINISTRADOR
         }
       });
 
