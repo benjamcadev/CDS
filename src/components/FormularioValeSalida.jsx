@@ -420,7 +420,12 @@ export default function FormularioValeSalida() {
               options={responsables}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
               onChange={(e, value) => { setDatos({ ...datos, responsableRetira: value.label, responsableRetiraCorreo: value.correo }) }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField 
+                  {...params} 
+                  inputProps={{ ...params.inputProps, readOnly: true }}                  
+                />
+              )}
             />
           </div>
 
@@ -441,7 +446,12 @@ export default function FormularioValeSalida() {
               options={responsablesBodega}
               isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
               onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.id, responsableEntregaCorreo: value.correo }) }}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField 
+                  {...params} 
+                  inputProps={{ ...params.inputProps, readOnly: true }}                  
+                />
+              )}
             />
           </div>
 
