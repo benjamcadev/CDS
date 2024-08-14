@@ -25,7 +25,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const MySwal = withReactContent(Swal)
 
-const { user } = useAuth();
+
 
 const style = {
   position: 'absolute',
@@ -48,6 +48,8 @@ const style = {
 
 const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
+
+  const { user } = useAuth();
   
   
   const [cameraOpen, setCameraOpen] = useState(false); 
