@@ -301,7 +301,7 @@ export default function FormularioValeSalida() {
   const handleSubmit = (e) => {
     e.preventDefault()
     //VALIDAR DATOS VACIOS
-    if (datos.ticketTrabajo == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
+    //if (datos.ticketTrabajo == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el area', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableRetira == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable que retira', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.responsableEntrega == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar el nombre responsable de bodega', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
     if (datos.descripcion == '') { setAlert({ ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 }); return }
@@ -386,7 +386,7 @@ export default function FormularioValeSalida() {
           <div className="mb-5">
             <label className="block text-gray-700 uppercase font-bold" htmlFor="areaSolicitante">Nro° Ticket de Trabajo</label>
             <TextField
-              type='number'
+              type='text'
               id="areaSolicitante"
               size="normal"
               fullWidth

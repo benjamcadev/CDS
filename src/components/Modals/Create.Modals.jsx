@@ -338,7 +338,13 @@ const CreateModal = ({ name, title, onSave }) => {
               </FormControl>
             </Box>
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <Button fullWidth variant="contained" color="primary" onClick={handleSubmit}>
+              <Button 
+                fullWidth 
+                variant="contained" 
+                color="primary" 
+                onClick={handleSubmit}
+                sx={{ height: '50px' }}
+                >
                 Guardar
               </Button>
             </Box>
