@@ -110,7 +110,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
       await axios.put('/materiales/update', formData, {
         headers: {
           'Content-Type': 'application/json',
-          usuarioid: 1, // Reemplaza con el ID de usuario actual
+          usuarioid: user.id, // Reemplaza con el ID de usuario actual
         },
       });
 
@@ -154,7 +154,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           await axios.delete('/materiales/delete', {
             headers: {
               'Content-Type': 'application/json',
-              usuarioid: 1, // Reemplaza con el ID de usuario actual
+              usuarioid: user.id, // Reemplaza con el ID de usuario actual
             },
             data: { idarticulo: formData.idarticulo },
           });
