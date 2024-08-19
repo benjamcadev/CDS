@@ -42,7 +42,9 @@ const WebcamCapture = ({ setImage }) => {
         audio={false}
         ref={webcamRef}
         videoConstraints={{ deviceId: deviceId }}
-        screenshotFormat="image/jpeg"
+        screenshotFormat="image/png"
+        forceScreenshotSourceSize = "true"
+        screenshotQuality={1}
         width="100%"
       />
     ) : (
