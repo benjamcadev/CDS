@@ -57,24 +57,18 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
 
   }, [isAuthenticated])
 
-  useEffect(() => {
+  //useEffect(() => {
 
-    let timer1 = setTimeout(() => setShowDarkMode(!showDarkMode), delay * 1000);
-    return () => {
+    //let timer1 = setTimeout(() => setShowDarkMode(!showDarkMode), delay * 1000);
+    //return () => {
       //clearTimeout(timer1);
-    };
-  }, [])
+    //};
+  //}, [])
 
   useEffect(() => {
-
-    let timer2 = setInterval(() => setShowDarkMode(!showDarkMode), 15000);
-
-
-    return () => {
-      //clearTimeout(timer1);
-      clearInterval(timer2)
-    };
-  }, [showDarkMode])
+    let timer2 = setInterval(() => setShowDarkMode(!showDarkMode), 10000);
+    return () => clearInterval(timer2);
+}, [showDarkMode])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -99,7 +93,8 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
   }
   return (
     <div className="mx-auto my-9">
-      {showDarkMode ?  '' : <Meteors number={50} />}
+      {showDarkMode ? <Meteors number={50} key="dark" /> : <Meteors number={50} key="light" />}
+
      
 
       <Alert
@@ -108,7 +103,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
       />
 
 
-      <div className={`rounded-md py-5 px-5 m-auto transition-all duration-700    ${showDarkMode ? "bg-white shadow-md " : "shadow-xl bg-gray-900 "} `}>
+      <div className={` login-container rounded-md py-5 px-5 m-auto transition-all duration-700  ${showDarkMode ? "bg-white shadow-md " : "shadow-xl bg-gray-900 "} `}>
         <header className='flex h-20 rounded-md p-4 justify-center  bg-gray-900 '>
           <div className={` absolute transition-opacity ease-in duration-700 ${showDarkMode ? "opacity-100" : "opacity-0"}`}  >
             <img className=" h-11 w-18 md:h-12 " src={logoPsinet} alt="Your Company" />
@@ -134,26 +129,27 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
            
             <div className={`mb-5 ${showDarkMode ? '' : ''}`} >
               <TextField
-              variant='outlined'
-              sx={{
-                
-                // Root class for the input field
-                "& .MuiOutlinedInput-root": {
-                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
-                  fontFamily: "Arial",
-                  fontWeight: "bold",
-                  // Class for the border around the input field
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
-                    borderWidth: "2px",
+                variant='outlined'
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: `${showDarkMode ? '#2e2e2e' : '#fff'}`, // Ajuste del color del texto
+                    fontFamily: "Arial",
+                    fontWeight: "bold",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
+                      borderWidth: "2px",
+                    },
                   },
-                },
-                // Class for the label of the input field
-                "& .MuiInputLabel-outlined": {
-                  color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
-                  fontWeight: "bold",
-                },
-              }}
+                  "& .MuiInputLabel-outlined": {
+                    color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
+                    fontWeight: "bold",
+                  },
+                  "& input:-webkit-autofill": {
+                    WebkitBoxShadow: `0 0 0px 1000px ${showDarkMode ? '#fff' : '#2e2e2e'} inset`,
+                    WebkitTextFillColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
+                  },
+                
+                }}
                 required
                 label='Correo'
                 id='correo'
@@ -186,6 +182,10 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
                 "& .MuiInputLabel-outlined": {
                   color: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                   fontWeight: "bold",
+                },
+                "& input:-webkit-autofill": {
+                  WebkitBoxShadow: `0 0 0px 1000px ${showDarkMode ? '#fff' : '#2e2e2e'} inset`,
+                  WebkitTextFillColor: `${showDarkMode ? '#2e2e2e' : '#fff'}`,
                 },
               }}
                 required

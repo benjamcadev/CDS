@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import CustomTextField from '../UI/CustomTextField';
 import ButtonMui from '../UI/ButtonMui';
 
@@ -46,6 +47,8 @@ const style = {
 
 const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
+
+  const { user } = useAuth();
   
   
   const [cameraOpen, setCameraOpen] = useState(false); 
@@ -132,7 +135,7 @@ const CreateModal = ({ name, title, onSave }) => {
       const response = await axios.post('/materiales/create', formData, {
         headers: {
           'Content-Type': 'application/json',
-          usuarioid: 1 // ID CON PERMISOS DE ADMINISTRADOR
+          usuarioid: user.id,// ID CON PERMISOS DE ADMINISTRADOR
         }
       });
 

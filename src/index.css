@@ -54,6 +54,20 @@ font-family: "Poppins", sans-serif;
     }
 }
 
+.login-container {
+    z-index: 2; /* Debe ser mayor que el z-index de los meteoros */
+    position: relative; /* Asegura que el z-index funcione correctamente */
+}
+
+.meteors-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1; /* Mantén este valor menor que el del login */
+}
 .animate-meteor-effect {
     animation-name: meteor;
     animation-timing-function: linear;
@@ -62,3 +76,13 @@ font-family: "Poppins", sans-serif;
 .zIndexModal {
     z-index: 1400 !important; /* Asegura que el SweetAlert esté por encima del modal */
   }
+  
+
+  input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    background-color: transparent !important;
+    //-webkit-text-fill-color: #fff !important; /* Cambia esto según el modo oscuro o claro */
+    box-shadow: 0 0 0px 1000px transparent inset;
+    border-color: transparent !important;
+}

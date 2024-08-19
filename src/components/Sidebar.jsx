@@ -18,7 +18,7 @@ export default function Sidebar() {
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const location = useLocation();
-
+  
   useEffect(() => {
     if (window.innerWidth <= 768) {
       setOpen(false);
@@ -69,8 +69,8 @@ export default function Sidebar() {
   return (
     <>
       {isAuthenticated ? (
-        //<div  style={{ height: '190vh' }}className={`bg-gray-800 h-full flex flex-col  overflow-y-auto p-5 pt-8 mr-4 duration-300 ${open ? 'w-' : 'w-20 no-scrollbar'} relative  `}>
-        <div style={{ height: '185vh' }} className={`bg-gray-800 h-screen flex flex-col  overflow-y-auto p-5 pt-8 mr-4  ${open ? 'w-64' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
+      
+        <div style={{ height: '185vh' }} className={`bg-gray-800 h-screen flex flex-col  overflow-y-auto p-5 pt-8 mr-4  ${open ? 'w-[64]' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
           
           <div className="inline-flex">
             {open ? (
@@ -80,11 +80,11 @@ export default function Sidebar() {
             )}
           </div>
           <FaAngleLeft
-            className={`bg-white text-gray-800 text-3xl rounded-full absolute -right-0 mr-1 sm:top-20 md:top-24 lg:top-24 border border-gray-800 cursor-pointer ${!open && "rotate-180 right-5 z-50"}`}
+            className={`bg-white text-gray-800 text-3xl rounded-full absolute -right-0 mr-2 sm:top-20 md:top-24 lg:top-24 border border-gray-800 cursor-pointer ${!open && "rotate-180 right-5 z-50"}`}
             onClick={() => setOpen(!open)}
           />
           {open && (
-            <div className="mt-5">
+            <div className="mt-9">
               <p className="text-gray-300 text-xs font-medium uppercase">Bienvenido!</p>
               <p className="text-gray-300  font-bold uppercase">{user.nombre}</p>
             </div>

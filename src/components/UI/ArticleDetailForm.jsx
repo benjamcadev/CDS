@@ -1,16 +1,37 @@
 import { useEffect, useState } from 'react';
-import { TextField, Button, Box, Grid, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, Box, Grid, Typography, FormControl, InputLabel, Select, MenuItem, Modal } from '@mui/material';
 import axios from '../../helpers/axios';
 import ImagenNot from '../../public/images/PageNotFound.png';
 import { opcionesUnidadMedida } from '../../helpers/options';
 import AlertComponent from './AlertMui';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '../../context/AuthContext';
+import WebcamCapture from '../WebcamCapture';
 
 const MySwal = withReactContent(Swal)
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '90%',
+  maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 2,
+  overflowY: 'auto', // Añade overflow para permitir el desplazamiento si es necesario
+  maxHeight: '90vh', //  modal no se extienda más allá de la vista
+  '@media (min-width:600px)': {
+    p: 2,
+    maxWidth: '40%', // Cambia a un porcentaje para adaptarse mejor
+  },
+};
 
 const CustomTextField = ({ label, value, onChange, ...props }) => (
   <TextField
@@ -27,6 +48,8 @@ const CustomTextField = ({ label, value, onChange, ...props }) => (
 export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
   const { user } = useAuth();
+
+  const [cameraOpen, setCameraOpen] = useState(false); 
 
   const [formData, setFormData] = useState({
     ...article,
@@ -110,7 +133,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
       await axios.put('/materiales/update', formData, {
         headers: {
           'Content-Type': 'application/json',
-          usuarioid: 1, // Reemplaza con el ID de usuario actual
+          usuarioid: user.id, // Reemplaza con el ID de usuario actual
         },
       });
 
@@ -180,6 +203,9 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
     });
   };
 
+  const openCamera = () => setCameraOpen(true);
+  const closeCamera = () => setCameraOpen(false);
+
 
   return (
     <Box component="form"  sx={{ mt: 0.1 }}>
@@ -215,6 +241,27 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
             Subir Nueva Imagen Del Articulo
           </Button>
         </label>
+        <Box sx={{ ml: 2 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            component="span"
+            onClick={openCamera}
+          >
+            <CameraAltIcon />
+          </Button>
+          </Box>
+        
+            
+          {/* Modal para abrir la cámara */}
+          <Modal open={cameraOpen} onClose={closeCamera}>
+          <Box sx={{ ...style, maxWidth: '200%', textAlign: 'center' }}>
+            <WebcamCapture setImage={(img) => {
+              setFormData({ ...formData, imagen_base64: img });
+              closeCamera();
+            }} />
+          </Box>
+        </Modal>
       </Box>
       ) : (
         <div></div>

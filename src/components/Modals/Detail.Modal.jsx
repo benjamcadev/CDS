@@ -1,8 +1,9 @@
 import React from 'react';
+import ArticleDetailForm from '../UI/ArticleDetailForm';
+
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import ArticleDetailForm from '../UI/ArticleDetailForm';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
