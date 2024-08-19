@@ -41,11 +41,15 @@ const WebcamCapture = ({ setImage }) => {
       <Webcam
         audio={false}
         ref={webcamRef}
-        videoConstraints={{ deviceId: deviceId }}
-        screenshotFormat="image/png"
-        forceScreenshotSourceSize = "true"
+        videoConstraints={{ 
+          deviceId: deviceId,
+          width: 1280,
+          height: 720
+        }}
+        screenshotFormat="image/webp"
+        forceScreenshotSourceSize = {true}
         screenshotQuality={1}
-        width="100%"
+        
       />
     ) : (
       <p>No se encontró una cámara</p>
