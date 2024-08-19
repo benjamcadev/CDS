@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '../../context/AuthContext';
 import WebcamCapture from '../WebcamCapture';
+import { getCategorias } from '../../helpers/getCategories';
 
 const MySwal = withReactContent(Swal)
 
@@ -98,6 +99,20 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
       [e.target.id]: e.target.value,
     });
   };
+
+  const [categorias, setCategorias] = useState([]);
+  
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const data = await getCategorias();
+        setCategorias(data);
+      } catch (error) {
+        console.error('Error al obtener las categorías:', error);
+      }
+    };
+    fetchCategorias();
+  }, []);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -321,7 +336,26 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           type="number"
           value={formData.precio || ''}
           onChange={handleChange}
-      />
+        />
+        <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+          <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
+            <Select
+              value={formData.categoria_idcategoria}
+              labelId="categoria_idcategoria"
+              id="categoria_idcategoria"
+              onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
+              fullWidth
+            >
+            <MenuItem value="" disabled >
+              ---Seleccione---
+            </MenuItem>
+            {categorias.map((categoria) => (
+              <MenuItem key={categoria.idcategoria} value={categoria.idcategoria}>
+                {categoria.nombre}
+              </MenuItem>
+            ))}
+            </Select>
+        </FormControl>
       </Box>
       <Box sx={{ mt: 0.2 }}>
         <Typography variant="h7" sx={{ fontWeight: 'bold' }}>Stock Por Bodega</Typography>
