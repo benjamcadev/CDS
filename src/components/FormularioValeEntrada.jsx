@@ -15,9 +15,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/es';
+import { useAuth } from '../context/AuthContext';
 
 export default function FormularioValeEntrada() {
   let { idTicket } = useParams();
+
+  const { user } = useAuth();
 
   const [datos, setDatos] = useState({
     fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
@@ -249,7 +252,7 @@ export default function FormularioValeEntrada() {
       responsable_bodega: datos.responsableEntrega,
       foto_documentos: datos.foto_documentos,
       tipo_ticket_idtipo_ticket: tipo_ticket_idtipo_ticket,
-      usuario_idusuario: 1  // ID del usuario logueado
+      usuario_idusuario: user.id,  // ID del usuario logueado
     };
 
     setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Ticket...', detalle_tipo: '', time: null });
