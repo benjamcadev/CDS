@@ -63,7 +63,12 @@ export const Devolucion = ({ datos, setDatos, responsables, responsablesBodega, 
           id="responsableBodega"
           options={responsablesBodega}
           isOptionEqualToValue={(option, value) => option.id === value.nombre}
-          onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+          onChange={(e, value) => { setDatos({ 
+            ...datos, 
+            responsableEntrega: value.label, 
+            responsableEntregaCorreo: value.correo,
+            usuario_idusuario: value.id  // Almacenar el ID del responsable
+          }) }}
           renderInput={(params) => ( 
             <TextField 
               {...params}
@@ -83,7 +88,12 @@ export const Devolucion = ({ datos, setDatos, responsables, responsablesBodega, 
           id="responsable"
           options={responsables}
           isOptionEqualToValue={(option, value) => option.id === value.id} //SOLO ARA SACAR UN WARNING POR CONSOLA
-          onChange={(e, value) => { setDatos({ ...datos, responsableRetira: value.label, responsableRetiraCorreo: value.correo }) }}
+          onChange={(e, value) => { setDatos({ 
+            ...datos, 
+            responsableRetira: value.label, 
+            responsableRetiraCorreo: value.correo,
+            usuario_idusuario: value.id  // Almacenar el ID del responsable
+           }) }}
           renderInput={(params) => ( 
             <TextField 
               {...params}

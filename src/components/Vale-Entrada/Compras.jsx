@@ -167,6 +167,7 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
         />
       </div>
 
+   
       <div className="mb-5">
         <label className="block text-gray-700 uppercase font-bold" htmlFor="responsableBodega">Responsable Bodega</label>
         <Autocomplete
@@ -181,8 +182,17 @@ export const Compra = ({ datos, setDatos, responsables, responsablesBodega  }) =
           }
           id="responsableBodega"
           options={responsablesBodega}
-          isOptionEqualToValue={(option, value) => option.id === value.nombre}
-          onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(e, value) => {
+            if (value) {
+              setDatos({ 
+                ...datos, 
+                responsableEntrega: value.label, 
+                responsableEntregaCorreo: value.correo,
+                usuario_idusuario: value.id  // Almacenar el ID del responsable
+              });
+            }
+          }}
           renderInput={(params) => ( 
             <TextField 
               {...params}

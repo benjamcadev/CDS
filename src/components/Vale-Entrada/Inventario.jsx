@@ -19,7 +19,12 @@ export const Inventario = ({ datos, setDatos, responsables, responsablesBodega  
           id="responsableBodega"
           options={responsablesBodega}
           isOptionEqualToValue={(option, value) => option.id === value.nombre}
-          onChange={(e, value) => { setDatos({ ...datos, responsableEntrega: value.label, responsableEntregaCorreo: value.correo }) }}
+          onChange={(e, value) => { setDatos({ 
+            ...datos, 
+            responsableEntrega: value.label, 
+            responsableEntregaCorreo: value.correo ,
+            usuario_idusuario: value.id  // Almacenar el ID del responsable
+          }) }}
           renderInput={(params) => ( 
             <TextField 
               {...params}
