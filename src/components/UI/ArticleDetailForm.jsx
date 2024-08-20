@@ -6,7 +6,6 @@ import { opcionesUnidadMedida } from '../../helpers/options';
 import AlertComponent from './AlertMui';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
-
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '../../context/AuthContext';
@@ -161,6 +160,8 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           container: 'zIndexModal',
         }
       });
+
+      console.log(formData);
 
       onUpdate(); // Actualizar la lista de artículos
       onClose(); // Cerrar el modal después de actualizar
@@ -335,6 +336,12 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           label="Precio"
           type="number"
           value={formData.precio || ''}
+          onChange={handleChange}
+        />
+        <CustomTextField
+          id="comentario"
+          label="Comentario"
+          value={formData.comentario || ''}
           onChange={handleChange}
         />
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>

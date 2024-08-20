@@ -195,7 +195,11 @@ export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicacione
                         obj.bodega = newValue ? newValue.idbodegas : '';
                         setRows(newArr);
                     }}
-                    renderInput={(params) => <TextField {...params} label="Selecciona una bodega" variant="outlined" />}
+                    renderInput={(params) => (
+                        <TextField 
+                            {...params} label="Selecciona una bodega" variant="outlined" 
+                            inputProps={{ ...params.inputProps, readOnly: true }}
+                        />)}
                     isOptionEqualToValue={(option, value) => option.idbodegas === value.idbodegas}
                 />
             ),
@@ -222,7 +226,11 @@ export default function TablaEntrada({ rows, setRows, datos, bodegas, ubicacione
                             }
                         }
                     }}
-                    renderInput={(inputParams) => <TextField {...inputParams} label="Selecciona una ubicacion" variant="outlined" />}
+                    renderInput={(inputParams) => ( 
+                        <TextField 
+                            {...inputParams} label="Selecciona una ubicacion" variant="outlined"
+                            inputProps={{ ...inputParams.inputProps, readOnly: true }} 
+                        />)}
                     isOptionEqualToValue={(option, value) => option.id_ubicacion_bodegas === value.id_ubicacion_bodegas}
                 />
             ),

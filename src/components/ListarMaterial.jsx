@@ -62,6 +62,8 @@ export default function MaterialDataGrid() {
         id: articulo.id,
       }));
 
+      console.log(articulosConCantidad);
+
       // Filtrar duplicados
       const uniqueArticulos = articulosConCantidad.filter(
         (articulo, index, self) =>
@@ -157,11 +159,10 @@ export default function MaterialDataGrid() {
           onChange={(e) => setSearchValue(e.target.value)}
           onEnter={handleSearch}
         />
-        {user.tipoUser === 1 ? (
-          <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />
-        ) : (
-          <div></div>
-        )}
+        {user.tipoUser === 1 
+          ? ( <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />) 
+          : ( <div></div> )
+        }
       </div>
       {error && (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt:3 }}>
