@@ -233,6 +233,22 @@ export default function FormularioValeEntrada() {
   
 
   const validarDatos = () => {
+
+    // Verificar si hay materiales sin guardar
+    const materialSinGuardar = rows.some(row => !row.isSaved || !row.descripcion || !row.cantidad || !row.bodega || !row.ubicacion);
+
+    if (materialSinGuardar) {
+        setAlert({
+            estado: true,
+            mensaje: 'Hay materiales sin guardar. Asegúrate de guardar todos los materiales antes de cerrar el ticket y Revisa que cada campo tenga un valor válido.',
+            tipo: 'error',
+            titulo: 'Error',
+            detalle_tipo: 'error_validation',
+            time: 10000,
+        });
+        return;
+    }
+
     if (datos.tipoTicket === '') {
       setAlert({ ...alert, estado: true, mensaje: 'Falta completar el tipo de ticket', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 });
       return false;
