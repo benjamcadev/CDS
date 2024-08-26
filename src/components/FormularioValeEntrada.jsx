@@ -235,18 +235,28 @@ export default function FormularioValeEntrada() {
   const validarDatos = () => {
 
     // Verificar si hay materiales sin guardar
-    const materialSinGuardar = rows.some(row => !row.isSaved || !row.descripcion || !row.cantidad || !row.bodega || !row.ubicacion);
+    //Si hay una fila que cumple con estas condiciones, some() devuelve true. Si ninguna fila cumple la condición, devuelve false.
+    const materialSinGuardar = rows.some(row => 
+      !row.descripcion ||  // Verifica si la descripción del material está vacía o no definida
+      !row.cantidad ||     // Verifica si la cantidad del material está vacía, es cero o no está definida
+      !row.bodega ||       // Verifica si la bodega no está seleccionada o definida
+      !row.ubicacion       // Verifica si la ubicación no está seleccionada o definida
+    );
+
+    // `rows` es un arreglo de objetos, donde cada objeto representa una fila con información de un material.
+    // `rows.some(...)` devuelve `true` si al menos una fila cumple con la condición indicada dentro de la función de flecha (es decir, si hay al menos un material con campos incompletos).
 
     if (materialSinGuardar) {
-        setAlert({
-            estado: true,
-            mensaje: 'Hay materiales sin guardar. Asegúrate de guardar todos los materiales antes de cerrar el ticket y Revisa que cada campo tenga un valor válido.',
-            tipo: 'error',
-            titulo: 'Error',
-            detalle_tipo: 'error_validation',
-            time: 10000,
-        });
-        return;
+      // Si hay al menos un material sin guardar (con campos incompletos), muestra una alerta al usuario
+      setAlert({
+          estado: true,                        
+          mensaje: 'Hay materiales sin guardar. Asegúrate de guardar todos los materiales antes de cerrar el ticket y Revisa que cada campo tenga un valor válido.', 
+          tipo: 'error',                           
+          titulo: 'Error',                        
+          detalle_tipo: 'error_validation',        
+          time: 10000,                             
+      });
+      return; 
     }
 
     if (datos.tipoTicket === '') {

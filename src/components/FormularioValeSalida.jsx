@@ -298,11 +298,11 @@ export default function FormularioValeSalida() {
 
    ]; */}
 
-   const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     // Verificar si hay materiales sin guardar
-    const materialSinGuardar = rows.some(row => !row.isSaved || !row.descripcion || !row.cantidad || !row.bodega || !row.ubicacion);
+    const materialSinGuardar = rows.some(row => !row.descripcion || !row.cantidad || !row.bodega || !row.ubicacion);
 
     if (materialSinGuardar) {
         setAlert({
@@ -356,7 +356,7 @@ export default function FormularioValeSalida() {
 
     // Enviar los datos
     enviarDatos();
-};
+  };
 
   const enviarDatos = async () => {
 
