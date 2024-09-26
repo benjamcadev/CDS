@@ -189,13 +189,14 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
       }
     }).then(async (result) => {
       if (result.isConfirmed) {
+        console.log(formData)
         try {
           await axios.delete('/materiales/delete', {
             headers: {
               'Content-Type': 'application/json',
               usuarioid: user.id, // Reemplaza con el ID de usuario actual
             },
-            data: { idarticulo: formData.idarticulo },
+            data: { idarticulo: formData.id },
           });
 
           MySwal.fire({
