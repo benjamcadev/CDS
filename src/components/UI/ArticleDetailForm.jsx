@@ -12,6 +12,9 @@ import { useAuth } from '../../context/AuthContext';
 import WebcamCapture from '../WebcamCapture';
 import { getCategorias } from '../../helpers/getCategories';
 
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
+
 const MySwal = withReactContent(Swal)
 
 const style = {
@@ -49,7 +52,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
   const { user } = useAuth();
 
-  const [cameraOpen, setCameraOpen] = useState(false); 
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     ...article,
@@ -100,7 +103,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
   };
 
   const [categorias, setCategorias] = useState([]);
-  
+
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -225,7 +228,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
 
   return (
-    <Box component="form"  sx={{ mt: 0.1 }}>
+    <Box component="form" sx={{ mt: 0.1 }}>
       {alert.open && (
         <AlertComponent
           message={alert.message}
@@ -234,52 +237,58 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
         />
       )}
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 1 }}>
-        <img
-          src={formData.imagen_base64}
-          alt="Artículo"
-          style={{ maxHeight: '300px', maxWidth: '100%', objectFit: 'contain' }}
-        />
+
+
+        <Zoom>
+          <img
+            src={formData.imagen_base64}
+            alt="Artículo"
+            style={{ maxHeight: '300px', maxWidth: '100%', objectFit: 'contain' }}
+          />
+        </Zoom>
+
+        
       </Box>
       {user.tipoUser === 1 ? (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
-        <input
-          accept="image/*"
-          id="contained-button-file"
-          multiple
-          type="file"
-          style={{ display: 'none' }}
-          onChange={handleImageUpload}
-        />
-        <label htmlFor="contained-button-file">
-          <Button 
-            fullWidth 
-            variant="contained" 
-            component="span">
-            Subir Nueva Imagen Del Articulo
-          </Button>
-        </label>
-        <Box sx={{ ml: 2 }}>
-          <Button
-            fullWidth
-            variant="contained"
-            component="span"
-            onClick={openCamera}
-          >
-            <CameraAltIcon />
-          </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
+          <input
+            accept="image/*"
+            id="contained-button-file"
+            multiple
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleImageUpload}
+          />
+          <label htmlFor="contained-button-file">
+            <Button
+              fullWidth
+              variant="contained"
+              component="span">
+              Subir Nueva Imagen Del Articulo
+            </Button>
+          </label>
+          <Box sx={{ ml: 2 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              component="span"
+              onClick={openCamera}
+            >
+              <CameraAltIcon />
+            </Button>
           </Box>
-        
-            
+
+
           {/* Modal para abrir la cámara */}
           <Modal open={cameraOpen} onClose={closeCamera}>
-          <Box sx={{ ...style, maxWidth: '200%', textAlign: 'center' }}>
-            <WebcamCapture setImage={(img) => {
-              setFormData({ ...formData, imagen_base64: img });
-              closeCamera();
-            }} />
-          </Box>
-        </Modal>
-      </Box>
+            <Box sx={{ ...style, maxWidth: '200%', textAlign: 'center' }}>
+              <WebcamCapture setImage={(img) => {
+                setFormData({ ...formData, imagen_base64: img });
+                closeCamera();
+              }} />
+            </Box>
+          </Modal>
+        </Box>
       ) : (
         <div></div>
       )}
@@ -314,23 +323,23 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
 
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
-            <Select
-              value={formData.unidad_medida}
-              labelId="unidad_medida"
-              id='unidad_medida'
-              
-              onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
-              fullWidth
-            >
-              <MenuItem value="" disabled >
-                ---Seleccione---
+          <Select
+            value={formData.unidad_medida}
+            labelId="unidad_medida"
+            id='unidad_medida'
+
+            onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
+            fullWidth
+          >
+            <MenuItem value="" disabled >
+              ---Seleccione---
+            </MenuItem>
+            {opcionesUnidadMedida.map((opcion) => (
+              <MenuItem key={opcion.id} value={opcion.label}>
+                {opcion.label}
               </MenuItem>
-              {opcionesUnidadMedida.map((opcion) => (
-                <MenuItem key={opcion.id} value={opcion.label}>
-                  {opcion.label}
-                </MenuItem>
-              ))}
-            </Select>
+            ))}
+          </Select>
         </FormControl>
         <CustomTextField
           id="precio"
@@ -347,13 +356,13 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
         />
         <FormControl variant="outlined" sx={{ minWidth: 120 }}>
           <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
-            <Select
-              value={formData.categoria_idcategoria}
-              labelId="categoria_idcategoria"
-              id="categoria_idcategoria"
-              onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
-              fullWidth
-            >
+          <Select
+            value={formData.categoria_idcategoria}
+            labelId="categoria_idcategoria"
+            id="categoria_idcategoria"
+            onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
+            fullWidth
+          >
             <MenuItem value="" disabled >
               ---Seleccione---
             </MenuItem>
@@ -362,7 +371,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
                 {categoria.nombre}
               </MenuItem>
             ))}
-            </Select>
+          </Select>
         </FormControl>
       </Box>
       <Box sx={{ mt: 0.2 }}>
@@ -371,20 +380,20 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           stockBodegas.map((stock) => (
             <Grid container key={stock.bodegas_idbodegas} sx={{ mt: 0.1 }} spacing={1}>
               <Grid item xs={4}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Bodega:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',  }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Bodega:</Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', }}>
                   {stock.nombreBodega}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Stock:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center'}}>
+                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
                   {stock.cantidad}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}> 
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
                   {stock.nombreUbicacion}
                 </Typography>
               </Grid>
@@ -403,12 +412,12 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           <Button variant="contained" color="warning" onClick={handleDelete}>
             Eliminar
           </Button>
-          
+
         </Box>
       ) : (
         <div></div>
       )
-    }
+      }
     </Box>
   );
 };
