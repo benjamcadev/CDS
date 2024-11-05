@@ -209,7 +209,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
         </form>
         <footer className="mt-8">
           <p className="text-center text-sm text-gray-500">¿Olvidaste tu contraseña?
-            <Link to="#!"
+            <Link to="/forget"
               className="font-semibold text-gray-600 hover:underline focus:text-gray-800 focus:outline-none"> Recuperar
             </Link>.
           </p>
