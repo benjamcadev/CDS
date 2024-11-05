@@ -22,3 +22,43 @@ export const verifyTokenRequest = (token) => {
     return response
 }
 
+export const forgetPass = async (email) => {
+    const response = await axios.post('/auth/forget/', email, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((res) => {
+       
+        if (res.status == 200) {
+           
+            return res
+        }
+    }).catch((error) => {
+       
+        return error.response
+    })
+
+    return response
+
+}
+
+export const changePass = async (newPassword) => {
+
+    const response = await axios.post('/auth/changepass/', newPassword, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((res) => {
+       
+        if (res.status == 200) {
+           
+            return res
+        }
+    }).catch((error) => {
+       
+        return error.response
+    })
+
+    return response
+}
+

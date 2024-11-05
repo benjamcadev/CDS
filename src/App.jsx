@@ -9,6 +9,8 @@ import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import { ArticulosPage } from './pages/ArticulosPage'
+import { ForgetPassPage } from './pages/ForgetPassPage'
+import { ChangePass } from './pages/ChangePass'
 
 
 function App() {
@@ -25,8 +27,9 @@ function App() {
         <Routes>
 
 
-          <Route path='/login' element={<LoginPage showDarkMode={showDarkMode} setShowDarkMode={setShowDarkMode} />} />
-          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/login' element={<LoginPage showDarkMode={showDarkMode} setShowDarkMode={setShowDarkMode} />} />  
+          <Route path='/forget' element={<ForgetPassPage />} />
+          <Route path='/changepass' element={<ChangePass />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<Home />} />
@@ -34,6 +37,7 @@ function App() {
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
             <Route path='/vale-entrada' element={<ValeEntrada />} />
             <Route path='/Articulos' element={<ArticulosPage />} />
+            <Route path='/register' element={<RegisterPage />} />
           </Route>
 
 
