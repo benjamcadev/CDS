@@ -6,7 +6,7 @@ import SignatureCanvas from 'react-signature-canvas'
 //COMPONENTE MUI 
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function Firmas({ idTicket, datos, setDatos, responsables, awaitSignature, oldSignature, setOldSignature }) {
+export default function Firmas({ idTicket, datos, setDatos, responsables, oldSignature, setOldSignature }) {
 
     //REFERENCIAS A LAS FIRMAS
     const sigCanvas = useRef({});
@@ -60,7 +60,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, awaitS
 
                 {/* SI EXISTE UNA FIRMA VA RENDERIZAR UN IMG O CANVAS, EN CASO QUE NO EXISTA FIRMA RENDERIZA COMPONENTE PARA FIRMAR */}
 
-                {  datos.firmaSolicitante != '' & idTicket  ?
+                {  datos.firmaSolicitante != '' && idTicket && datos.fechaCierre  ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaSolicitante} />
 

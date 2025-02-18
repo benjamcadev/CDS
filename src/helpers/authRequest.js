@@ -23,6 +23,7 @@ export const verifyTokenRequest = (token) => {
 }
 
 export const forgetPass = async (email) => {
+    
     const response = await axios.post('/auth/forget/', email, {
         headers: {
             'Content-Type': 'application/json'

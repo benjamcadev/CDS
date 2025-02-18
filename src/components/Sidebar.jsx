@@ -68,7 +68,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {isAuthenticated ? (
+      {isAuthenticated && user.usuario != 'no-sidebar' ? (
       
         <div style={{ height: '185vh' }} className={`bg-gray-800 h-screen flex flex-col  overflow-y-auto p-5 pt-8 mr-4  ${open ? 'w-[64]' : 'w-20 no-scrollbar'} h-screen relative duration-300`}>
           

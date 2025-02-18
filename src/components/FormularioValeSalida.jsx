@@ -348,9 +348,13 @@ export default function FormularioValeSalida() {
         return;
     }
     if (datos.firmaSolicitante === '') {
-        setAlert({
+        /*setAlert({
             ...alert, estado: true, mensaje: 'No hay firma de quien retira los materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000
         });
+        */
+
+        setDialogo({...dialogo, estado: true, mensaje: "No hay firma del solcitante de los materiales, por ende se enviara por correo al solicitante el ticket para que lo firme.", titulo: "¿Dejar Ticket Abierto?"});
+       
         return;
     }
 
@@ -377,6 +381,7 @@ export default function FormularioValeSalida() {
     if (response.status == 200) {
       setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Guardado !', detalle_tipo: 'success_ticket', time: null, value: response.data.idTicket });
     }
+      
 
   }
 

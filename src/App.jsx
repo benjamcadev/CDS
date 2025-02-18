@@ -11,6 +11,7 @@ import ProtectedRoute from './ProtectedRoute'
 import { ArticulosPage } from './pages/ArticulosPage'
 import { ForgetPassPage } from './pages/ForgetPassPage'
 import { ChangePass } from './pages/ChangePass'
+import { ValePendiente } from './pages/ValePendiente'
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path='/login' element={<LoginPage showDarkMode={showDarkMode} setShowDarkMode={setShowDarkMode} />} />  
           <Route path='/forget' element={<ForgetPassPage />} />
           <Route path='/changepass' element={<ChangePass />} />
+          <Route path='/vale-pendiente' element={<ValePendiente />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<Home />} />
