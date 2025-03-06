@@ -10,7 +10,7 @@ import Alert from '../components/alertSnackbar';
 
 //COMPONENTES DE MUI
 import TextField from '@mui/material/TextField';
-import { changePass } from '../helpers/authRequest';
+
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -31,6 +31,14 @@ import { useAuth } from '../context/AuthContext'
 
 //HELPERS
 import { getSignature } from '../helpers/getSignature'
+
+// PLUGINS DE TIMEZONE
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(timezone);
+dayjs.extend(utc);
 
 
 export const ValePendiente = () => {
@@ -183,9 +191,12 @@ export const ValePendiente = () => {
                     //Agregar datos al state del ticket
                     const { fecha_creacion, ticketTrabajo, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle, fecha_cierre } = response.data;
 
+                    //CONVERTIR FECHA A CHILE
+                    const fecha = dayjs.utc(fecha_creacion);
+                    const fechaConvertida = fecha.tz('America/Santiago').format('YYYY-MM-DD HH:mm:ss');
                     // asignar al state de datos
                     setDatos({
-                        fecha: fecha_creacion,
+                        fecha: fechaConvertida,
                         fechaCierre: fecha_cierre,
                         ticketTrabajo: ticketTrabajo,
                         solCodelco: cliente_trabajo,
