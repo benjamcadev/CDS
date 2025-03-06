@@ -33,7 +33,6 @@ import { useAuth } from '../context/AuthContext'
 import { getSignature } from '../helpers/getSignature'
 
 
-
 export const ValePendiente = () => {
 
     const [searchParams] = useSearchParams();
@@ -45,6 +44,8 @@ export const ValePendiente = () => {
     const email = searchParams.get("email");
     const pass = searchParams.get("p");
     const user = searchParams.get("user");
+
+
 
 
     //TRAYENDO LA FUNCION DE REGISTAR DESDE EL CONTEXT
@@ -96,7 +97,8 @@ export const ValePendiente = () => {
         observaciones: '',
         firmaSolicitante: '',
         firmaBodega: '',
-        detalle: ''
+        detalle: '',
+        idTicketSalida: ''
     })
 
     //STATE DEL LOGIN
@@ -193,10 +195,15 @@ export const ValePendiente = () => {
                         descripcion: motivo,
                         observaciones: observaciones,
                         firmaSolicitante: signatures.base64_retira,
-                        firmaBodega: signatures.base64_entrega
+                        firmaBodega: signatures.base64_entrega,
+                        idTicketSalida: idTicket,
+                        detalle: detalle
+
                     });
 
                     setRows(...rows, detalle.map(function (det) { return det; }))
+
+                   
 
 
                 } catch (error) {
@@ -204,12 +211,12 @@ export const ValePendiente = () => {
                     console.log(error)
 
                     if (error) {
-                        
-                        setAlert({ ...alert, estado: true, mensaje: `${error}`, tipo: 'error', titulo: `Error`, detalle_tipo: '', time: null }); 
 
-                    }if (error.response.data) {
-                        setAlert({ ...alert, estado: true, mensaje: `${error.response.data.message}`, tipo: 'error', titulo: `${error.response.data.title}`, detalle_tipo: '', time: null }); 
-                   
+                        setAlert({ ...alert, estado: true, mensaje: `${error}`, tipo: 'error', titulo: `Error`, detalle_tipo: '', time: null });
+
+                    } if (error.response.data) {
+                        setAlert({ ...alert, estado: true, mensaje: `${error.response.data.message}`, tipo: 'error', titulo: `${error.response.data.title}`, detalle_tipo: '', time: null });
+
                     } else {
                         setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
                     }
@@ -220,12 +227,12 @@ export const ValePendiente = () => {
 
         if (idTicket !== undefined) {
             fetchTicketSalida(idTicket)
-
-
-
         }
 
     }, [])
+
+
+ 
 
 
 
@@ -236,40 +243,41 @@ export const ValePendiente = () => {
         e.preventDefault();
 
 
-        if (newpass.newPassword.length >= 6) {
-            if (newpass.newPassword == newpass.reNewPassword) {
+        if (datos.firmaSolicitante === '') {
+            setAlert({
+                ...alert, estado: true, mensaje: 'No hay firma de quien retira los materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000
+            });
 
-                const requestJson = JSON.stringify(newpass);
-
-                //ENVIAR DATOS EN ENDPOINT
-                const response = await changePass(requestJson);
-
-                if (response.status == 400) {
-                    setAlert({ ...alert, estado: true, mensaje: `${response.data.message}`, tipo: 'error', titulo: `${response.statusText}`, detalle_tipo: '', time: null });
-                    return
-                }
-
-                if (response.status == 200) {
-
-                    setAlert({ ...alert, estado: true, mensaje: `Contraseña cambiada`, tipo: 'success', titulo: `Listo !`, detalle_tipo: '', time: null });
-                    setTimeout(function () {
-                        navigate('/login/')
-                    }, 6000);
-                    return
-                } else { }
-
-                setAlert({ ...alert, estado: true, mensaje: `${response.data.message}`, tipo: 'error', titulo: `${response.statusText}`, detalle_tipo: '', time: null });
-
-
-            } else {
-
-                setAlert({ ...alert, estado: true, mensaje: `Contraseñas no coinciden`, tipo: 'error', titulo: `Error`, detalle_tipo: '', time: null });
-            }
-        } else {
-            setAlert({ ...alert, estado: true, mensaje: `Contraseña no contiene 6 caracteres como minimo`, tipo: 'error', titulo: `Error`, detalle_tipo: '', time: null });
+            return;
         }
 
+        // Enviar los datos
+        enviarDatos();
 
+
+    }
+
+    const enviarDatos = async () => {
+
+        const requestJson = JSON.stringify(datos);
+
+        //ACTIVAR MENSAJE DE ESPERA
+        setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Cerrando Ticket...', detalle_tipo: '', time: null });
+        //ENVIAR DATOS EN ENDPOINT
+        const response = await axios.post('/ticket/salida/close', requestJson, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        }).catch((error) => {
+            setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
+
+        })
+
+        if (response.status == 200) {
+            setAlert({ ...alert, estado: true, mensaje: `N° Ticket: ${response.data.idTicket}`, tipo: 'success', titulo: 'Ticket Cerrado !', detalle_tipo: 'success_ticket_pendiente', time: null, value: response.data.idTicket });
+        }
+    
 
     }
 
@@ -294,8 +302,9 @@ export const ValePendiente = () => {
                 <div className="text-center mt-6 ">
 
                     <h1 className={`text-4xl font-semibold text-black `}>TICKET N° {idTicket}</h1>
-                    {datos.firmaSolicitante ? '' : <p className="mt-2 text-slate-100 text-2xl bg-amber-500 rounded-md font-bold ">Ticket pendiente de firma</p>}
-                   
+                    {datos.firmaSolicitante && datos.fechaCierre ?  <p className="mt-2 text-slate-100 text-2xl bg-green-400 rounded-md font-bold ">Ticket Firmado</p> : 
+                    <p className="mt-2 text-slate-100 text-2xl bg-amber-500 rounded-md font-bold ">Ticket pendiente de firma</p>}
+
 
                     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 mt-5">
 
@@ -408,13 +417,14 @@ export const ValePendiente = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
+                                       
                                         {rows.map((row) => (
                                             <TableRow
                                                 key={row.name}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             >
                                                 <TableCell component="th" scope="row">
-                                                    {row.id}
+                                                    {row.item}
                                                 </TableCell>
                                                 <TableCell align="right">{row.unidad}</TableCell>
                                                 <TableCell align="right">{row.descripcion}</TableCell>
@@ -448,11 +458,13 @@ export const ValePendiente = () => {
                         />
                     </div>
 
-                    <input
-                        type="submit"
-                        className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
-                        value={'Cambiar Contraseña'}
-                    />
+                    {datos.firmaSolicitante && datos.fechaCierre ? '' :
+                        <input
+                            type="submit"
+                            className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
+                            value={'cerrar vale'}
+                        />}
+
 
                 </form>
 

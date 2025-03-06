@@ -12,7 +12,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, oldSig
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
    
-    console.log(datos)
+    console.log(datos.firmaBodega)
 
     // useEffect(() => {
 
@@ -104,7 +104,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, oldSig
                     }
                 </p>
 
-                { datos.firmaBodega != '' & idTicket  ?
+                { datos.firmaBodega != '' && idTicket  ?
 
                     <img className=' border-4 border-gray-950' width={300} height={200} src={datos.firmaBodega} />
 

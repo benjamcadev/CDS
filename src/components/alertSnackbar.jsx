@@ -23,7 +23,16 @@ export default function alertSnackbar({ alert, setAlert }) {
         if (alert.detalle_tipo == 'success_ticket') { 
             setAlert({ ...alert, estado: false, responseReturn: true }); 
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
-            navigate("/vale-salida/"+alert.value)  }
+            navigate("/vale-salida/"+alert.value)  
+        }
+
+        if (alert.detalle_tipo == 'success_ticket_pendiente') { 
+            setAlert({ ...alert, estado: false, responseReturn: true }); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            navigate("/mensajes/",{
+                state: { mensaje: 'Ticket firmado, ya puedes cerrar esta pagina', titulo: 'Ticket Firmado', icono: 'success'}
+            })  
+        }
        
     }
 
@@ -41,7 +50,7 @@ export default function alertSnackbar({ alert, setAlert }) {
                     <AlertTitle>{alert.titulo}</AlertTitle>
                     <div className="flex mt-4 font-bold justify-center items-center text-lg">  {alert.mensaje}</div>
 
-                    {alert.detalle_tipo == 'success_ticket' ? <div className="mt-3 flex justify-center items-center">
+                    {alert.detalle_tipo == 'success_ticket' || 'success_ticket_pendiente' ? <div className="mt-3 flex justify-center items-center">
                         <Button onClick={handleAceptar}  color="inherit" size="normal">
                         Aceptar
                         </Button>

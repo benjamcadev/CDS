@@ -353,7 +353,7 @@ export default function FormularioValeSalida() {
         });
         */
 
-        setDialogo({...dialogo, estado: true, mensaje: "No hay firma del solcitante de los materiales, por ende se enviara por correo al solicitante el ticket para que lo firme.", titulo: "¿Dejar Ticket Abierto?"});
+        setDialogo({...dialogo, estado: true, mensaje: "No hay firma del solicitante de los materiales, por ende se enviara por correo el ticket para que lo firme.", titulo: "¿Dejar Ticket Abierto?"});
        
         return;
     }

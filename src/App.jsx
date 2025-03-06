@@ -12,6 +12,7 @@ import { ArticulosPage } from './pages/ArticulosPage'
 import { ForgetPassPage } from './pages/ForgetPassPage'
 import { ChangePass } from './pages/ChangePass'
 import { ValePendiente } from './pages/ValePendiente'
+import { Mensajes } from './pages/Mensajes'
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path='/forget' element={<ForgetPassPage />} />
           <Route path='/changepass' element={<ChangePass />} />
           <Route path='/vale-pendiente' element={<ValePendiente />} />
+          <Route path='/mensajes' element={<Mensajes />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<Home />} />
