@@ -12,7 +12,7 @@ export default function Firmas({ idTicket, datos, setDatos, responsables, oldSig
     const sigCanvas = useRef({});
     const sigCanvas2 = useRef({});
    
-    console.log(datos.firmaBodega)
+   
 
     // useEffect(() => {
 

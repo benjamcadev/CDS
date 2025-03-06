@@ -125,7 +125,7 @@ export const ValePendiente = () => {
 
         fetchResponsables()
 
-    }, [])
+    }, [signin])
 
     //USE EFFECT PARA TRAER UBICACIONES BODEGAS
 
@@ -142,7 +142,7 @@ export const ValePendiente = () => {
 
         fetchUbicaciones()
 
-    }, [])
+    }, [signin])
 
 
 
