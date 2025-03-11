@@ -189,7 +189,7 @@ export const ValePendiente = () => {
                     const signatures = await getSignature(idTicket)
 
                     //Agregar datos al state del ticket
-                    const { fecha_creacion, ticketTrabajo, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle, fecha_cierre } = response.data;
+                    const { fecha_creacion, ticketTrabajo, cliente_trabajo, solicitante, usuario_idusuario, CC, motivo, observaciones, detalle, fecha_cierre, responsableRetiraCorreo } = response.data;
 
                     //CONVERTIR FECHA A CHILE
                     const fecha = dayjs.utc(fecha_creacion);
@@ -208,6 +208,7 @@ export const ValePendiente = () => {
                         firmaSolicitante: signatures.base64_retira,
                         firmaBodega: signatures.base64_entrega,
                         idTicketSalida: idTicket,
+                        responsableRetiraCorreo: responsableRetiraCorreo,
                         detalle: detalle
 
                     });
