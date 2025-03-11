@@ -157,6 +157,11 @@ export const ValePendiente = () => {
 
     //USEEFFECT PARA CARGAR :id POR PARAMETROS DE URL
     useEffect(() => {
+
+        //ACTIVAR MENSAJE DE ESPERA
+        setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Cerrando Ticket...', detalle_tipo: '', time: null });
+
+        
         if (idTicket == undefined || email == undefined || pass == undefined || user == undefined) {
             navigate('/login/')
         }

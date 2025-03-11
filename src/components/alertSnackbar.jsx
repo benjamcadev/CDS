@@ -10,6 +10,8 @@ export default function alertSnackbar({ alert, setAlert }) {
 
     let navigate = useNavigate()
 
+  
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -50,7 +52,8 @@ export default function alertSnackbar({ alert, setAlert }) {
                     <AlertTitle>{alert.titulo}</AlertTitle>
                     <div className="flex mt-4 font-bold justify-center items-center text-lg">  {alert.mensaje}</div>
 
-                    {alert.detalle_tipo == 'success_ticket' || 'success_ticket_pendiente' ? <div className="mt-3 flex justify-center items-center">
+                    {alert.detalle_tipo == 'success_ticket' || alert.detalle_tipo == 'success_ticket_pendiente' ? 
+                    <div className="mt-3 flex justify-center items-center">
                         <Button onClick={handleAceptar}  color="inherit" size="normal">
                         Aceptar
                         </Button>
