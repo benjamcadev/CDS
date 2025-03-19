@@ -135,8 +135,14 @@ export default function FormularioValeEntrada() {
       try {
         const response = await axios.get(`/usuarios/${3}`, { withCredentials: true }); //3 ES USUARIOS RESPONSABLES
         const response2 = await axios.get(`/usuarios/${1}`, { withCredentials: true }); //1 ES USUARIOS ADMIN
-        setResponsables(response.data.concat(response2.data));
-        setResponsablesBodega(response2.data);
+        const responsablesConcat = response.data.concat(response2.data);
+        
+        //Ordenar los responses alfabeticamente
+        const sortedResponse = responsablesConcat.sort((a, b) => a.label.localeCompare(b.label));
+        const sortedResponsablesBodega = response2.data.sort((a, b) => a.label.localeCompare(b.label));
+
+        setResponsables(sortedResponse);
+        setResponsablesBodega(sortedResponsablesBodega)
       } catch (error) {
         console.error('Hubo un error fetch usuarios responsables: ' + error);
       }
