@@ -3,6 +3,7 @@ import ValeSalida from './pages/ValeSalida'
 import ValeEntrada from './pages/ValeEntrada'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import { CotizacionPage } from './pages/CotizacionPage'
 import Home from './pages/Home'
 import Sidebar from './components/Sidebar'
 import { Route, Routes } from 'react-router-dom'
@@ -42,6 +43,7 @@ function App() {
             <Route path='/vale-entrada' element={<ValeEntrada />} />
             <Route path='/Articulos' element={<ArticulosPage />} />
             <Route path='/register' element={<RegisterPage />} />
+            <Route path='/cotizacion' element={<CotizacionPage />} />
           </Route>
 
 

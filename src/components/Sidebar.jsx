@@ -6,7 +6,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // Iconos de react-icons
-import { FaAngleLeft, FaBars, FaChevronDown, FaFileArrowDown, FaFileArrowUp, FaClipboardList, FaFileInvoice, FaGear, FaArrowRightFromBracket, FaFileSignature } from "react-icons/fa6";
+import { FaAngleLeft, FaBars, FaChevronDown, FaFileArrowDown, FaFileArrowUp, FaClipboardList, FaFileInvoice, FaGear, FaArrowRightFromBracket, FaFileSignature, FaFileInvoiceDollar } from "react-icons/fa6";
 
 // Importando imagenes de la carpeta public
 import logoPsinet from '../public/images/Logo-PSINet.png';
@@ -33,6 +33,8 @@ export default function Sidebar() {
   
   
     { title: "Vale Entrada", icon: <FaFileArrowUp />, link: "/vale-entrada", visible: user?.tipoUser === 1},
+
+    {title: "Cotizacion", icon: <FaFileInvoiceDollar/>, link: "/cotizacion", visible: user?.tipoUser === 1},
     //{ title: "Ver Vales Salida", icon: <FaFileSignature />, link: "/ver-vales-salida" },
 
     {
