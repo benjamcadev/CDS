@@ -13,7 +13,7 @@ import AutocompleteSearch from './autocompleteSearch'
 
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
-import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell } from '@mui/x-data-grid';
+import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell, renderEditInputCell } from '@mui/x-data-grid';
 
 
 export default function TablaCotizacion() {
@@ -135,7 +135,7 @@ export default function TablaCotizacion() {
             }
         },
         {
-            field: 'precio',
+            field: 'precioUnitario',
             headerName: 'Precio Unitario',
             headerAlign: 'left',
             editable: true,
@@ -143,27 +143,22 @@ export default function TablaCotizacion() {
             minWidth: 130,
             type: 'number',
 
-            renderCell: (params) => {
-
-                return (
-                    (params.value <= 0) ? 1 : params.value
-                )
-
-            }
+            
         },
         {
             field: 'precioTotal',
             headerName: 'Precio Total',
             headerAlign: 'left',
-            editable: true,
+            align: 'right',
+            editable: false,
             flex: 0.3,
             minWidth: 130,
-            type: 'number',
+            
 
             renderCell: (params) => {
-
-                return (
-                    (params.value <= 0) ? 1 : params.value
+                return ( 
+                    params.row.precioUnitario * params.row.cantidad
+                    
                 )
 
             }
@@ -172,13 +167,9 @@ export default function TablaCotizacion() {
             field: 'codigo',
             headerName: 'Codigo SAP',
             headerAlign: 'left',
+            type: "string",
             flex: 1,
             minWidth: 200,
-            renderCell: (params) => {
-                return (
-                    <div></div>
-                )
-            },
 
         },
         {
