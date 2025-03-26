@@ -138,10 +138,22 @@ export default function TablaCotizacion() {
             field: 'precioUnitario',
             headerName: 'Precio Unitario',
             headerAlign: 'left',
+            align: 'right',
             editable: true,
-            flex: 0.3,
+            flex: 1,
             minWidth: 130,
-            type: 'number',
+            type: 'string',
+
+            renderCell: (params) => {
+                console.log(rows)
+                console.log(params)
+                return ( 
+                    
+                    <TextField 
+                    value={params.row.precioUnitario}
+                    />
+                )
+            }
 
             
         },
@@ -156,9 +168,15 @@ export default function TablaCotizacion() {
             
 
             renderCell: (params) => {
+
+                let valuePrecioTotal = params.row.precioUnitario * params.row.cantidad;
+                let newArr = [...rows];
+                let obj = newArr.find(o => o.id === params.id);
+                obj.precioTotal = valuePrecioTotal;
+                
+               
                 return ( 
-                    params.row.precioUnitario * params.row.cantidad
-                    
+                    valuePrecioTotal    
                 )
 
             }
@@ -167,9 +185,17 @@ export default function TablaCotizacion() {
             field: 'codigo',
             headerName: 'Codigo SAP',
             headerAlign: 'left',
+            align: 'right',
             type: "string",
+            editable: false,
             flex: 1,
             minWidth: 200,
+            renderCell: (params) => {
+              
+                return ( 
+                    params.row.codigo   
+                )
+            }
 
         },
         {
@@ -260,7 +286,7 @@ export default function TablaCotizacion() {
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: '', precioUnitario: '', precioTotal: '', codigo: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: '', precioUnitario: 0, precioTotal: '', codigo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },

@@ -86,12 +86,24 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
             }}
             onChange={(e, value) => {
 
+
                 if (value) {
                     setBodegasId([value.id])
                     let newArr = [...rows];
                     let obj = newArr.find(o => o.id === id);
                     obj.idArticulo = value.id
-                    setRows(newArr)
+                    if ('precioUnitario' in obj) {
+                        obj.precioUnitario = 10
+                    }
+                    /*if ('codigo' in obj) {
+                        obj.codigo = value.Codigo_SAP
+                    }
+                    if ('unidad' in obj) {
+                        obj.unidad = value.unidad_medida
+                    }*/
+
+                    console.log(newArr)
+                    setRows(newArr) 
                 }
 
             }}
@@ -138,7 +150,7 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                             console.log(error);
                         });
 
-                    if (response.status == 200) {  setOptions(response.data) }
+                    if (response.status == 200) { setOptions(response.data) }
                 }
 
 
