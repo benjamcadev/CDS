@@ -92,17 +92,20 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                     let newArr = [...rows];
                     let obj = newArr.find(o => o.id === id);
                     obj.idArticulo = value.id
-                    if ('precioUnitario' in obj) {
-                        obj.precioUnitario = 10
+
+                    if ('precio' in obj) {
+                        console.log(typeof(value.precio))
+                        obj.precio = value.precio.toString()
                     }
-                    /*if ('codigo' in obj) {
+                    
+                    if ('codigo' in obj) {
+                        
                         obj.codigo = value.Codigo_SAP
                     }
                     if ('unidad' in obj) {
                         obj.unidad = value.unidad_medida
-                    }*/
+                    }
 
-                    console.log(newArr)
                     setRows(newArr) 
                 }
 
@@ -122,6 +125,7 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                 let newArr = [...rows];
                 let obj = newArr.find(o => o.id === id);
                 obj.descripcion = newValue
+
                 setRows(newArr)
 
 

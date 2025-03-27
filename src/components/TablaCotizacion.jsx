@@ -1,5 +1,5 @@
 //COMPONENTES DE MATERIAL UI
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
@@ -45,13 +45,69 @@ export default function TablaCotizacion() {
         value: ''
     });
 
+    //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
+      useEffect(() => {
+        setDatosCotizacion({ ...datosCotizacion, detalle: rows })
+      }, [rows])
 
-    //HANDLES DE LOS BOTONES ACTIONS DE LA TABLA
+
+      function EditToolbar(props) {
+        const { setRows, setRowModesModel } = props;
+
+
+        const handleClick = () => {
+            const id = getLastId();
+            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: '', precio: '', precioTotal: '', codigo: '', isNew: true }]);
+            setRowModesModel((oldModel) => ({
+                ...oldModel,
+                [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+            }));
+        };
+
+        return (
+            <GridToolbarContainer className="mt-3">
+                <Button size="small" variant='contained' color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                    Agregar Material
+                </Button>
+            </GridToolbarContainer>
+        );
+    }
+
+    const [rowModesModel, setRowModesModel] = useState({});
+
+
+    const getLastId = () => {
+
+        let lastId = 0
+        for (let i = 0; i < rows.length; i++) {
+            lastId = rows[i].id;
+
+        }
+        return lastId + 1
+    }
+
+    const handleRowEditStop = (params, event) => {
+        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+            event.defaultMuiPrevented = true;
+        }
+    };
+
+    
+    const handleEditClick = (id) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    };
+
+    
     const handleSaveClick = (id) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
 
-
     };
+
+    
+    const handleDeleteClick = (id) => () => {
+        setRows(rows.filter((row) => row.id !== id));
+    };
+
 
     const handleCancelClick = (id) => () => {
         setRowModesModel({
@@ -65,14 +121,18 @@ export default function TablaCotizacion() {
         }
     };
 
-    const handleEditClick = (id) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    };
+    const processRowUpdate = (newRow) => {
+        
+        //if (newRow.cantidad <= 0) { newRow.cantidad = 1 }
+        const updatedRow = { ...newRow, isNew: false };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
-    const handleDeleteClick = (id) => () => {
-        setRows(rows.filter((row) => row.id !== id));
+        return updatedRow;
     };
-
+    
+    const handleRowModesModelChange = (newRowModesModel) => {
+        setRowModesModel(newRowModesModel);
+    };
 
     //COLUMNAS
     const columns = [
@@ -135,7 +195,7 @@ export default function TablaCotizacion() {
             }
         },
         {
-            field: 'precioUnitario',
+            field: 'precio',
             headerName: 'Precio Unitario',
             headerAlign: 'left',
             align: 'right',
@@ -145,13 +205,9 @@ export default function TablaCotizacion() {
             type: 'string',
 
             renderCell: (params) => {
-                console.log(rows)
-                console.log(params)
+                
                 return ( 
-                    
-                    <TextField 
-                    value={params.row.precioUnitario}
-                    />
+                    params.value
                 )
             }
 
@@ -193,7 +249,7 @@ export default function TablaCotizacion() {
             renderCell: (params) => {
               
                 return ( 
-                    params.row.codigo   
+                    params.value   
                 )
             }
 
@@ -248,61 +304,6 @@ export default function TablaCotizacion() {
 
 
     ]
-
-    const getLastId = () => {
-
-        let lastId = 0
-        for (let i = 0; i < rows.length; i++) {
-            lastId = rows[i].id;
-
-        }
-        return lastId + 1
-    }
-
-
-    const [rowModesModel, setRowModesModel] = React.useState({});
-
-    const handleRowModesModelChange = (newRowModesModel) => {
-        setRowModesModel(newRowModesModel);
-    };
-
-    const handleRowEditStop = (params, event) => {
-        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-            event.defaultMuiPrevented = true;
-        }
-    };
-
-    const processRowUpdate = (newRow) => {
-        if (newRow.cantidad <= 0) { newRow.cantidad = 1 }
-        const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-
-        return updatedRow;
-    };
-
-    function EditToolbar(props) {
-        const { setRows, setRowModesModel } = props;
-
-
-        const handleClick = () => {
-            const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: '', precioUnitario: 0, precioTotal: '', codigo: '', isNew: true }]);
-            setRowModesModel((oldModel) => ({
-                ...oldModel,
-                [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-            }));
-        };
-
-        return (
-            <GridToolbarContainer className="mt-3">
-                <Button size="small" variant='contained' color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                    Agregar Material
-                </Button>
-            </GridToolbarContainer>
-        );
-    }
-
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
