@@ -94,8 +94,8 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                     obj.idArticulo = value.id
 
                     if ('precio' in obj) {
-                        console.log(typeof(value.precio))
-                        obj.precio = value.precio.toString()
+                        obj.precio = value.precio
+                    
                     }
                     
                     if ('codigo' in obj) {

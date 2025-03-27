@@ -33,6 +33,7 @@ export default function TablaCotizacion() {
     //STATES PARA EL AUTOCOMPLETE
     const [bodegasId, setBodegasId] = useState([]);
     const [bodegasMaterial, setBodegasMaterial] = useState([])
+    const [rowEdit, setRowEdit] = useState(false)
 
     //STATE DE ALERT SNACKBAR
     const [alert, setAlert] = useState({
@@ -46,18 +47,20 @@ export default function TablaCotizacion() {
     });
 
     //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
-      useEffect(() => {
+    useEffect(() => {
         setDatosCotizacion({ ...datosCotizacion, detalle: rows })
-      }, [rows])
+        console.log('actualizando rows')
+        console.log(rows)
+    }, [rows])
 
 
-      function EditToolbar(props) {
+    function EditToolbar(props) {
         const { setRows, setRowModesModel } = props;
 
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: '', precio: '', precioTotal: '', codigo: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: 0, precio: 0, precioTotal: '', codigo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -86,24 +89,29 @@ export default function TablaCotizacion() {
         return lastId + 1
     }
 
+    
+
     const handleRowEditStop = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
             event.defaultMuiPrevented = true;
         }
     };
 
-    
+
     const handleEditClick = (id) => () => {
+     
+       
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     };
 
-    
+
     const handleSaveClick = (id) => () => {
+
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
 
     };
 
-    
+
     const handleDeleteClick = (id) => () => {
         setRows(rows.filter((row) => row.id !== id));
     };
@@ -122,14 +130,15 @@ export default function TablaCotizacion() {
     };
 
     const processRowUpdate = (newRow) => {
-        
+
         //if (newRow.cantidad <= 0) { newRow.cantidad = 1 }
         const updatedRow = { ...newRow, isNew: false };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
 
         return updatedRow;
     };
-    
+
+
     const handleRowModesModelChange = (newRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
@@ -196,22 +205,33 @@ export default function TablaCotizacion() {
         },
         {
             field: 'precio',
-            headerName: 'Precio Unitario',
+            headerName: 'Precio',
             headerAlign: 'left',
             align: 'right',
-            editable: true,
-            flex: 1,
+            editable: (params) => params.value === 0,
+            flex: 0.3,
             minWidth: 130,
-            type: 'string',
-
-            renderCell: (params) => {
+           
+            /*cellClassName: (params) => {
+                console.log("cellclass")
+                console.log(params)
                 
-                return ( 
-                    params.value
-                )
-            }
+                if(params.value == 0) {
+                    console.log("cambiando editable")
+                    params.colDef.editable == true}
 
-            
+                return (params.row.precio)
+            }*/
+
+                renderCell: (params) => {
+
+                    return (
+                        params.value
+                    )
+                }
+
+
+
         },
         {
             field: 'precioTotal',
@@ -221,18 +241,17 @@ export default function TablaCotizacion() {
             editable: false,
             flex: 0.3,
             minWidth: 130,
-            
+
 
             renderCell: (params) => {
 
-                let valuePrecioTotal = params.row.precioUnitario * params.row.cantidad;
+                let valuePrecioTotal = params.row.precio * params.row.cantidad;
                 let newArr = [...rows];
                 let obj = newArr.find(o => o.id === params.id);
                 obj.precioTotal = valuePrecioTotal;
-                
-               
-                return ( 
-                    valuePrecioTotal    
+
+                return (
+                    valuePrecioTotal
                 )
 
             }
@@ -247,9 +266,9 @@ export default function TablaCotizacion() {
             flex: 1,
             minWidth: 200,
             renderCell: (params) => {
-              
-                return ( 
-                    params.value   
+
+                return (
+                    params.value
                 )
             }
 
