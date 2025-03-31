@@ -44,7 +44,6 @@ export default function TablaCotizacion() {
     //STATES PARA EL AUTOCOMPLETE
     const [bodegasId, setBodegasId] = useState([]);
     const [bodegasMaterial, setBodegasMaterial] = useState([])
-    const [rowEdit, setRowEdit] = useState(false)
 
     //STATE DE ALERT SNACKBAR
     const [alert, setAlert] = useState({

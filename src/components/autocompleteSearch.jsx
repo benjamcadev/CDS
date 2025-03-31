@@ -149,7 +149,7 @@ export default function AutocompleteSearch({ id, rows, setRows, bodegasId, setBo
                         .catch(function (error) {
                             if (error.response.status == 404) {
                                 // console.log(error.response.data)
-                                setAlert({ ...alert, estado: true, mensaje: error.response.data.message, tipo: 'error', titulo: 'Error' })
+                                setAlert({ ...alert, estado: true, mensaje: error.response.data.message, tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000 })
                             }
                             console.log(error);
                         });
