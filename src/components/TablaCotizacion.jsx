@@ -3,26 +3,37 @@ import React, { useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
+
+import { useAuth } from '../context/AuthContext';
+
 
 //IMPORTANDO COMPONENTE DE AUTOCOMPLETE COLUMNA DESCRIPCION EN DATAGRID
 import AutocompleteSearch from './autocompleteSearch'
+
+// IMPORTAR COMPONENTE DE ALERT SNACKBAR
+import Alert from './alertSnackbar'
 
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
 import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell, renderEditInputCell } from '@mui/x-data-grid';
 
+import dayjs from 'dayjs';
+
+//LIBRERIA PARA HACER FETCH
+import axios from '../helpers/axios'
+
 
 export default function TablaCotizacion() {
 
+    const { user } = useAuth();
+
     const [datosCotizacion, setDatosCotizacion] = useState({
-        fecha: "",
+        fecha: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         descripcion: "",
         ceco: "",
         observaciones: "",
+        usuario_idusuario: user.id,
         detalle: ""
     })
 
@@ -43,15 +54,16 @@ export default function TablaCotizacion() {
         detalle_tipo: '',
         time: null,
         responseReturn: false,
-        value: ''
+        value: '',
+        fileName: '',
     });
 
     //USEEFFECT PARA IR GRABANDO MODIFICACIONES DE LA TABLA 
     useEffect(() => {
         setDatosCotizacion({ ...datosCotizacion, detalle: rows })
-        console.log('actualizando rows')
-        console.log(rows)
     }, [rows])
+
+    
 
 
     function EditToolbar(props) {
@@ -60,7 +72,7 @@ export default function TablaCotizacion() {
 
         const handleClick = () => {
             const id = getLastId();
-            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: 0, precio: 0, precioTotal: '', codigo: '', isNew: true }]);
+            setRows((oldRows) => [...oldRows, { id, item: id, descripcion: '', unidad: '', cantidad: 1, precio: 0, precioTotal: '', codigo: '', isNew: true }]);
             setRowModesModel((oldModel) => ({
                 ...oldModel,
                 [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -89,48 +101,12 @@ export default function TablaCotizacion() {
         return lastId + 1
     }
 
-    
-
-    const handleRowEditStop = (params, event) => {
-        if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-            event.defaultMuiPrevented = true;
-        }
-    };
-
-
-    const handleEditClick = (id) => () => {
-     
-       
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    };
-
-
-    const handleSaveClick = (id) => () => {
-
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-
-    };
-
-
     const handleDeleteClick = (id) => () => {
         setRows(rows.filter((row) => row.id !== id));
     };
 
 
-    const handleCancelClick = (id) => () => {
-        setRowModesModel({
-            ...rowModesModel,
-            [id]: { mode: GridRowModes.View, ignoreModifications: true },
-        });
-
-        const editedRow = rows.find((row) => row.id === id);
-        if (editedRow.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
-        }
-    };
-
     const processRowUpdate = (newRow) => {
-
         //if (newRow.cantidad <= 0) { newRow.cantidad = 1 }
         const updatedRow = { ...newRow, isNew: false };
         setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
@@ -138,10 +114,6 @@ export default function TablaCotizacion() {
         return updatedRow;
     };
 
-
-    const handleRowModesModelChange = (newRowModesModel) => {
-        setRowModesModel(newRowModesModel);
-    };
 
     //COLUMNAS
     const columns = [
@@ -194,42 +166,18 @@ export default function TablaCotizacion() {
             flex: 0.3,
             minWidth: 130,
             type: 'number',
+            defaultValue: 1,
 
-            renderCell: (params) => {
 
-                return (
-                    (params.value <= 0) ? 1 : params.value
-                )
-
-            }
         },
         {
             field: 'precio',
             headerName: 'Precio',
             headerAlign: 'left',
             align: 'right',
-            editable: (params) => params.value === 0,
             flex: 0.3,
             minWidth: 130,
-           
-            /*cellClassName: (params) => {
-                console.log("cellclass")
-                console.log(params)
-                
-                if(params.value == 0) {
-                    console.log("cambiando editable")
-                    params.colDef.editable == true}
-
-                return (params.row.precio)
-            }*/
-
-                renderCell: (params) => {
-
-                    return (
-                        params.value
-                    )
-                }
-
+            editable: true,
 
 
         },
@@ -279,45 +227,17 @@ export default function TablaCotizacion() {
             headerName: 'Acciones',
             headerAlign: 'left',
             cellClassName: 'actions',
-            getActions: ({ id }) => {
-                const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-                if (isInEditMode) {
-                    return [
-                        <GridActionsCellItem
-                            icon={<SaveIcon />}
-                            label="Save"
-                            sx={{
-                                color: 'primary.main',
-                            }}
-                            onClick={handleSaveClick(id)}
-                        />,
-                        <GridActionsCellItem
-                            icon={<CancelIcon />}
-                            label="Cancel"
-                            className="textPrimary"
-                            onClick={handleCancelClick(id)}
-                            color="inherit"
-                        />,
-
-                    ];
-                }
+            getActions: ({ id }, params) => {
 
                 return [
-
-                    <GridActionsCellItem
-                        icon={<EditIcon />}
-                        label="Edit"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
-                    />,
                     <GridActionsCellItem
                         icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteClick(id)}
                         color="inherit"
                     />,
-                ];
+                ]
+
             },
         },
 
@@ -326,11 +246,57 @@ export default function TablaCotizacion() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (datosCotizacion.descripcion === '') {
+            setAlert({
+                ...alert, estado: true, mensaje: 'Falta completar una descripcion del trabajo', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000
+            });
+            return;
+        }
+        if (datosCotizacion.detalle.length === 0) {
+            setAlert({
+                ...alert, estado: true, mensaje: 'No has agregado materiales', tipo: 'error', titulo: 'Error', detalle_tipo: 'error_validation', time: 8000
+            });
+            return;
+        }
+
+        // Enviar los datos
+        enviarDatos();
+
+    }
+
+    const enviarDatos = async () => {
+        const requestJson = JSON.stringify(datosCotizacion);
+
+
+
+        //ACTIVAR MENSAJE DE ESPERA
+        setAlert({ ...alert, estado: true, mensaje: `Favor esperar`, tipo: 'info', titulo: 'Generando Cotizacion...', detalle_tipo: '', time: null });
+        //ENVIAR DATOS EN ENDPOINT
+        const response = await axios.post('/cotizacion/', requestJson, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            withCredentials: true
+        }).catch((error) => {
+            setAlert({ ...alert, estado: true, mensaje: `${error.message}`, tipo: 'error', titulo: `${error.code}`, detalle_tipo: '', time: null });
+
+        })
+
+        if (response.status == 200) {
+            setAlert({ ...alert, estado: true, mensaje: `N° Cotizacion: ${response.data.idCotizacion}`, tipo: 'success', titulo: 'Cotizacion Realizada !', detalle_tipo: 'success_cotizacion', time: null, value: response.data.base64Excel, fileName: datosCotizacion.descripcion });
+        }
     }
 
 
     return (
         <div className="bg-white shadow-md rounded-md py-5 px-5 ">
+
+            <Alert
+                alert={alert}
+                setAlert={setAlert}
+            />
+
+
             <form className="" onSubmit={handleSubmit}>
                 <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1">
 
@@ -367,7 +333,7 @@ export default function TablaCotizacion() {
                                 fullWidth
                                 variant="outlined"
                                 value={datosCotizacion.ceco}
-                                onChange={(e) => setDatos({ ...datosCotizacion, solCodelco: e.target.value })} />
+                                onChange={(e) => setDatosCotizacion({ ...datosCotizacion, ceco: e.target.value })} />
                         </div>
                     </div>
 
@@ -382,10 +348,10 @@ export default function TablaCotizacion() {
                             <DataGrid
                                 rows={rows}
                                 columns={columns}
-                                editMode="row"
+                                /*editMode="row"
                                 rowModesModel={rowModesModel}
                                 onRowModesModelChange={handleRowModesModelChange}
-                                onRowEditStop={handleRowEditStop}
+                                onRowEditStop={handleRowEditStop}*/
                                 processRowUpdate={processRowUpdate}
                                 slots={{
                                     toolbar: EditToolbar,
@@ -406,7 +372,7 @@ export default function TablaCotizacion() {
                 <input
                     type="submit"
                     className="bg-sky-700 w-full p-3 text-white uppercase font-bold hover:bg-sky-800 cursor-pointer transition-all rounded"
-                    value={'cerrar vale'}
+                    value={'finalizar cotizacion'}
                 />
 
 
