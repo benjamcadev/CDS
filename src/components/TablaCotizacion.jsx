@@ -16,7 +16,7 @@ import Alert from './alertSnackbar'
 
 
 //COMPONENTE DE MATERIAL UI DATE TABLE
-import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem, GridRowEditStopReasons, GridEditInputCell, renderEditInputCell } from '@mui/x-data-grid';
+import { GridRowModes, DataGrid, GridToolbarContainer, GridActionsCellItem } from '@mui/x-data-grid';
 
 import dayjs from 'dayjs';
 
