@@ -68,15 +68,16 @@ export default function TablaListadoCotizacion() {
                         });
 
                         console.log(response)
+                        const link = document.createElement('a');
+                        link.href = 'data:application/vnd.ms-excel;base64,' + response.data.base64;  // Obtiene el archivo base64
+                        link.download = `${params.row.descripcion}.xlsx`; // Nombre del archivo
+                        link.click();
 
                         
                     } catch (error) {
                         console.error('Hubo un error al traer cotizacion excel: ' + error);
                     }
-                    /* const link = document.createElement('a');
-                     link.href = params.row.base64;  // Obtiene el archivo base64
-                     link.download = `${params.row.descripcion}.xlsx`; // Nombre del archivo
-                     link.click();*/
+                    
                 };
 
                 return (
