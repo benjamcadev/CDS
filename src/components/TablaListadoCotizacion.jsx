@@ -5,6 +5,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 
+import dayjs from 'dayjs';
+
 //LIBRERIA PARA HACER FETCH
 import axios from '../helpers/axios'
 
@@ -13,47 +15,68 @@ export default function TablaListadoCotizacion() {
 
     //use state para guardar las cotizaciones
 
-     const [cotizaciones, setCotizaciones] = useState([])
+    const [cotizaciones, setCotizaciones] = useState([])
 
     //USE EFFECT PARA LA CARGA DE DATA
 
     useEffect(() => {
-    
+
         async function fetchCotizaciones() {
-          try {
-            const response = await axios.post('cotizacion/list/', { withCredentials: true });
-            setCotizaciones(response.data)
-          } catch (error) {
-            console.error('Hubo un error fetch cotizaciones: ' + error);
-          }
+            try {
+                const response = await axios.post('cotizacion/list/', { withCredentials: true });
+
+                // Convertir cada fecha en el array y reemplazar la fecha original con la formateada
+                const respondeActualizado = response.data.map(item => {
+                    const fechaFormateada = dayjs(item.fecha).format('DD/MM/YYYY HH:mm:ss');
+                    return {
+                        ...item,  // Copiar las demás propiedades del objeto
+                        fecha: fechaFormateada, // Reemplazar la fecha original por la formateada
+                    };
+                });
+
+                setCotizaciones(respondeActualizado)
+            } catch (error) {
+                console.error('Hubo un error fetch cotizaciones: ' + error);
+            }
         }
-    
+
         fetchCotizaciones()
-    
-      }, [])
+
+    }, [])
 
     // Datos de ejemplo para las filas del DataGrid
-    const rows = [
-        { id: 1, descripcion: 'Archivo 1', fecha: '2025-03-31', usuario: 'Usuario A', base64: 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQAAAAIAEpzSiFqNjzE3XGU8FtBQjOw5vHM+P9XtIfqrcdtshFhNlrluU5Elv2v5Ig3AeWQ==' },
-        { id: 2, descripcion: 'Archivo 2', fecha: '2025-03-30', usuario: 'Usuario B', base64: 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQAAAAIAEpzSiFqNjzE3XGU8FtBQjOw5vHM+P9XtIfqrcdtshFhNlrluU5Elv2v5Ig3AeWQ==' },
-        // Agrega más filas según sea necesario
-    ];
+    const rows = cotizaciones
 
     // Definición de las columnas
     const columns = [
-        { field: 'descripcion', headerName: 'Descripción', width: 180 },
-        { field: 'fecha', headerName: 'Fecha', width: 180 },
-        { field: 'usuario', headerName: 'Usuario', width: 180 },
+        { field: 'descripcion', headerName: 'Descripción', flex: 1, minWidth: 200, },
+        { field: 'fecha', headerName: 'Fecha', flex: 0.4 },
+        { field: 'usuario', headerName: 'Usuario', flex: 0.3 },
         {
             field: 'descargar',
             headerName: 'Descargar',
-            width: 150,
+            flex: 0.2,
             renderCell: (params) => {
-                const handleDownload = () => {
-                    const link = document.createElement('a');
-                    link.href = params.row.base64;  // Obtiene el archivo base64
-                    link.download = `${params.row.descripcion}.xlsx`; // Nombre del archivo
-                    link.click();
+                const handleDownload = async () => {
+                    //traer el excel en base64
+                    try {
+
+                        const response = await axios.post('/cotizacion/get', { path_excel: params.row.path_excel }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        });
+
+                        console.log(response)
+
+                        
+                    } catch (error) {
+                        console.error('Hubo un error al traer cotizacion excel: ' + error);
+                    }
+                    /* const link = document.createElement('a');
+                     link.href = params.row.base64;  // Obtiene el archivo base64
+                     link.download = `${params.row.descripcion}.xlsx`; // Nombre del archivo
+                     link.click();*/
                 };
 
                 return (
