@@ -4,7 +4,8 @@ import ValeEntrada from './pages/ValeEntrada'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { CotizacionPage } from './pages/CotizacionPage'
-import { ListadoCotizacionPage } from './pages/listado-cotizacion'
+import { ListadoCotizacionPage } from './pages/ListadoCotizacion'
+import { ListadoValeSalidaPage } from './pages/ListadoValeSalida'
 import Home from './pages/Home'
 import Sidebar from './components/Sidebar'
 import { Route, Routes } from 'react-router-dom'
@@ -46,6 +47,7 @@ function App() {
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/cotizacion' element={<CotizacionPage />} />
             <Route path='/listado-cotizacion' element={<ListadoCotizacionPage />} />
+            <Route path='/listado-vale-salida' element={<ListadoValeSalidaPage />} />
           </Route>
 
 
