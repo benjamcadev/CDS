@@ -91,7 +91,7 @@ export default function TablaListadoValeSalida() {
 
                         const link = document.createElement('a');
                         link.href = 'data:application/pdf;base64,' + response.data.base64;  // Obtiene el archivo base64
-                        link.download = `${params.row.id} - ${params.row.descripcion}.pdf`; // Nombre del archivo
+                        link.download = `${params.row.id} - ${params.row.motivo}.pdf`; // Nombre del archivo
                         link.click();
 
 
