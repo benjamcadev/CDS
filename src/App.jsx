@@ -6,6 +6,7 @@ import RegisterPage from './pages/RegisterPage'
 import { CotizacionPage } from './pages/CotizacionPage'
 import { ListadoCotizacionPage } from './pages/ListadoCotizacion'
 import { ListadoValeSalidaPage } from './pages/ListadoValeSalida'
+import { ListadoValeEntradaPage } from './pages/ListadoValeEntrada'
 import Home from './pages/Home'
 import Sidebar from './components/Sidebar'
 import { Route, Routes } from 'react-router-dom'
@@ -48,6 +49,7 @@ function App() {
             <Route path='/cotizacion' element={<CotizacionPage />} />
             <Route path='/listado-cotizacion' element={<ListadoCotizacionPage />} />
             <Route path='/listado-vale-salida' element={<ListadoValeSalidaPage />} />
+            <Route path='/listado-vale-entrada' element={<ListadoValeEntradaPage />} />
           </Route>
 
 
