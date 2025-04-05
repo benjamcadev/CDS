@@ -68,7 +68,7 @@ export default function TablaListadoValeEntrada() {
         { field: 'id', headerName: 'N° Ticket', flex: 0.2, },
         { field: 'motivo', headerName: 'Descripción', flex: 1, minWidth: 200, },
         { field: 'responsable_bodega', headerName: 'Responsable Recepción', flex: 0.4 },
-        { field: 'fecha_creacion', headerName: 'Fecha', flex: 0.4 },
+        { field: 'fecha', headerName: 'Fecha', flex: 0.4 },
         {
             field: 'tipo_ticket_idtipo_ticket',
             headerName: 'Tipo Ticket',
