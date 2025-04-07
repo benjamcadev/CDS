@@ -8,7 +8,7 @@ import { opcionesUnidadMedida } from '../../helpers/options';
 import axios from '../../helpers/axios';
 import ImagenNot from '../../public/images/PageNotFound.png';
 
-import {  FormControl, IconButton, InputLabel, MenuItem, Select  } from '@mui/material';
+import { FormControl, IconButton, InputLabel, MenuItem, Select } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -49,9 +49,9 @@ const CreateModal = ({ name, title, onSave }) => {
   const [open, setOpen] = useState(false);
 
   const { user } = useAuth();
-  
-  
-  const [cameraOpen, setCameraOpen] = useState(false); 
+
+
+  const [cameraOpen, setCameraOpen] = useState(false);
   const [formData, setFormData] = useState({
     nombre: '',
     sap: '',
@@ -63,10 +63,11 @@ const CreateModal = ({ name, title, onSave }) => {
     comentario: '',
     categoria_idcategoria: '',
     imagen_base64: ImagenNot,
+    cantidad_min: ''
   });
-  
+
   const [categorias, setCategorias] = useState([]);
-  
+
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -93,8 +94,9 @@ const CreateModal = ({ name, title, onSave }) => {
       comentario: '',
       categoria_idcategoria: '',
       imagen_base64: ImagenNot,
+      cantidad_min: ''
     });
-    
+
   };
 
   const handleChange = (e) => {
@@ -129,7 +131,7 @@ const CreateModal = ({ name, title, onSave }) => {
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post('/materiales/create', formData, {
@@ -161,12 +163,13 @@ const CreateModal = ({ name, title, onSave }) => {
         comentario: '',
         categoria_idcategoria: '',
         imagen_base64: ImagenNot,
+        cantidad_min: ''
       });
 
       onSave(); // Actualizar la lista de artículos
       //Cerramos el modal
       handleClose();
-      
+
       // No cerramos el modal aquí, permitimos que el usuario continúe
     } catch (error) {
       MySwal.fire({
@@ -185,7 +188,7 @@ const CreateModal = ({ name, title, onSave }) => {
   const closeCamera = () => setCameraOpen(false);
 
 
- 
+
   return (
     <div>
       <ButtonMui name={name} handleOpen={handleOpen} />
@@ -223,18 +226,18 @@ const CreateModal = ({ name, title, onSave }) => {
                 )}
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
-                <input 
-                  accept="image/*" 
-                  id="contained-button-file" 
-                  multiple type="file" 
-                  capture="environment" 
-                  style={{ display: 'none' }} 
-                  onChange={handleImageUpload} 
+                <input
+                  accept="image/*"
+                  id="contained-button-file"
+                  multiple type="file"
+                  capture="environment"
+                  style={{ display: 'none' }}
+                  onChange={handleImageUpload}
                 />
                 <label htmlFor="contained-button-file">
-                  <Button 
-                    fullWidth 
-                    variant="contained" 
+                  <Button
+                    fullWidth
+                    variant="contained"
                     component="span">
                     Subir Imagen Del Articulo
                   </Button>
@@ -251,8 +254,8 @@ const CreateModal = ({ name, title, onSave }) => {
                 </Box>
               </Box>
             </Box>
-             {/* Modal para abrir la cámara */}
-             <Modal open={cameraOpen} onClose={closeCamera}>
+            {/* Modal para abrir la cámara */}
+            <Modal open={cameraOpen} onClose={closeCamera}>
               <Box sx={{ ...style, maxWidth: '200%', textAlign: 'center' }}>
                 <WebcamCapture setImage={(img) => {
                   setFormData({ ...formData, imagen_base64: img });
@@ -262,73 +265,81 @@ const CreateModal = ({ name, title, onSave }) => {
             </Modal>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.4, mt: 1.5 }}>
-              <CustomTextField 
-                id="nombre" 
-                label="Descripción del Articulo (Obligatorio)" 
-                variant="outlined"  
-                value={formData.nombre} 
-                onChange={handleChange} 
+              <CustomTextField
+                id="nombre"
+                label="Descripción del Articulo (Obligatorio)"
+                variant="outlined"
+                value={formData.nombre}
+                onChange={handleChange}
               />
-              <CustomTextField 
-                id="sap" 
-                label="SAP (Opcional)" 
-                type="number" 
-                variant="outlined"  
-                value={formData.sap} 
-                onChange={handleChange} 
+              <CustomTextField
+                id="sap"
+                label="SAP (Opcional)"
+                type="number"
+                variant="outlined"
+                value={formData.sap}
+                onChange={handleChange}
               />
-              <CustomTextField 
-                id="sku" 
-                label="SKU (Opcional)" 
-                type="number" 
-                variant="outlined"  
-                value={formData.sku} 
-                onChange={handleChange} 
+              <CustomTextField
+                id="sku"
+                label="SKU (Opcional)"
+                type="number"
+                variant="outlined"
+                value={formData.sku}
+                onChange={handleChange}
               />
-               <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+              <FormControl variant="outlined" sx={{ minWidth: 120 }}>
                 <InputLabel id="unidad_medida">Unidad Medida</InputLabel>
-                  <Select
-                    value={formData.unidad_medida}
-                    labelId="unidad_medida"
-                    id='unidad_medida'
-                    onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
-                    fullWidth
-                  >
-                    <MenuItem value="" disabled >
-                      ---Seleccione---
+                <Select
+                  value={formData.unidad_medida}
+                  labelId="unidad_medida"
+                  id='unidad_medida'
+                  onChange={(e) => setFormData({ ...formData, unidad_medida: e.target.value })}
+                  fullWidth
+                >
+                  <MenuItem value="" disabled >
+                    ---Seleccione---
+                  </MenuItem>
+                  {opcionesUnidadMedida.map((opcion) => (
+                    <MenuItem key={opcion.id} value={opcion.label}>
+                      {opcion.label}
                     </MenuItem>
-                    {opcionesUnidadMedida.map((opcion) => (
-                      <MenuItem key={opcion.id} value={opcion.label}>
-                        {opcion.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                  ))}
+                </Select>
               </FormControl>
-              <CustomTextField 
-                id="precio" 
-                label="Precio (USD)"  
-                type="number" 
-                value={formData.precio} 
-                onChange={handleChange} 
+              <CustomTextField
+                id="precio"
+                label="Precio (USD)"
+                type="number"
+                value={formData.precio}
+                onChange={handleChange}
               />
 
-              <CustomTextField 
-                id="comentario" 
-                label="Comentario (Opcional)" 
-                variant="outlined" 
-                fullWidth 
-                value={formData.comentario} 
-                onChange={handleChange} 
+              <CustomTextField
+                id="cantidad_min"
+                label="Cantidad Minima en Stock"
+                type="number"
+                value={formData.cantidad_min}
+                onChange={handleChange}
+              />
+
+              <CustomTextField
+                id="comentario"
+                label="Comentario (Opcional)"
+                variant="outlined"
+                fullWidth
+                value={formData.comentario}
+                onChange={handleChange}
               />
               <FormControl variant="outlined" sx={{ minWidth: 120 }}>
                 <InputLabel id="categoria_idcategoria">Categoria</InputLabel>
-                  <Select
-                    value={formData.categoria_idcategoria}
-                    labelId="categoria_idcategoria"
-                    id="categoria_idcategoria"
-                    onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
-                    fullWidth
-                  >
+                <Select
+                  value={formData.categoria_idcategoria}
+                  labelId="categoria_idcategoria"
+                  id="categoria_idcategoria"
+                  onChange={(e) => setFormData({ ...formData, categoria_idcategoria: e.target.value })}
+                  fullWidth
+                >
                   <MenuItem value="" disabled >
                     ---Seleccione---
                   </MenuItem>
@@ -337,17 +348,17 @@ const CreateModal = ({ name, title, onSave }) => {
                       {categoria.nombre}
                     </MenuItem>
                   ))}
-                  </Select>
+                </Select>
               </FormControl>
             </Box>
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-              <Button 
-                fullWidth 
-                variant="contained" 
-                color="primary" 
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
                 onClick={handleSubmit}
                 sx={{ height: '50px' }}
-                >
+              >
                 Guardar
               </Button>
             </Box>
