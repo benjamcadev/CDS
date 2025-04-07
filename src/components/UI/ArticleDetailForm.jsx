@@ -247,7 +247,7 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           />
         </Zoom>
 
-        
+
       </Box>
       {user.tipoUser === 1 ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 0.5 }}>
@@ -348,6 +348,17 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           value={formData.precio || ''}
           onChange={handleChange}
         />
+
+
+        <CustomTextField
+          id="cantidad_min"
+          label="Cantidad Minima en Stock"
+          type="number"
+          value={formData.cantidad_min || ''}
+          onChange={handleChange}
+        />
+
+
         <CustomTextField
           id="comentario"
           label="Comentario"

@@ -128,12 +128,13 @@ export default function MaterialDataGrid() {
   };
 
   const columns = [
-    { field: 'id', headerAlign: 'center', headerName: 'ID', align: 'center', width: 85 },
+    { field: 'id', headerAlign: 'center', headerName: 'ID', align: 'center', width: 70 },
     { field: 'Descripcion', headerName: 'Descripción', width: 450 },
-    { field: 'Codigo_SAP', headerName: 'SAP', headerAlign: 'center', width: 150, align: 'center' },
-    { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'center', width: 150, align: 'center' },
+    { field: 'Codigo_SAP', headerName: 'SAP', headerAlign: 'center', width: 120, align: 'center' },
+    { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'center', width: 120, align: 'center' },
     { field: 'unidad_medida', headerName: 'Unidad de Medida', width: 150, align: 'center' },
     { field: 'precio', headerName: 'Precio', headerAlign: 'center', type: 'number', width: 150, align: 'center' },
+    { field: 'cantidad_min', headerName: 'Min Stock', headerAlign: 'center', type: 'number', width: 80, align: 'center' },
     {
       field: 'Detalle',
       headerName: 'Detalle Articulo',

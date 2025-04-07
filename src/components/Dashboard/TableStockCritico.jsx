@@ -11,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
+import axios from '../../helpers/axios'
 import { Fragment, useState, useEffect } from 'react';
 
 export default function TableStockCritico() {
@@ -22,18 +23,9 @@ export default function TableStockCritico() {
 
         async function fetchStockCritico() {
             try {
-                /*const response = await axios.get('bodegas/', { withCredentials: true });
-                setBodegas(response.data)*/
+                const response = await axios.get('materiales/stock-critico/', { withCredentials: true });
 
-                setMaterialesStockCritico([
-                    {
-                        id: 500,
-                        nombre: 'CINTA ADHESIVA GRIS 48MM X 27M ',
-                        sap: '9032533',
-                        cantidad_actual: 5,
-                        stock_minimo: 20
-                    }
-                ])
+                setMaterialesStockCritico(response.data)
 
             } catch (error) {
                 console.error('Hubo un error fetch stock critico: ' + error);
