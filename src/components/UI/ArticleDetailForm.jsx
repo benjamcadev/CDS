@@ -374,26 +374,26 @@ export const ArticleDetailForm = ({ article, onClose, onUpdate, onDelete }) => {
           </Select>
         </FormControl>
       </Box>
-      <Box sx={{ mt: 0.2 }}>
-        <Typography variant="h7" sx={{ fontWeight: 'bold' }}>Stock Por Bodega</Typography>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h7" sx={{ fontWeight: 'bold', fontSize: '25px' }}>Stock Por Bodega</Typography>
         {stockBodegas.length > 0 ? (
           stockBodegas.map((stock) => (
-            <Grid container key={stock.bodegas_idbodegas} sx={{ mt: 0.1 }} spacing={1}>
+            <Grid container key={stock.bodegas_idbodegas} sx={{ mt: 1 }} spacing={1}>
               <Grid item xs={4}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Bodega:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Bodega:</Typography>
+                <Typography variant="body2" sx={{ fontSize: '20px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', }}>
                   {stock.nombreBodega}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Stock:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Stock:</Typography>
+                <Typography variant="body2" sx={{ fontSize: '20px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
                   {stock.cantidad}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Ubicación:</Typography>
-                <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', fontSize: '20px' }}>Ubicación:</Typography>
+                <Typography variant="body2" sx={{ fontSize: '20px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', alignItems: 'center' }}>
                   {stock.nombreUbicacion}
                 </Typography>
               </Grid>
