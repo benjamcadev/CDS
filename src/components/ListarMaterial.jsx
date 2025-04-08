@@ -1,14 +1,17 @@
-import  { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import { getArticulos, searchArticulos } from '../helpers/getArticulos';
 //import { getBodegaMaterial } from '../helpers/getBodegas';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DescriptionIcon from '@mui/icons-material/Description';
 import DetailModal from './Modals/Detail.Modal';
+import KardexModal from './Modals/Kardex.Modal';
 import { Button } from '@mui/material';
 import SearchBar from './UI/SearchBar';
 import CreateModal from './Modals/Create.Modals';
 import { useAuth } from '../context/AuthContext';
+
 
 
 export default function MaterialDataGrid() {
@@ -22,12 +25,15 @@ export default function MaterialDataGrid() {
   const [error, setError] = useState(null);
   const [totalArticulos, setTotalArticulos] = useState(0);
   const [selectedArticulo, setSelectedArticulo] = useState(null);
+  const [selectedArticuloKardex, setSelectedArticuloKardex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalKardexOpen, setModalKardexOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const { user } = useAuth();
 
   const fetchArticulos = async (currentPage, currentPageSize) => {
+    
     try {
       setLoading(true);
       setError(null);
@@ -47,6 +53,7 @@ export default function MaterialDataGrid() {
   };
 
   const handleSearch = async () => {
+
     if (!searchValue.trim()) {
       setIsSearching(false);
       fetchArticulos(paginationModel.page, paginationModel.pageSize);
@@ -62,7 +69,7 @@ export default function MaterialDataGrid() {
         id: articulo.id,
       }));
 
-      console.log(articulosConCantidad);
+     
 
       // Filtrar duplicados
       const uniqueArticulos = articulosConCantidad.filter(
@@ -97,16 +104,32 @@ export default function MaterialDataGrid() {
 
   const rowCountRef = useRef(totalArticulos);
 
+  useEffect(() => {
+    
+  }, [selectedArticuloKardex, KardexModal])
+
   const handleDetailClick = (row) => {
     setSelectedArticulo(row);
     setModalOpen(true);
   };
+
+  const handleKardexClick = (row) => {
+    setSelectedArticuloKardex(row);
+    setModalKardexOpen(true);
+  };
+
+  const handleCloseModalKardex = () => {
+    setModalKardexOpen(false);
+    setSelectedArticuloKardex(null);
+  };
+
 
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedArticulo(null);
   };
 
+  
   const rowCount = useMemo(() => {
     if (totalArticulos !== undefined) {
       rowCountRef.current = totalArticulos;
@@ -130,17 +153,17 @@ export default function MaterialDataGrid() {
   const columns = [
     { field: 'id', headerAlign: 'center', headerName: 'ID', align: 'center', width: 70 },
     { field: 'Descripcion', headerName: 'Descripción', width: 450 },
-    { field: 'Codigo_SAP', headerName: 'SAP', headerAlign: 'center', width: 120, align: 'center' },
-    { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'center', width: 120, align: 'center' },
-    { field: 'unidad_medida', headerName: 'Unidad de Medida', width: 150, align: 'center' },
-    { field: 'precio', headerName: 'Precio', headerAlign: 'center', type: 'number', width: 150, align: 'center' },
-    { field: 'cantidad_min', headerName: 'Min Stock', headerAlign: 'center', type: 'number', width: 80, align: 'center' },
+    { field: 'Codigo_SAP', headerName: 'SAP', headerAlign: 'left', width: 120, align: 'left' },
+    { field: 'Codigo_interno', headerName: 'Código Interno', headerAlign: 'left', width: 120, align: 'left' },
+    { field: 'unidad_medida', headerName: 'Unidad Medida', headerAlign: 'left', width: 130, align: 'left' },
+    { field: 'precio', headerName: 'Precio', headerAlign: 'left', type: 'number', width: 90, align: 'left' },
+    { field: 'cantidad_min', headerName: 'Min Stock', headerAlign: 'left', type: 'number', width: 80, align: 'left' },
     {
       field: 'Detalle',
-      headerName: 'Detalle Articulo',
-      width: 140,
-      headerAlign: 'center',
-      align: 'center',
+      headerName: 'Detalle',
+      width: 85,
+      headerAlign: 'left',
+      align: 'left',
       renderCell: (params) => (
         <Button
           color="warning"
@@ -148,8 +171,31 @@ export default function MaterialDataGrid() {
           onClick={() => handleDetailClick(params.row)}
         >
         </Button>
+
+
       ),
     },
+    {
+      field: 'kardex',
+      headerName: 'Kardex',
+      width: 85,
+      headerAlign: 'left',
+      align: 'left',
+      renderCell: (params) => (
+        <Box textAlign='left'>
+          <Button
+            color="primary"
+            startIcon={<DescriptionIcon />}
+            onClick={() => handleKardexClick(params.row)}
+          >
+          </Button>
+        </Box>
+
+
+
+      ),
+    },
+
   ];
 
   return (
@@ -160,15 +206,15 @@ export default function MaterialDataGrid() {
           onChange={(e) => setSearchValue(e.target.value)}
           onEnter={handleSearch}
         />
-        {user.tipoUser === 1 
-          ? ( <CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />) 
-          : ( <div></div> )
+        {user.tipoUser === 1
+          ? (<CreateModal name={'Crear Articulo'} title={'Crear Articulo'} onSave={handleSave} />)
+          : (<div></div>)
         }
       </div>
       {error && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt:3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', mt: 3 }}>
           <p>Material No Existe En la Base de datos</p>
-          <Button sx={{mt:2}} color='primary' variant='contained' onClick={() => fetchArticulos(paginationModel.page, paginationModel.pageSize)}>
+          <Button sx={{ mt: 2 }} color='primary' variant='contained' onClick={() => fetchArticulos(paginationModel.page, paginationModel.pageSize)}>
             Recargue la Tabla
           </Button>
         </Box>
@@ -191,6 +237,16 @@ export default function MaterialDataGrid() {
           open={modalOpen}
           handleClose={handleCloseModal}
           article={selectedArticulo}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+        />
+      )}
+
+      {selectedArticuloKardex && (
+        <KardexModal
+          open={modalKardexOpen}
+          handleClose={handleCloseModalKardex}
+          article={selectedArticuloKardex}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
         />
