@@ -28,7 +28,7 @@ const style = {
 
 const DetailModal = ({ open, handleClose, article, onUpdate , onDelete }) => {
 
-  console.log(article);
+ 
 
   return (
     <Modal open={open}>
