@@ -40,7 +40,7 @@ function App() {
           <Route path='/mensajes' element={<Mensajes />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path='/' element={<Home />} />
+            <Route path='/dashboard' element={<Home />} />
             <Route path='/vale-salida' element={<ValeSalida />} />
             <Route path='/vale-salida/:idTicket' element={<ValeSalida />} />
             <Route path='/vale-entrada' element={<ValeEntrada />} />

@@ -28,7 +28,7 @@ export default function Sidebar() {
 
 
   const Menus = [
-    { title: "Dashboard", spacing: true, link: "/" },
+    { title: "Dashboard", spacing: true, link: "/dashboard" },
     { title: "Vale Salida", icon: <FaFileArrowDown />, spacing: true, link: "/vale-salida", visible: user?.tipoUser === 1 || user?.tipoUser === 3 },
 
 

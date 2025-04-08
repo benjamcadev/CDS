@@ -52,7 +52,7 @@ export default function LoginPage({showDarkMode, setShowDarkMode}) {
   useEffect(() => {
 
     if (isAuthenticated) {
-      navigate('/vale-salida/')
+      navigate('/dashboard/')
     }
 
   }, [isAuthenticated])
